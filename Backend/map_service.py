@@ -206,9 +206,10 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
     filename = f"{safe_county}_{safe_sub}_{crop.lower()}_{year}_yield.tif"
     out_path = out_dir / filename
 
-    # Always regenerate (no stale cache)
+    # Use cached TIF if it already exists to achieve instant rendering
     if out_path.exists():
-        out_path.unlink()
+        return filename
+
 
     try:
         with rasterio.open(y_path) as y_src:
@@ -335,6 +336,14 @@ def generate_county_map(county: str, crop: str, year: int, map_type: str = 'crop
 
     out_dir = Path(__file__).parent / "images"
     out_dir.mkdir(exist_ok=True)
+
+    safe_county = county.lower().replace(" ", "_")
+    safe_sub = subcounty.lower().replace(" ", "_") if subcounty else ""
+    filename = f"{safe_county}_{safe_sub}_{crop.lower()}_{year}_{map_type}.png"
+    out_path = out_dir / filename
+    if out_path.exists():
+        return filename
+
 
     try:
         # ── CROP MAP ──────────────────────────────────────────────────────────
@@ -533,8 +542,8 @@ def generate_county_map(county: str, crop: str, year: int, map_type: str = 'crop
                      fontsize=18, fontweight='bold', pad=20)
         ax.axis('off')
 
-        filename = f"{display_name.lower().replace(' ', '_')}_{crop.lower()}_{year}_{map_type}.png"
-        out_path = out_dir / filename
+        # filename and out_path are already defined at the beginning of the function
+
         plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
         plt.margins(0,0)
         ax.xaxis.set_major_locator(plt.NullLocator())

@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, ImageOverlay, useMap, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, ImageOverlay, useMap, GeoJSON, ZoomControl } from "react-leaflet";
+
 import { API_BASE_URL } from "../config";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState, useRef } from "react";
@@ -137,7 +138,8 @@ const GeoTiffLayerComponent = ({ url, opacity, crop }: { url: string; opacity: n
             if (v < thresholds.hi) return "#f59e0b";   // Mid - Orange
             return "#10b981";                           // High - Green
           },
-          resolution: 256,
+          resolution: 64,
+
         });
 
         // Set custom properties to ensure safe, minification-proof removal
@@ -240,6 +242,8 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath }: 
         zoomControl={false}
       >
         <TileLayer attribution="&copy; OpenStreetMap" url={getTileUrl()} />
+        <ZoomControl position="topright" />
+
 
         {layer === "pixel" && (
           <GeoTiffLayerComponent url={tifUrl} opacity={opacity} crop={crop} />

@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, ImageOverlay, useMap, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, ImageOverlay, useMap, GeoJSON, ZoomControl } from 'react-leaflet';
+
 import { API_BASE_URL } from "../config";
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
@@ -100,6 +101,8 @@ export const SoilMap = ({ county, subcounty }: SoilMapProps) => {
             attribution='&copy; OpenStreetMap' 
             url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'} 
         />
+        <ZoomControl position="topright" />
+
         
         {eeTileUrl && county && county !== "Kenya" && (
            <TileLayer 
