@@ -18,7 +18,10 @@ load_dotenv()
 
 app = FastAPI(title="Kenya Yield Insight API V2", description="XGBoost + Earth Engine")
 
+import os
+os.makedirs("images", exist_ok=True)
 app.mount("/images", StaticFiles(directory="images"), name="images")
+
 
 app.add_middleware(
     CORSMiddleware,
