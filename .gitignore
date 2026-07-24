@@ -9,19 +9,20 @@
 secrets/
 
 # === TRAINED MODEL — PROTECT YOUR IP ===
-Backend/models/saved/*.json
 Backend/models/saved/*.pkl
 Backend/models/saved/*.joblib
+!Backend/models/saved/xgb_yield_model.json
+!Backend/models/saved/features.json
 
 # === RAW PROPRIETARY DATA — NEVER EXPOSE ===
-Backend/data/afa_official_stats.csv
 Backend/data/raw/
-Backend/data/processed/
 Backend/data/gee_cache.db
-Backend/data/boundaries/
-Backend/data/*.json
-Backend/data/*.csv
-Backend/data/tif_baselines_2017.json
+
+# Allow specific processed and boundary files needed by backend
+!Backend/data/boundaries/
+!Backend/data/processed/
+!Backend/data/afa_official_stats.csv
+
 
 # === PYTHON ===
 __pycache__/

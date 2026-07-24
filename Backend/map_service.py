@@ -16,10 +16,9 @@ import os
 
 logger = logging.getLogger(__name__)
 
-SHAPEFILE_PATH = os.environ.get(
-    "DATA_DIR",
-    r"C:\Users\PC\Documents\kenya-yield-insight\Backend\data\boundaries"
-) + r"\ken_admbnda_adm2_iebc_20191031.shp"
+MAP_SERVICE_DIR = Path(__file__).parent
+SHAPEFILE_PATH = str(MAP_SERVICE_DIR / "data" / "boundaries" / "ken_admbnda_adm2_iebc_20191031.shp")
+
 
 _kenya_gdf = None
 
@@ -120,7 +119,8 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
     from rasterio.warp import reproject
     from rasterio.features import rasterize
 
-    data_dir = Path(__file__).parent.parent.parent / "kenya-yield-insight" / "Backend" / "data"
+    data_dir = Path(__file__).parent / "data"
+
 
     # Yield TIF  +  Harvested-area TIF (used as crop-presence mask)
     CROP_FILES = {
@@ -345,7 +345,8 @@ def generate_county_map(county: str, crop: str, year: int, map_type: str = 'crop
     try:
         # ── CROP MAP ──────────────────────────────────────────────────────────
         if map_type == 'crop':
-            old_project = Path(__file__).parent.parent.parent / "kenya-yield-insight" / "Backend" / "data"
+            old_project = Path(__file__).parent / "data"
+
 
             if crop.lower() == 'maize':
                 tif_path = old_project / "raw" / "maize_harvest_0.1km.tif"
@@ -379,7 +380,8 @@ def generate_county_map(county: str, crop: str, year: int, map_type: str = 'crop
             import glob
             from rasterio.merge import merge
 
-            tif_pattern = r"C:\Users\PC\Documents\kenya-yield-insight\Backend\data\raw\kenya_soil_properties-*.tif"
+            tif_pattern = str(Path(__file__).parent / "data" / "raw" / "kenya_soil_properties-*.tif")
+
             tif_paths = glob.glob(tif_pattern)
 
             rendered = False
@@ -470,8 +472,8 @@ def generate_county_map(county: str, crop: str, year: int, map_type: str = 'crop
         elif map_type == 'lulc':
             from PIL import Image
 
-            lulc_dir = (Path(__file__).parent.parent.parent /
-                        "kenya-yield-insight" / "Backend" / "data" / "processed" / "lulc")
+            lulc_dir = Path(__file__).parent / "data" / "processed" / "lulc"
+
             query_year = min(year, 2024)
 
             file_name = "Kenya.png" if is_national else f"{display_name.replace(' ', '_')}.png"

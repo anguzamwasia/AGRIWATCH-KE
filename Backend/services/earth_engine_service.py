@@ -10,21 +10,45 @@ logger = logging.getLogger(__name__)
 
 class EarthEngineService:
     def __init__(self):
-        try:
-            ee.Initialize(project='ee-penguincynthia')
-        except Exception:
+        self.initialized = False
+        import json
+        import os
+        from pathlib import Path
+        
+        credentials_json = os.environ.get("EE_CREDENTIALS")
+        if credentials_json:
             try:
-                ee.Authenticate()
+                creds_dict = json.loads(credentials_json)
+                from google.oauth2 import service_account
+                credentials = service_account.Credentials.from_service_account_info(creds_dict)
+                ee.Initialize(credentials, project='ee-penguincynthia')
+                self.initialized = True
+                logger.info("Successfully initialized Earth Engine using Service Account Credentials.")
+            except Exception as e:
+                logger.error(f"Failed to init GEE with EE_CREDENTIALS: {e}")
+
+        if not self.initialized:
+            try:
                 ee.Initialize(project='ee-penguincynthia')
+                self.initialized = True
+                logger.info("Successfully initialized Earth Engine using default credentials.")
             except Exception as e:
                 logger.error(f"Could not init EE: {e}")
                 
-        self.fc = ee.FeatureCollection("users/penguincynthia/kenya_subcounties") # Just fallback if we had uploaded it
-        # Wait, since we don't have it uploaded as an asset, we will just use a geometry
+        if self.initialized:
+            try:
+                self.fc = ee.FeatureCollection("users/penguincynthia/kenya_subcounties") # Just fallback if we had uploaded it
+            except Exception as e:
+                logger.warning(f"Could not load ee.FeatureCollection: {e}")
+                self.fc = None
+        else:
+            self.fc = None
+
         # Let's read the subcounty geometry directly from the shapefile or a cached GeoJSON.
-        # Actually, for live queries, doing gpd.read_file() takes 1 second, which is fine.
         import geopandas as gpd
-        self.gdf = gpd.read_file(r"C:\Users\PC\Documents\kenya-yield-insight\Backend\data\boundaries\ken_admbnda_adm2_iebc_20191031.shp")
+        base_dir = Path(__file__).parent.parent
+        shp_path = base_dir / "data" / "boundaries" / "ken_admbnda_adm2_iebc_20191031.shp"
+        self.gdf = gpd.read_file(str(shp_path))
         self.gdf['subcounty'] = self.gdf['ADM2_EN'].str.lower()
         self.gdf['county'] = self.gdf['ADM1_EN'].str.lower()
         
@@ -32,6 +56,7 @@ class EarthEngineService:
         for c, df in self.gdf.groupby('county'):
             self.county_geoms[c] = df.geometry.unary_union.simplify(0.005)
         self.kenya_geom = self.gdf.geometry.unary_union.simplify(0.01)
+
 
     def _to_ee_geom(self, geom):
         if geom.geom_type == 'Polygon':

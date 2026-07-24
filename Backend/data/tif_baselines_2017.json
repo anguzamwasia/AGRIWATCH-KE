@@ -1,0 +1,1694 @@
+[
+  {
+    "county": "Baringo",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 25833.8,
+    "yield_tha": 1.8445,
+    "production_tons": 47650.86,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bomet",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 49854.8,
+    "yield_tha": 1.6268,
+    "production_tons": 81103.6,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bungoma",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 97436.5,
+    "yield_tha": 1.5754,
+    "production_tons": 153503.14,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Busia",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 31225.4,
+    "yield_tha": 1.9422,
+    "production_tons": 60647.36,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Elgeyo-Marakwet",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 42770.8,
+    "yield_tha": 1.5417,
+    "production_tons": 65940.87,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Embu",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 51643.9,
+    "yield_tha": 1.7867,
+    "production_tons": 92270.59,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Garissa",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 1.1,
+    "yield_tha": 0.2079,
+    "production_tons": 0.23,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Homa Bay",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 71327.6,
+    "yield_tha": 1.639,
+    "production_tons": 116906.36,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Isiolo",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 1707.8,
+    "yield_tha": 1.8802,
+    "production_tons": 3210.99,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kajiado",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 45815.6,
+    "yield_tha": 1.2846,
+    "production_tons": 58855.59,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kakamega",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 94345.8,
+    "yield_tha": 1.7277,
+    "production_tons": 162999.87,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kericho",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 50749.6,
+    "yield_tha": 1.5328,
+    "production_tons": 77786.45,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kiambu",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 40459.7,
+    "yield_tha": 1.5504,
+    "production_tons": 62729.97,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kilifi",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 47824.61,
+    "yield_tha": 1.5171,
+    "production_tons": 72554.43,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kirinyaga",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 30978.6,
+    "yield_tha": 1.7677,
+    "production_tons": 54760.66,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisii",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 63458.2,
+    "yield_tha": 1.587,
+    "production_tons": 100707.37,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisumu",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 23987.8,
+    "yield_tha": 2.01,
+    "production_tons": 48214.65,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kitui",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 114786.3,
+    "yield_tha": 1.5907,
+    "production_tons": 182591.51,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kwale",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 15540.1,
+    "yield_tha": 1.6834,
+    "production_tons": 26159.81,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Laikipia",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 34705.5,
+    "yield_tha": 1.4988,
+    "production_tons": 52018.18,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Lamu",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 8615.6,
+    "yield_tha": 2.4723,
+    "production_tons": 21300.27,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Machakos",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 187395.41,
+    "yield_tha": 1.425,
+    "production_tons": 267044.45,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Makueni",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 114129.8,
+    "yield_tha": 1.4555,
+    "production_tons": 166115.11,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mandera",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 2359.7,
+    "yield_tha": 1.026,
+    "production_tons": 2421.13,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Marsabit",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 10629.5,
+    "yield_tha": 1.5848,
+    "production_tons": 16845.54,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Meru",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 93576.59,
+    "yield_tha": 1.9025,
+    "production_tons": 178030.49,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Migori",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 60518.9,
+    "yield_tha": 1.6913,
+    "production_tons": 102355.62,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mombasa",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 743.9,
+    "yield_tha": 2.224,
+    "production_tons": 1654.43,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Murang'a",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 51680.0,
+    "yield_tha": 1.6615,
+    "production_tons": 85864.94,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nairobi",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 1658.1,
+    "yield_tha": 1.7539,
+    "production_tons": 2908.14,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nakuru",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 82769.8,
+    "yield_tha": 1.2215,
+    "production_tons": 101100.08,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nandi",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 54261.1,
+    "yield_tha": 1.6463,
+    "production_tons": 89327.64,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Narok",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 103444.8,
+    "yield_tha": 1.4613,
+    "production_tons": 151161.74,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyamira",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 58152.0,
+    "yield_tha": 1.4469,
+    "production_tons": 84140.14,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyandarua",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 17476.0,
+    "yield_tha": 1.7414,
+    "production_tons": 30432.01,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyeri",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 31889.0,
+    "yield_tha": 1.7005,
+    "production_tons": 54226.85,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Samburu",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 2533.8,
+    "yield_tha": 1.1349,
+    "production_tons": 2875.63,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Siaya",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 54839.7,
+    "yield_tha": 1.7949,
+    "production_tons": 98432.84,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Taita Taveta",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 21762.2,
+    "yield_tha": 1.6968,
+    "production_tons": 36926.6,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tana River",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 2010.0,
+    "yield_tha": 1.6106,
+    "production_tons": 3237.32,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tharaka-Nithi",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 42429.9,
+    "yield_tha": 1.6785,
+    "production_tons": 71219.02,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Trans Nzoia",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 109699.4,
+    "yield_tha": 1.6456,
+    "production_tons": 180518.88,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Turkana",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 2752.5,
+    "yield_tha": 2.3645,
+    "production_tons": 6508.17,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Uasin Gishu",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 80625.91,
+    "yield_tha": 1.7226,
+    "production_tons": 138886.39,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Vihiga",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 23400.6,
+    "yield_tha": 1.5999,
+    "production_tons": 37439.01,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Wajir",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 2982.2,
+    "yield_tha": 1.5588,
+    "production_tons": 4648.55,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "West Pokot",
+    "crop": "Maize",
+    "year": 2017,
+    "area_ha": 32891.6,
+    "yield_tha": 1.4719,
+    "production_tons": 48413.57,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Baringo",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bomet",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 1095.9,
+    "yield_tha": 1.1952,
+    "production_tons": 1309.82,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bungoma",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 72.0,
+    "yield_tha": 2.0366,
+    "production_tons": 146.64,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Busia",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Elgeyo-Marakwet",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 2621.6,
+    "yield_tha": 1.5645,
+    "production_tons": 4101.48,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Embu",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Garissa",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Homa Bay",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Isiolo",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 118.6,
+    "yield_tha": 0.6454,
+    "production_tons": 76.54,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kajiado",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 353.3,
+    "yield_tha": 1.6682,
+    "production_tons": 589.36,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kakamega",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kericho",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 141.9,
+    "yield_tha": 1.6179,
+    "production_tons": 229.59,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kiambu",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kilifi",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kirinyaga",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisii",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisumu",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.5,
+    "yield_tha": 1.0868,
+    "production_tons": 0.54,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kitui",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kwale",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Laikipia",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 6877.6,
+    "yield_tha": 1.3976,
+    "production_tons": 9612.43,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Lamu",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Machakos",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.7,
+    "yield_tha": 1.8361,
+    "production_tons": 1.29,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Makueni",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mandera",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Marsabit",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 145.0,
+    "yield_tha": 1.5877,
+    "production_tons": 230.22,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Meru",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 15028.6,
+    "yield_tha": 1.1059,
+    "production_tons": 16620.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Migori",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mombasa",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Murang'a",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nairobi",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nakuru",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 15633.3,
+    "yield_tha": 1.3558,
+    "production_tons": 21195.83,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nandi",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 1026.2,
+    "yield_tha": 1.8683,
+    "production_tons": 1917.2,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Narok",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 55744.7,
+    "yield_tha": 1.352,
+    "production_tons": 75365.71,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyamira",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyandarua",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 3409.0,
+    "yield_tha": 1.5793,
+    "production_tons": 5383.72,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyeri",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 4577.3,
+    "yield_tha": 1.4628,
+    "production_tons": 6695.89,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Samburu",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 425.3,
+    "yield_tha": 1.0144,
+    "production_tons": 431.44,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Siaya",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Taita Taveta",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tana River",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tharaka-Nithi",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Trans Nzoia",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 1454.2,
+    "yield_tha": 2.0163,
+    "production_tons": 2932.15,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Turkana",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Uasin Gishu",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 35759.6,
+    "yield_tha": 1.6431,
+    "production_tons": 58757.64,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Vihiga",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Wajir",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "West Pokot",
+    "crop": "Wheat",
+    "year": 2017,
+    "area_ha": 42.7,
+    "yield_tha": 2.0856,
+    "production_tons": 89.06,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Baringo",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 1404.5,
+    "yield_tha": 8.6805,
+    "production_tons": 12191.81,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bomet",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 1617.8,
+    "yield_tha": 9.3996,
+    "production_tons": 15206.63,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bungoma",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 5035.9,
+    "yield_tha": 8.2425,
+    "production_tons": 41508.57,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Busia",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Elgeyo-Marakwet",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 8285.3,
+    "yield_tha": 8.1029,
+    "production_tons": 67135.13,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Embu",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 959.8,
+    "yield_tha": 7.7403,
+    "production_tons": 7429.14,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Garissa",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Homa Bay",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 19.5,
+    "yield_tha": 7.8434,
+    "production_tons": 152.95,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Isiolo",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 128.9,
+    "yield_tha": 2.8284,
+    "production_tons": 364.58,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kajiado",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 1792.9,
+    "yield_tha": 6.8949,
+    "production_tons": 12361.78,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kakamega",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 41.5,
+    "yield_tha": 8.0783,
+    "production_tons": 335.25,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kericho",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 1866.8,
+    "yield_tha": 8.2786,
+    "production_tons": 15454.47,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kiambu",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 23785.7,
+    "yield_tha": 7.9851,
+    "production_tons": 189931.41,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kilifi",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kirinyaga",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 2336.1,
+    "yield_tha": 2.5421,
+    "production_tons": 5938.6,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisii",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 803.5,
+    "yield_tha": 8.2337,
+    "production_tons": 6615.79,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisumu",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 27.1,
+    "yield_tha": 8.655,
+    "production_tons": 234.55,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kitui",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 118.9,
+    "yield_tha": 7.4256,
+    "production_tons": 882.9,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kwale",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Laikipia",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 4498.0,
+    "yield_tha": 7.7638,
+    "production_tons": 34921.71,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Lamu",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Machakos",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 13.6,
+    "yield_tha": 2.4486,
+    "production_tons": 33.3,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Makueni",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mandera",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Marsabit",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Meru",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 27106.5,
+    "yield_tha": 5.9455,
+    "production_tons": 161161.96,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Migori",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 42.3,
+    "yield_tha": 6.8626,
+    "production_tons": 290.29,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mombasa",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Murang'a",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 12406.8,
+    "yield_tha": 7.192,
+    "production_tons": 89230.06,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nairobi",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 903.3,
+    "yield_tha": 4.1717,
+    "production_tons": 3768.3,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nakuru",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 22071.1,
+    "yield_tha": 7.4258,
+    "production_tons": 163895.51,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nandi",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 1233.3,
+    "yield_tha": 8.6488,
+    "production_tons": 10666.57,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Narok",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 12549.1,
+    "yield_tha": 7.9673,
+    "production_tons": 99982.92,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyamira",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 639.3,
+    "yield_tha": 8.4661,
+    "production_tons": 5412.4,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyandarua",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 21461.1,
+    "yield_tha": 7.7462,
+    "production_tons": 166242.45,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyeri",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 24811.1,
+    "yield_tha": 9.0817,
+    "production_tons": 225327.9,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Samburu",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 1637.3,
+    "yield_tha": 7.7039,
+    "production_tons": 12613.54,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Siaya",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 26.8,
+    "yield_tha": 8.4826,
+    "production_tons": 227.33,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Taita Taveta",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tana River",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tharaka-Nithi",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 800.0,
+    "yield_tha": 11.3489,
+    "production_tons": 9079.12,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Trans Nzoia",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 1610.3,
+    "yield_tha": 8.2458,
+    "production_tons": 13278.18,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Turkana",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 10.1,
+    "yield_tha": 14.0044,
+    "production_tons": 141.44,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Uasin Gishu",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 4611.5,
+    "yield_tha": 8.3731,
+    "production_tons": 38612.56,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Vihiga",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 7.0,
+    "yield_tha": 7.2296,
+    "production_tons": 50.61,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Wajir",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "West Pokot",
+    "crop": "Potatoes",
+    "year": 2017,
+    "area_ha": 569.9,
+    "yield_tha": 7.7405,
+    "production_tons": 4411.29,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Baringo",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bomet",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Bungoma",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Busia",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Elgeyo-Marakwet",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Embu",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 4926.4,
+    "yield_tha": 0.6917,
+    "production_tons": 3407.63,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Garissa",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Homa Bay",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Isiolo",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 111.0,
+    "yield_tha": 0.8689,
+    "production_tons": 96.45,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kajiado",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kakamega",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kericho",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kiambu",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 98.6,
+    "yield_tha": 0.488,
+    "production_tons": 48.12,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kilifi",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 102.2,
+    "yield_tha": 0.6117,
+    "production_tons": 62.52,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kirinyaga",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisii",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kisumu",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kitui",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 49788.8,
+    "yield_tha": 0.5449,
+    "production_tons": 27128.75,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Kwale",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 151.7,
+    "yield_tha": 0.6415,
+    "production_tons": 97.31,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Laikipia",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Lamu",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Machakos",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 68673.7,
+    "yield_tha": 0.6035,
+    "production_tons": 41441.41,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Makueni",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 39818.8,
+    "yield_tha": 0.5988,
+    "production_tons": 23843.75,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mandera",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Marsabit",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Meru",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 5941.0,
+    "yield_tha": 0.7631,
+    "production_tons": 4533.67,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Migori",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Mombasa",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Murang'a",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 268.4,
+    "yield_tha": 0.6635,
+    "production_tons": 178.09,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nairobi",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nakuru",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nandi",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Narok",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyamira",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyandarua",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Nyeri",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Samburu",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Siaya",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Taita Taveta",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 269.3,
+    "yield_tha": 0.655,
+    "production_tons": 176.39,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tana River",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Tharaka-Nithi",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 6878.0,
+    "yield_tha": 0.646,
+    "production_tons": 4443.46,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Trans Nzoia",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Turkana",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Uasin Gishu",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Vihiga",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "Wajir",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  },
+  {
+    "county": "West Pokot",
+    "crop": "Pigeonpeas",
+    "year": 2017,
+    "area_ha": 0.0,
+    "yield_tha": 0.0,
+    "production_tons": 0.0,
+    "source": "SpamCast_TIF_2017"
+  }
+]
