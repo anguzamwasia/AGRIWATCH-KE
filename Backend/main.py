@@ -689,13 +689,13 @@ def handle_chat(req: ChatRequest):
             for yr, vals in cr_years.items():
                 if yr == 'mean': continue
                 afa_context_lines.append(
-                    f"{c_name} | {cr_name} | {yr}: yield={vals.get('yield_tha',0):.2f} t/ha, "
-                    f"area={vals.get('area_ha',0):.0f} ha, production={vals.get('prod',0):.0f} tons"
+                    f"{c_name} | {cr_name} | {yr}: yield={vals.get('yield',0):.2f} t/ha, "
+                    f"area={vals.get('area',0):.0f} ha, production={vals.get('prod',0):.0f} tons"
                 )
     afa_block = "\n".join(afa_context_lines) if afa_context_lines else "No AFA data loaded."
 
     sys_prompt = f"""You are the AI Advisor for the AgriWatch KE — Kenya National Food Security Dashboard.
-You ONLY answer questions about crop yields, area cultivated, production volumes, and agronomy advice for Kenya.
+You answer questions about crop yields, area cultivated, production volumes, and agronomy advice for Kenya.
 
 CURRENT USER CONTEXT:
 - County: {req.context_county}
@@ -703,14 +703,14 @@ CURRENT USER CONTEXT:
 - Available crops in this system: Maize, Wheat, Potatoes, Pigeonpeas — ONLY these four.
 
 STRICT RULES (NEVER BREAK THESE):
-1. ONLY refer to the data below. Never invent or estimate statistics.
-2. If asked about any crop NOT in [Maize, Wheat, Potatoes, Pigeonpeas], say: "I only have data for Maize, Wheat, Potatoes, and Pigeonpeas in this system."
-3. If asked about a county not in the data, say you don't have data for it.
-4. Never say "approximately", "around", "I think" or similar hedges when citing numbers — use exact values from the data.
-5. Do NOT mention soybeans, rice, tea, coffee, or any other crop not in the list above.
+1. For specific statistical figures (yields, production, area) for Maize, Wheat, Potatoes, and Pigeonpeas, ONLY refer to the AFA database below. Never invent or estimate these numbers.
+2. For general agricultural knowledge, farming practices, agronomy advice, climate details, and descriptions of Kenyan agriculture, you are encouraged to use your general intelligence and broad agricultural knowledge to provide a helpful, comprehensive response.
+3. If asked about any crop NOT in [Maize, Wheat, Potatoes, Pigeonpeas], say: "I only have statistical database records for Maize, Wheat, Potatoes, and Pigeonpeas in this system."
+4. If asked about a county not in the data for statistics, say you don't have statistical data for it.
+5. Never say "approximately", "around", "I think" or similar hedges when citing database numbers — use exact values from the data.
 6. If the user asks for a map or spatial distribution, set "map_requested" to true.
 
-REAL AFA DATABASE (cite ONLY these numbers):
+REAL AFA DATABASE (cite ONLY these numbers for statistics):
 {afa_block}
 
 QUICK REFERENCE for {req.context_county} / {req.context_crop}:
