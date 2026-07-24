@@ -1,0 +1,19 @@
+AgriWatch KE — AI Crop Yield Early Warning System
+Copyright © 2026 Cynthia Anguza. All Rights Reserved.
+
+SUBMISSION NOTICE
+-----------------
+This software was developed by Cynthia Anguza and submitted to the
+IGAD Hackathon 2026: Smarter Early Warning, Stronger Communities.
+
+This submission is provided for EVALUATION PURPOSES ONLY.
+Unauthorized reproduction, distribution, modification, or commercial
+use of this software, its algorithms, trained models, or data pipelines
+is strictly prohibited without prior written consent from the author.
+
+The trained XGBoost model, satellite data pipelines, and system
+architecture represent original intellectual work, as evidenced by
+the Git commit history and timestamps prior to this submission.
+
+Contact: [your email here]
+Submission Date: July 2026

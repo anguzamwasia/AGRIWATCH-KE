@@ -1,0 +1,3174 @@
+{
+    "Ainabkoi": {
+        "monthly_history": [
+            {
+                "year": 2017,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.3954,
+                        "evi": 0.6996,
+                        "temp_c": 12.84,
+                        "precip_mm": 0.26,
+                        "soil_moisture": 275.6345
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.3667,
+                        "evi": 0.6479,
+                        "temp_c": 14.34,
+                        "precip_mm": 2.81,
+                        "soil_moisture": 252.1622
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.5182,
+                        "evi": 1.041,
+                        "temp_c": 12.44,
+                        "precip_mm": 0.21,
+                        "soil_moisture": 314.3682
+                    }
+                ]
+            },
+            {
+                "year": 2018,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.4696,
+                        "evi": 0.9345,
+                        "temp_c": 12.53,
+                        "precip_mm": 1.4,
+                        "soil_moisture": 263.6132
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.3966,
+                        "evi": 0.722,
+                        "temp_c": 13.7,
+                        "precip_mm": 0.59,
+                        "soil_moisture": 223.0918
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.496,
+                        "evi": 1.0647,
+                        "temp_c": 12.29,
+                        "precip_mm": 8.34,
+                        "soil_moisture": 332.1515
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.5372,
+                        "evi": 1.2211,
+                        "temp_c": 12.3,
+                        "precip_mm": 2.4,
+                        "soil_moisture": 297.2125
+                    }
+                ]
+            },
+            {
+                "year": 2019,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5266,
+                        "evi": 1.1098,
+                        "temp_c": 13.17,
+                        "precip_mm": 0.21,
+                        "soil_moisture": 256.0525
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.4316,
+                        "evi": 0.8238,
+                        "temp_c": 14.0,
+                        "precip_mm": 0.21,
+                        "soil_moisture": 220.0483
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.348,
+                        "evi": 0.6281,
+                        "temp_c": 14.05,
+                        "precip_mm": 0.65,
+                        "soil_moisture": 208.5646
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.3196,
+                        "evi": 0.5887,
+                        "temp_c": 14.69,
+                        "precip_mm": 4.62,
+                        "soil_moisture": 193.5609
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.4218,
+                        "evi": 0.8441,
+                        "temp_c": 13.78,
+                        "precip_mm": 8.04,
+                        "soil_moisture": 233.1176
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.2927,
+                        "evi": 1.4105,
+                        "temp_c": 12.29,
+                        "precip_mm": 16.17,
+                        "soil_moisture": 367.1804
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.5793,
+                        "evi": 2.8848,
+                        "temp_c": 11.73,
+                        "precip_mm": 5.51,
+                        "soil_moisture": 375.4039
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.4834,
+                        "evi": 2.4165,
+                        "temp_c": 11.36,
+                        "precip_mm": 11.38,
+                        "soil_moisture": 399.8919
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.5045,
+                        "evi": 1.5358,
+                        "temp_c": 11.88,
+                        "precip_mm": 13.74,
+                        "soil_moisture": 402.7753
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5147,
+                        "evi": 19.6324,
+                        "temp_c": 12.04,
+                        "precip_mm": 11.37,
+                        "soil_moisture": 388.2767
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6093,
+                        "evi": 1.7762,
+                        "temp_c": 12.34,
+                        "precip_mm": 6.57,
+                        "soil_moisture": 382.8635
+                    }
+                ]
+            },
+            {
+                "year": 2020,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.4239,
+                        "evi": 1.0887,
+                        "temp_c": 12.71,
+                        "precip_mm": 4.88,
+                        "soil_moisture": 307.239
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.4919,
+                        "evi": 1.3467,
+                        "temp_c": 13.25,
+                        "precip_mm": 6.72,
+                        "soil_moisture": 254.7894
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5344,
+                        "evi": 1.2169,
+                        "temp_c": 13.58,
+                        "precip_mm": 11.08,
+                        "soil_moisture": 248.9237
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.518,
+                        "evi": 1.1426,
+                        "temp_c": 13.14,
+                        "precip_mm": 17.48,
+                        "soil_moisture": 259.3086
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.394,
+                        "evi": 0.8204,
+                        "temp_c": 13.14,
+                        "precip_mm": 10.82,
+                        "soil_moisture": 320.2871
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.3899,
+                        "evi": -6.8623,
+                        "temp_c": 12.15,
+                        "precip_mm": 11.61,
+                        "soil_moisture": 292.7743
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.3313,
+                        "evi": 5.3335,
+                        "temp_c": 11.58,
+                        "precip_mm": 12.44,
+                        "soil_moisture": 285.538
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.4498,
+                        "evi": 1.451,
+                        "temp_c": 11.63,
+                        "precip_mm": 15.2,
+                        "soil_moisture": 299.8692
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.567,
+                        "evi": 2.2463,
+                        "temp_c": 11.78,
+                        "precip_mm": 14.25,
+                        "soil_moisture": 281.5107
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.568,
+                        "evi": 1.9745,
+                        "temp_c": 12.35,
+                        "precip_mm": 10.57,
+                        "soil_moisture": 252.5173
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.5668,
+                        "evi": 1.6642,
+                        "temp_c": 12.25,
+                        "precip_mm": 3.45,
+                        "soil_moisture": 232.7374
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.5717,
+                        "evi": 1.1952,
+                        "temp_c": 12.13,
+                        "precip_mm": 0.57,
+                        "soil_moisture": 205.2297
+                    }
+                ]
+            },
+            {
+                "year": 2021,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.4849,
+                        "evi": 0.9832,
+                        "temp_c": 12.37,
+                        "precip_mm": 1.01,
+                        "soil_moisture": 186.4045
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.4205,
+                        "evi": 0.8671,
+                        "temp_c": 13.23,
+                        "precip_mm": 2.42,
+                        "soil_moisture": 174.2142
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.376,
+                        "evi": 0.69,
+                        "temp_c": 13.38,
+                        "precip_mm": 0.8,
+                        "soil_moisture": 161.5255
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.3189,
+                        "evi": 0.4753,
+                        "temp_c": 13.77,
+                        "precip_mm": 5.36,
+                        "soil_moisture": 153.6373
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.5623,
+                        "evi": 1.5546,
+                        "temp_c": 12.72,
+                        "precip_mm": 15.98,
+                        "soil_moisture": 211.9084
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.584,
+                        "evi": 1.3715,
+                        "temp_c": 11.75,
+                        "precip_mm": 1.93,
+                        "soil_moisture": 172.043
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.2955,
+                        "evi": -11.1956,
+                        "temp_c": 11.38,
+                        "precip_mm": 11.77,
+                        "soil_moisture": 168.2078
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6573,
+                        "evi": 2.1123,
+                        "temp_c": 11.2,
+                        "precip_mm": 7.78,
+                        "soil_moisture": 165.2621
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6945,
+                        "evi": 3.0253,
+                        "temp_c": 11.68,
+                        "precip_mm": 12.44,
+                        "soil_moisture": 169.3047
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5587,
+                        "evi": 1.7455,
+                        "temp_c": 12.61,
+                        "precip_mm": 5.86,
+                        "soil_moisture": 171.6074
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.5416,
+                        "evi": -0.3204,
+                        "temp_c": 12.83,
+                        "precip_mm": 0.68,
+                        "soil_moisture": 151.7876
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.4968,
+                        "evi": 0.9895,
+                        "temp_c": 12.88,
+                        "precip_mm": 0.83,
+                        "soil_moisture": 142.2407
+                    }
+                ]
+            },
+            {
+                "year": 2022,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.419,
+                        "evi": 0.9206,
+                        "temp_c": 12.3,
+                        "precip_mm": 3.85,
+                        "soil_moisture": 145.822
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.36,
+                        "evi": 0.6885,
+                        "temp_c": 13.49,
+                        "precip_mm": 1.3,
+                        "soil_moisture": 140.6777
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.3729,
+                        "evi": 0.7587,
+                        "temp_c": 13.64,
+                        "precip_mm": 0.52,
+                        "soil_moisture": 131.367
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.3062,
+                        "evi": 0.7065,
+                        "temp_c": 13.7,
+                        "precip_mm": 10.55,
+                        "soil_moisture": 129.7963
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.5602,
+                        "evi": 1.3096,
+                        "temp_c": 12.96,
+                        "precip_mm": 3.99,
+                        "soil_moisture": 150.3434
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6271,
+                        "evi": 1.6489,
+                        "temp_c": 11.42,
+                        "precip_mm": 5.56,
+                        "soil_moisture": 133.1379
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.4955,
+                        "evi": 1.0194,
+                        "temp_c": 11.77,
+                        "precip_mm": 8.96,
+                        "soil_moisture": 124.1585
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.3415,
+                        "evi": 6.599,
+                        "temp_c": 11.29,
+                        "precip_mm": 12.74,
+                        "soil_moisture": 160.1138
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6639,
+                        "evi": 1.8343,
+                        "temp_c": 11.26,
+                        "precip_mm": 7.04,
+                        "soil_moisture": 204.2308
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6176,
+                        "evi": 1.6481,
+                        "temp_c": 12.13,
+                        "precip_mm": 2.28,
+                        "soil_moisture": 170.4855
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.4312,
+                        "evi": 0.928,
+                        "temp_c": 12.57,
+                        "precip_mm": 1.32,
+                        "soil_moisture": 158.815
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.4593,
+                        "evi": 1.0324,
+                        "temp_c": 12.5,
+                        "precip_mm": 0.93,
+                        "soil_moisture": 152.5615
+                    }
+                ]
+            },
+            {
+                "year": 2023,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.4506,
+                        "evi": 0.9131,
+                        "temp_c": 12.17,
+                        "precip_mm": 0.1,
+                        "soil_moisture": 141.3635
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.3567,
+                        "evi": 0.6464,
+                        "temp_c": 13.41,
+                        "precip_mm": 0.1,
+                        "soil_moisture": 129.8077
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.31,
+                        "evi": 0.6336,
+                        "temp_c": 13.42,
+                        "precip_mm": 5.3,
+                        "soil_moisture": 134.8669
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.4456,
+                        "evi": 0.9402,
+                        "temp_c": 13.0,
+                        "precip_mm": 11.6,
+                        "soil_moisture": 176.7285
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.535,
+                        "evi": -0.2901,
+                        "temp_c": 12.81,
+                        "precip_mm": 3.07,
+                        "soil_moisture": 233.7706
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.3774,
+                        "evi": 2.0269,
+                        "temp_c": 12.26,
+                        "precip_mm": 7.68,
+                        "soil_moisture": 177.5671
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.4494,
+                        "evi": 1.3434,
+                        "temp_c": 11.62,
+                        "precip_mm": 6.31,
+                        "soil_moisture": 153.9585
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6365,
+                        "evi": 2.2052,
+                        "temp_c": 11.86,
+                        "precip_mm": 6.29,
+                        "soil_moisture": 162.5162
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6598,
+                        "evi": 1.8325,
+                        "temp_c": 12.65,
+                        "precip_mm": 15.2,
+                        "soil_moisture": 156.1241
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6053,
+                        "evi": 1.5864,
+                        "temp_c": 13.14,
+                        "precip_mm": 4.24,
+                        "soil_moisture": 154.8208
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6237,
+                        "evi": 1.4657,
+                        "temp_c": 13.23,
+                        "precip_mm": 1.17,
+                        "soil_moisture": 186.8574
+                    }
+                ]
+            },
+            {
+                "year": 2024,
+                "months": [
+                    {
+                        "month": 2,
+                        "ndvi": 0.4976,
+                        "evi": 1.3353,
+                        "temp_c": 14.05,
+                        "precip_mm": 1.96,
+                        "soil_moisture": 163.3644
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.4827,
+                        "evi": 1.0485,
+                        "temp_c": 14.03,
+                        "precip_mm": 1.02,
+                        "soil_moisture": 163.6041
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5574,
+                        "evi": 1.4119,
+                        "temp_c": 13.69,
+                        "precip_mm": 15.35,
+                        "soil_moisture": 170.452
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6245,
+                        "evi": 1.787,
+                        "temp_c": 13.21,
+                        "precip_mm": 7.62,
+                        "soil_moisture": 308.744
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.2615,
+                        "evi": 11.9185,
+                        "temp_c": 12.01,
+                        "precip_mm": 12.63,
+                        "soil_moisture": 214.6961
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.5805,
+                        "evi": 1.5807,
+                        "temp_c": 11.78,
+                        "precip_mm": 11.59,
+                        "soil_moisture": 251.9535
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.5559,
+                        "evi": -86.99,
+                        "temp_c": 12.2,
+                        "precip_mm": 6.17,
+                        "soil_moisture": 213.9841
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6259,
+                        "evi": 1.5841,
+                        "temp_c": 12.71,
+                        "precip_mm": 5.11,
+                        "soil_moisture": 185.5808
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.5282,
+                        "evi": 1.3296,
+                        "temp_c": 12.66,
+                        "precip_mm": 4.56,
+                        "soil_moisture": 171.5304
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.5917,
+                        "evi": 1.4201,
+                        "temp_c": 12.55,
+                        "precip_mm": 0.54,
+                        "soil_moisture": 188.1823
+                    }
+                ]
+            },
+            {
+                "year": 2025,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5527,
+                        "evi": 1.2145,
+                        "temp_c": 12.62,
+                        "precip_mm": 2.26,
+                        "soil_moisture": 166.8806
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.4538,
+                        "evi": 0.9236,
+                        "temp_c": 13.06,
+                        "precip_mm": 0.07,
+                        "soil_moisture": 158.4022
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.4217,
+                        "evi": 0.7516,
+                        "temp_c": 13.74,
+                        "precip_mm": 3.68,
+                        "soil_moisture": 165.6485
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5274,
+                        "evi": 1.4117,
+                        "temp_c": 13.38,
+                        "precip_mm": 6.65,
+                        "soil_moisture": 205.0196
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.5897,
+                        "evi": 1.6958,
+                        "temp_c": 12.98,
+                        "precip_mm": 11.92,
+                        "soil_moisture": 209.6079
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7131,
+                        "evi": 1.9335,
+                        "temp_c": 11.95,
+                        "precip_mm": 5.8,
+                        "soil_moisture": 180.8061
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.4359,
+                        "evi": 0.12,
+                        "temp_c": 11.49,
+                        "precip_mm": 11.61,
+                        "soil_moisture": 186.485
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.2174,
+                        "evi": 0.0439,
+                        "temp_c": 11.08,
+                        "precip_mm": 12.4,
+                        "soil_moisture": 226.984
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.5515,
+                        "evi": 1.4995,
+                        "temp_c": 11.55,
+                        "precip_mm": 8.37,
+                        "soil_moisture": 223.349
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5792,
+                        "evi": 1.6091,
+                        "temp_c": 12.11,
+                        "precip_mm": 7.52,
+                        "soil_moisture": 210.7144
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6207,
+                        "evi": 1.4847,
+                        "temp_c": 12.1,
+                        "precip_mm": 1.42,
+                        "soil_moisture": 196.3518
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.577,
+                        "evi": 1.2952,
+                        "temp_c": 12.86,
+                        "precip_mm": 2.42,
+                        "soil_moisture": 169.8716
+                    }
+                ]
+            },
+            {
+                "year": 2026,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5637,
+                        "evi": 1.2534,
+                        "temp_c": 12.86,
+                        "precip_mm": 0.15,
+                        "soil_moisture": 162.0607
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.4462,
+                        "evi": 0.5967,
+                        "temp_c": 13.16,
+                        "precip_mm": 9.49,
+                        "soil_moisture": 152.6189
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5564,
+                        "evi": 1.3013,
+                        "temp_c": 12.75,
+                        "precip_mm": 11.13,
+                        "soil_moisture": 316.5573
+                    }
+                ]
+            }
+        ],
+        "metadata": {
+            "last_sync": "2026-04-12",
+            "variables": [
+                "ndvi",
+                "temp_c",
+                "precip_mm",
+                "soil_moisture"
+            ]
+        }
+    },
+    "Ainamoi": {
+        "monthly_history": [
+            {
+                "year": 2017,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5472,
+                        "evi": 1.1026,
+                        "temp_c": 14.95,
+                        "precip_mm": 2.15,
+                        "soil_moisture": 406.2325
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6623,
+                        "evi": 1.5853,
+                        "temp_c": 15.19,
+                        "precip_mm": 7.12,
+                        "soil_moisture": 414.7129
+                    }
+                ]
+            },
+            {
+                "year": 2018,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.61,
+                        "evi": 1.4517,
+                        "temp_c": 13.99,
+                        "precip_mm": 0.84,
+                        "soil_moisture": 368.2014
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5142,
+                        "evi": 1.1034,
+                        "temp_c": 16.02,
+                        "precip_mm": 1.45,
+                        "soil_moisture": 304.093
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6644,
+                        "evi": 1.6969,
+                        "temp_c": 14.17,
+                        "precip_mm": 8.26,
+                        "soil_moisture": 467.3621
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6877,
+                        "evi": 1.6743,
+                        "temp_c": 13.76,
+                        "precip_mm": 5.36,
+                        "soil_moisture": 450.449
+                    }
+                ]
+            },
+            {
+                "year": 2019,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6825,
+                        "evi": 1.6838,
+                        "temp_c": 14.23,
+                        "precip_mm": 0.67,
+                        "soil_moisture": 395.1615
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5832,
+                        "evi": 1.321,
+                        "temp_c": 15.7,
+                        "precip_mm": 1.02,
+                        "soil_moisture": 334.6838
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.4955,
+                        "evi": 1.0388,
+                        "temp_c": 15.36,
+                        "precip_mm": 1.61,
+                        "soil_moisture": 335.0809
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5227,
+                        "evi": 1.1819,
+                        "temp_c": 15.37,
+                        "precip_mm": 6.97,
+                        "soil_moisture": 320.0156
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6945,
+                        "evi": 1.7335,
+                        "temp_c": 14.41,
+                        "precip_mm": 9.84,
+                        "soil_moisture": 538.9349
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.7477,
+                        "evi": 2.3779,
+                        "temp_c": 13.38,
+                        "precip_mm": 2.93,
+                        "soil_moisture": 531.2025
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.7029,
+                        "evi": 2.4555,
+                        "temp_c": 13.36,
+                        "precip_mm": 5.78,
+                        "soil_moisture": 524.1896
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6682,
+                        "evi": 2.418,
+                        "temp_c": 13.71,
+                        "precip_mm": 7.76,
+                        "soil_moisture": 551.7931
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.7235,
+                        "evi": 2.2007,
+                        "temp_c": 13.43,
+                        "precip_mm": 18.98,
+                        "soil_moisture": 549.437
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.7103,
+                        "evi": 1.5905,
+                        "temp_c": 14.14,
+                        "precip_mm": 13.21,
+                        "soil_moisture": 544.3586
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7272,
+                        "evi": 1.598,
+                        "temp_c": 13.67,
+                        "precip_mm": 13.14,
+                        "soil_moisture": 583.116
+                    }
+                ]
+            },
+            {
+                "year": 2020,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7311,
+                        "evi": 2.0049,
+                        "temp_c": 14.42,
+                        "precip_mm": 7.24,
+                        "soil_moisture": 421.3177
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.7243,
+                        "evi": 1.8449,
+                        "temp_c": 14.55,
+                        "precip_mm": 3.95,
+                        "soil_moisture": 284.1347
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6598,
+                        "evi": 1.7129,
+                        "temp_c": 14.82,
+                        "precip_mm": 10.51,
+                        "soil_moisture": 339.411
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.7019,
+                        "evi": 1.8167,
+                        "temp_c": 14.79,
+                        "precip_mm": 15.73,
+                        "soil_moisture": 347.9451
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7418,
+                        "evi": 2.2691,
+                        "temp_c": 14.31,
+                        "precip_mm": 11.1,
+                        "soil_moisture": 411.4545
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7694,
+                        "evi": 2.0468,
+                        "temp_c": 13.71,
+                        "precip_mm": 5.52,
+                        "soil_moisture": 345.4286
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.6635,
+                        "evi": 3.3517,
+                        "temp_c": 13.49,
+                        "precip_mm": 5.57,
+                        "soil_moisture": 298.1736
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6298,
+                        "evi": 3.4659,
+                        "temp_c": 13.57,
+                        "precip_mm": 4.46,
+                        "soil_moisture": 275.5609
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6989,
+                        "evi": 2.0107,
+                        "temp_c": 13.66,
+                        "precip_mm": 6.49,
+                        "soil_moisture": 255.8518
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.728,
+                        "evi": 1.9096,
+                        "temp_c": 14.18,
+                        "precip_mm": 10.85,
+                        "soil_moisture": 220.5443
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6996,
+                        "evi": 1.3173,
+                        "temp_c": 14.02,
+                        "precip_mm": 9.32,
+                        "soil_moisture": 213.5013
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7655,
+                        "evi": 1.8949,
+                        "temp_c": 13.57,
+                        "precip_mm": 1.56,
+                        "soil_moisture": 192.0653
+                    }
+                ]
+            },
+            {
+                "year": 2021,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7011,
+                        "evi": 1.787,
+                        "temp_c": 13.51,
+                        "precip_mm": 3.68,
+                        "soil_moisture": 174.2146
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6456,
+                        "evi": 1.6167,
+                        "temp_c": 14.63,
+                        "precip_mm": 2.61,
+                        "soil_moisture": 181.9156
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6281,
+                        "evi": 1.516,
+                        "temp_c": 14.8,
+                        "precip_mm": 2.47,
+                        "soil_moisture": 175.5123
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6072,
+                        "evi": 1.8051,
+                        "temp_c": 14.53,
+                        "precip_mm": 9.84,
+                        "soil_moisture": 179.6127
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7448,
+                        "evi": 2.2113,
+                        "temp_c": 13.97,
+                        "precip_mm": 8.72,
+                        "soil_moisture": 205.0931
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6786,
+                        "evi": 2.4502,
+                        "temp_c": 12.96,
+                        "precip_mm": 2.58,
+                        "soil_moisture": 177.6009
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.5874,
+                        "evi": 3.544,
+                        "temp_c": 13.56,
+                        "precip_mm": 3.3,
+                        "soil_moisture": 165.7972
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.5575,
+                        "evi": 5.2546,
+                        "temp_c": 13.39,
+                        "precip_mm": 4.08,
+                        "soil_moisture": 156.2544
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6975,
+                        "evi": 1.6996,
+                        "temp_c": 13.54,
+                        "precip_mm": 7.52,
+                        "soil_moisture": 152.5503
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6796,
+                        "evi": 1.6814,
+                        "temp_c": 14.52,
+                        "precip_mm": 6.32,
+                        "soil_moisture": 147.2607
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6877,
+                        "evi": 2.1446,
+                        "temp_c": 14.55,
+                        "precip_mm": 3.88,
+                        "soil_moisture": 138.664
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6499,
+                        "evi": 2.197,
+                        "temp_c": 14.64,
+                        "precip_mm": 4.61,
+                        "soil_moisture": 135.9656
+                    }
+                ]
+            },
+            {
+                "year": 2022,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6475,
+                        "evi": 1.6657,
+                        "temp_c": 13.68,
+                        "precip_mm": 3.64,
+                        "soil_moisture": 144.431
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5896,
+                        "evi": 2.2244,
+                        "temp_c": 13.64,
+                        "precip_mm": 2.92,
+                        "soil_moisture": 150.6101
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6251,
+                        "evi": 1.5982,
+                        "temp_c": 14.7,
+                        "precip_mm": 3.07,
+                        "soil_moisture": 151.8868
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6232,
+                        "evi": 1.6028,
+                        "temp_c": 15.0,
+                        "precip_mm": 11.57,
+                        "soil_moisture": 148.3724
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7125,
+                        "evi": 2.0661,
+                        "temp_c": 13.94,
+                        "precip_mm": 7.3,
+                        "soil_moisture": 164.6931
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7323,
+                        "evi": 2.2558,
+                        "temp_c": 12.92,
+                        "precip_mm": 2.28,
+                        "soil_moisture": 148.9305
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.7121,
+                        "evi": 2.6674,
+                        "temp_c": 13.8,
+                        "precip_mm": 2.86,
+                        "soil_moisture": 136.7806
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.7418,
+                        "evi": 2.2023,
+                        "temp_c": 13.21,
+                        "precip_mm": 6.25,
+                        "soil_moisture": 146.5567
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.7297,
+                        "evi": 1.9864,
+                        "temp_c": 13.2,
+                        "precip_mm": 4.74,
+                        "soil_moisture": 179.8811
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6535,
+                        "evi": 2.2172,
+                        "temp_c": 14.38,
+                        "precip_mm": 4.19,
+                        "soil_moisture": 163.8739
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.3984,
+                        "evi": 2.102,
+                        "temp_c": 14.21,
+                        "precip_mm": 7.62,
+                        "soil_moisture": 161.0429
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7052,
+                        "evi": 1.944,
+                        "temp_c": 13.49,
+                        "precip_mm": 5.27,
+                        "soil_moisture": 150.891
+                    }
+                ]
+            },
+            {
+                "year": 2023,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6777,
+                        "evi": 1.7092,
+                        "temp_c": 13.45,
+                        "precip_mm": 0.12,
+                        "soil_moisture": 142.3333
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5305,
+                        "evi": 1.109,
+                        "temp_c": 15.22,
+                        "precip_mm": 0.35,
+                        "soil_moisture": 134.1959
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5241,
+                        "evi": 1.1978,
+                        "temp_c": 14.92,
+                        "precip_mm": 13.57,
+                        "soil_moisture": 149.1521
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6393,
+                        "evi": 1.6506,
+                        "temp_c": 14.75,
+                        "precip_mm": 15.93,
+                        "soil_moisture": 208.3438
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7056,
+                        "evi": 2.8168,
+                        "temp_c": 14.42,
+                        "precip_mm": 4.39,
+                        "soil_moisture": 236.1015
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6699,
+                        "evi": 2.6916,
+                        "temp_c": 13.93,
+                        "precip_mm": 4.54,
+                        "soil_moisture": 190.1612
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.7016,
+                        "evi": 2.4189,
+                        "temp_c": 13.71,
+                        "precip_mm": 2.71,
+                        "soil_moisture": 172.5784
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.7053,
+                        "evi": 2.0317,
+                        "temp_c": 14.46,
+                        "precip_mm": 2.42,
+                        "soil_moisture": 160.4381
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.7047,
+                        "evi": 1.983,
+                        "temp_c": 14.43,
+                        "precip_mm": 9.39,
+                        "soil_moisture": 162.0798
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6345,
+                        "evi": 4.8367,
+                        "temp_c": 15.02,
+                        "precip_mm": 8.98,
+                        "soil_moisture": 155.2212
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6108,
+                        "evi": 2.3621,
+                        "temp_c": 14.71,
+                        "precip_mm": 17.55,
+                        "soil_moisture": 219.5791
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7591,
+                        "evi": 2.0476,
+                        "temp_c": 14.38,
+                        "precip_mm": 4.82,
+                        "soil_moisture": 208.0676
+                    }
+                ]
+            },
+            {
+                "year": 2024,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7035,
+                        "evi": 2.3587,
+                        "temp_c": 14.66,
+                        "precip_mm": 6.8,
+                        "soil_moisture": 216.672
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.7295,
+                        "evi": 2.068,
+                        "temp_c": 15.41,
+                        "precip_mm": 2.6,
+                        "soil_moisture": 213.7078
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6842,
+                        "evi": 1.8337,
+                        "temp_c": 15.81,
+                        "precip_mm": 4.65,
+                        "soil_moisture": 226.1117
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6976,
+                        "evi": 2.078,
+                        "temp_c": 15.44,
+                        "precip_mm": 21.8,
+                        "soil_moisture": 241.3756
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7484,
+                        "evi": 2.1011,
+                        "temp_c": 15.01,
+                        "precip_mm": 8.4,
+                        "soil_moisture": 340.4431
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.5603,
+                        "evi": 2.1573,
+                        "temp_c": 14.14,
+                        "precip_mm": 2.4,
+                        "soil_moisture": 273.6375
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.5621,
+                        "evi": -0.8188,
+                        "temp_c": 14.13,
+                        "precip_mm": 3.51,
+                        "soil_moisture": 241.7647
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6002,
+                        "evi": 2.3429,
+                        "temp_c": 14.12,
+                        "precip_mm": 4.83,
+                        "soil_moisture": 225.8647
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6889,
+                        "evi": 2.3188,
+                        "temp_c": 14.72,
+                        "precip_mm": 5.74,
+                        "soil_moisture": 197.2878
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.7211,
+                        "evi": 2.1097,
+                        "temp_c": 14.28,
+                        "precip_mm": 6.64,
+                        "soil_moisture": 182.7657
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.5747,
+                        "evi": 1.9464,
+                        "temp_c": 14.6,
+                        "precip_mm": 12.58,
+                        "soil_moisture": 171.6504
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.746,
+                        "evi": 2.0353,
+                        "temp_c": 14.06,
+                        "precip_mm": 4.45,
+                        "soil_moisture": 193.8149
+                    }
+                ]
+            },
+            {
+                "year": 2025,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7062,
+                        "evi": 1.7474,
+                        "temp_c": 13.78,
+                        "precip_mm": 2.79,
+                        "soil_moisture": 177.3709
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6833,
+                        "evi": 1.7672,
+                        "temp_c": 15.39,
+                        "precip_mm": 0.63,
+                        "soil_moisture": 179.4988
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5941,
+                        "evi": 1.5835,
+                        "temp_c": 15.59,
+                        "precip_mm": 11.36,
+                        "soil_moisture": 181.6899
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.7115,
+                        "evi": 1.9678,
+                        "temp_c": 14.97,
+                        "precip_mm": 12.33,
+                        "soil_moisture": 229.0254
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7267,
+                        "evi": 2.3921,
+                        "temp_c": 14.25,
+                        "precip_mm": 10.47,
+                        "soil_moisture": 221.4365
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7686,
+                        "evi": 2.3229,
+                        "temp_c": 13.45,
+                        "precip_mm": 4.34,
+                        "soil_moisture": 189.6744
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.6259,
+                        "evi": -61.7476,
+                        "temp_c": 13.37,
+                        "precip_mm": 5.62,
+                        "soil_moisture": 189.5522
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6467,
+                        "evi": 2.4737,
+                        "temp_c": 13.3,
+                        "precip_mm": 4.56,
+                        "soil_moisture": 209.4697
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6695,
+                        "evi": 2.4624,
+                        "temp_c": 13.97,
+                        "precip_mm": 6.35,
+                        "soil_moisture": 199.7439
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6813,
+                        "evi": 2.0028,
+                        "temp_c": 14.26,
+                        "precip_mm": 10.85,
+                        "soil_moisture": 202.183
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.7275,
+                        "evi": 1.9894,
+                        "temp_c": 14.28,
+                        "precip_mm": 3.43,
+                        "soil_moisture": 199.8651
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6881,
+                        "evi": 1.7287,
+                        "temp_c": 14.33,
+                        "precip_mm": 5.95,
+                        "soil_moisture": 169.2774
+                    }
+                ]
+            },
+            {
+                "year": 2026,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6916,
+                        "evi": 1.8143,
+                        "temp_c": 14.53,
+                        "precip_mm": 0.7,
+                        "soil_moisture": 166.0517
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6399,
+                        "evi": 1.7393,
+                        "temp_c": 14.43,
+                        "precip_mm": 9.33,
+                        "soil_moisture": 163.2013
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6612,
+                        "evi": 1.965,
+                        "temp_c": 14.45,
+                        "precip_mm": 18.0,
+                        "soil_moisture": 388.4413
+                    }
+                ]
+            }
+        ],
+        "metadata": {
+            "last_sync": "2026-04-12",
+            "variables": [
+                "ndvi",
+                "temp_c",
+                "precip_mm",
+                "soil_moisture"
+            ]
+        }
+    },
+    "Aldai": {
+        "monthly_history": [
+            {
+                "year": 2017,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5812,
+                        "evi": 1.2609,
+                        "temp_c": 15.53,
+                        "precip_mm": 1.98,
+                        "soil_moisture": 311.069
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6611,
+                        "evi": 1.6567,
+                        "temp_c": 15.9,
+                        "precip_mm": 4.66,
+                        "soil_moisture": 345.4528
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6611,
+                        "evi": 1.5767,
+                        "temp_c": 16.01,
+                        "precip_mm": 7.59,
+                        "soil_moisture": 353.6601
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7169,
+                        "evi": 1.9074,
+                        "temp_c": 15.19,
+                        "precip_mm": 2.77,
+                        "soil_moisture": 389.9238
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6804,
+                        "evi": 1.7125,
+                        "temp_c": 15.13,
+                        "precip_mm": 5.77,
+                        "soil_moisture": 420.0941
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.648,
+                        "evi": 1.6541,
+                        "temp_c": 15.05,
+                        "precip_mm": 1.69,
+                        "soil_moisture": 371.2374
+                    }
+                ]
+            },
+            {
+                "year": 2018,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6568,
+                        "evi": 1.6894,
+                        "temp_c": 14.67,
+                        "precip_mm": 2.22,
+                        "soil_moisture": 330.065
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5721,
+                        "evi": 1.3266,
+                        "temp_c": 16.72,
+                        "precip_mm": 2.53,
+                        "soil_moisture": 292.5705
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.692,
+                        "evi": 2.1207,
+                        "temp_c": 15.16,
+                        "precip_mm": 10.84,
+                        "soil_moisture": 403.2308
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7432,
+                        "evi": 1.9921,
+                        "temp_c": 14.66,
+                        "precip_mm": 8.11,
+                        "soil_moisture": 383.3555
+                    }
+                ]
+            },
+            {
+                "year": 2019,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6948,
+                        "evi": 1.7721,
+                        "temp_c": 14.87,
+                        "precip_mm": 2.51,
+                        "soil_moisture": 347.0044
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6132,
+                        "evi": 1.4668,
+                        "temp_c": 16.26,
+                        "precip_mm": 2.16,
+                        "soil_moisture": 295.9229
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6091,
+                        "evi": 1.4647,
+                        "temp_c": 16.03,
+                        "precip_mm": 2.68,
+                        "soil_moisture": 314.6647
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5584,
+                        "evi": 1.2366,
+                        "temp_c": 16.57,
+                        "precip_mm": 8.15,
+                        "soil_moisture": 342.4835
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7361,
+                        "evi": 2.051,
+                        "temp_c": 15.9,
+                        "precip_mm": 10.78,
+                        "soil_moisture": 426.5715
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.3823,
+                        "evi": 1.3291,
+                        "temp_c": 15.23,
+                        "precip_mm": 5.66,
+                        "soil_moisture": 412.4479
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.6692,
+                        "evi": 2.6674,
+                        "temp_c": 14.84,
+                        "precip_mm": 4.15,
+                        "soil_moisture": 410.7484
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.5616,
+                        "evi": -41.9421,
+                        "temp_c": 15.08,
+                        "precip_mm": 4.49,
+                        "soil_moisture": 401.7192
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6709,
+                        "evi": 2.1353,
+                        "temp_c": 15.22,
+                        "precip_mm": 5.78,
+                        "soil_moisture": 427.539
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.7096,
+                        "evi": 2.0473,
+                        "temp_c": 14.75,
+                        "precip_mm": 13.23,
+                        "soil_moisture": 438.2116
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.4876,
+                        "evi": 17.1315,
+                        "temp_c": 15.14,
+                        "precip_mm": 9.91,
+                        "soil_moisture": 440.79
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.5127,
+                        "evi": 4.7403,
+                        "temp_c": 14.6,
+                        "precip_mm": 10.18,
+                        "soil_moisture": 460.5133
+                    }
+                ]
+            },
+            {
+                "year": 2020,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7035,
+                        "evi": 1.8433,
+                        "temp_c": 15.25,
+                        "precip_mm": 6.82,
+                        "soil_moisture": 401.9573
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6834,
+                        "evi": 1.9293,
+                        "temp_c": 15.52,
+                        "precip_mm": 6.92,
+                        "soil_moisture": 310.5846
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6311,
+                        "evi": -2.1789,
+                        "temp_c": 15.91,
+                        "precip_mm": 12.29,
+                        "soil_moisture": 320.6563
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.694,
+                        "evi": 1.9679,
+                        "temp_c": 15.85,
+                        "precip_mm": 11.75,
+                        "soil_moisture": 337.6779
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7444,
+                        "evi": 2.3029,
+                        "temp_c": 15.51,
+                        "precip_mm": 10.62,
+                        "soil_moisture": 392.7412
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7175,
+                        "evi": 2.2667,
+                        "temp_c": 15.01,
+                        "precip_mm": 4.7,
+                        "soil_moisture": 358.6556
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.6131,
+                        "evi": 2.4914,
+                        "temp_c": 14.81,
+                        "precip_mm": 3.89,
+                        "soil_moisture": 337.3915
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6695,
+                        "evi": 2.5712,
+                        "temp_c": 14.9,
+                        "precip_mm": 4.25,
+                        "soil_moisture": 330.9351
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6938,
+                        "evi": 2.2443,
+                        "temp_c": 14.96,
+                        "precip_mm": 4.8,
+                        "soil_moisture": 325.4095
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6995,
+                        "evi": 0.4742,
+                        "temp_c": 15.24,
+                        "precip_mm": 8.49,
+                        "soil_moisture": 309.2934
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6485,
+                        "evi": 2.7352,
+                        "temp_c": 15.05,
+                        "precip_mm": 9.07,
+                        "soil_moisture": 297.1836
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.755,
+                        "evi": 2.0998,
+                        "temp_c": 14.3,
+                        "precip_mm": 3.34,
+                        "soil_moisture": 270.1188
+                    }
+                ]
+            },
+            {
+                "year": 2021,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7149,
+                        "evi": 1.9069,
+                        "temp_c": 14.42,
+                        "precip_mm": 4.22,
+                        "soil_moisture": 225.4239
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6796,
+                        "evi": 1.7849,
+                        "temp_c": 15.59,
+                        "precip_mm": 4.54,
+                        "soil_moisture": 201.2888
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6588,
+                        "evi": 1.7294,
+                        "temp_c": 15.28,
+                        "precip_mm": 5.92,
+                        "soil_moisture": 182.7272
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6245,
+                        "evi": 2.8456,
+                        "temp_c": 15.82,
+                        "precip_mm": 11.24,
+                        "soil_moisture": 209.0262
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7244,
+                        "evi": 2.5318,
+                        "temp_c": 15.24,
+                        "precip_mm": 8.11,
+                        "soil_moisture": 301.1107
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7362,
+                        "evi": 2.2999,
+                        "temp_c": 14.45,
+                        "precip_mm": 3.23,
+                        "soil_moisture": 244.957
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.5611,
+                        "evi": 1.4072,
+                        "temp_c": 14.9,
+                        "precip_mm": 4.3,
+                        "soil_moisture": 230.5736
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6523,
+                        "evi": 2.2939,
+                        "temp_c": 14.39,
+                        "precip_mm": 3.78,
+                        "soil_moisture": 208.4061
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.7215,
+                        "evi": 2.156,
+                        "temp_c": 14.62,
+                        "precip_mm": 6.17,
+                        "soil_moisture": 213.7596
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6409,
+                        "evi": 2.2618,
+                        "temp_c": 15.28,
+                        "precip_mm": 5.46,
+                        "soil_moisture": 226.2652
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.7148,
+                        "evi": 2.1518,
+                        "temp_c": 15.33,
+                        "precip_mm": 4.6,
+                        "soil_moisture": 209.842
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6793,
+                        "evi": 2.1098,
+                        "temp_c": 15.47,
+                        "precip_mm": 5.39,
+                        "soil_moisture": 191.4271
+                    }
+                ]
+            },
+            {
+                "year": 2022,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6201,
+                        "evi": 1.9112,
+                        "temp_c": 14.52,
+                        "precip_mm": 4.56,
+                        "soil_moisture": 176.4958
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5609,
+                        "evi": 0.6538,
+                        "temp_c": 15.03,
+                        "precip_mm": 5.98,
+                        "soil_moisture": 166.0359
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6534,
+                        "evi": 1.8039,
+                        "temp_c": 15.48,
+                        "precip_mm": 4.77,
+                        "soil_moisture": 153.1966
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.676,
+                        "evi": 1.8881,
+                        "temp_c": 15.72,
+                        "precip_mm": 10.83,
+                        "soil_moisture": 169.3932
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6887,
+                        "evi": 2.6787,
+                        "temp_c": 15.02,
+                        "precip_mm": 7.83,
+                        "soil_moisture": 195.255
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7483,
+                        "evi": 2.1736,
+                        "temp_c": 14.38,
+                        "precip_mm": 2.79,
+                        "soil_moisture": 176.6674
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.4751,
+                        "evi": -0.4096,
+                        "temp_c": 15.09,
+                        "precip_mm": 4.07,
+                        "soil_moisture": 176.4078
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6417,
+                        "evi": 1.4086,
+                        "temp_c": 14.54,
+                        "precip_mm": 6.38,
+                        "soil_moisture": 213.1201
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.7349,
+                        "evi": 2.0053,
+                        "temp_c": 14.22,
+                        "precip_mm": 5.38,
+                        "soil_moisture": 291.176
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.729,
+                        "evi": 2.0781,
+                        "temp_c": 15.11,
+                        "precip_mm": 3.86,
+                        "soil_moisture": 273.2347
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.4893,
+                        "evi": -0.0355,
+                        "temp_c": 14.93,
+                        "precip_mm": 9.53,
+                        "soil_moisture": 272.6337
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.676,
+                        "evi": 2.2478,
+                        "temp_c": 14.57,
+                        "precip_mm": 7.3,
+                        "soil_moisture": 256.9165
+                    }
+                ]
+            },
+            {
+                "year": 2023,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7016,
+                        "evi": 1.7855,
+                        "temp_c": 14.43,
+                        "precip_mm": 0.5,
+                        "soil_moisture": 217.4476
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5764,
+                        "evi": 1.3475,
+                        "temp_c": 16.38,
+                        "precip_mm": 1.61,
+                        "soil_moisture": 169.9728
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.4931,
+                        "evi": 1.6169,
+                        "temp_c": 15.73,
+                        "precip_mm": 11.61,
+                        "soil_moisture": 188.9305
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6409,
+                        "evi": 1.4957,
+                        "temp_c": 15.63,
+                        "precip_mm": 12.45,
+                        "soil_moisture": 252.437
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7527,
+                        "evi": 2.4884,
+                        "temp_c": 15.31,
+                        "precip_mm": 3.72,
+                        "soil_moisture": 322.7426
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.7014,
+                        "evi": 2.0644,
+                        "temp_c": 15.37,
+                        "precip_mm": 1.96,
+                        "soil_moisture": 264.3966
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.7336,
+                        "evi": 2.1422,
+                        "temp_c": 16.03,
+                        "precip_mm": 8.12,
+                        "soil_moisture": 275.0508
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.4127,
+                        "evi": -7.178,
+                        "temp_c": 15.59,
+                        "precip_mm": 15.25,
+                        "soil_moisture": 320.2586
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.778,
+                        "evi": 2.1811,
+                        "temp_c": 15.58,
+                        "precip_mm": 6.06,
+                        "soil_moisture": 287.1899
+                    }
+                ]
+            },
+            {
+                "year": 2024,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6933,
+                        "evi": 1.6962,
+                        "temp_c": 16.09,
+                        "precip_mm": 9.79,
+                        "soil_moisture": 282.038
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5612,
+                        "evi": 2.56,
+                        "temp_c": 16.41,
+                        "precip_mm": 5.01,
+                        "soil_moisture": 260.1392
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6947,
+                        "evi": 1.8795,
+                        "temp_c": 16.4,
+                        "precip_mm": 5.55,
+                        "soil_moisture": 249.3652
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6938,
+                        "evi": 4.0986,
+                        "temp_c": 16.31,
+                        "precip_mm": 14.93,
+                        "soil_moisture": 273.9616
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.7263,
+                        "evi": 9.5909,
+                        "temp_c": 16.05,
+                        "precip_mm": 6.6,
+                        "soil_moisture": 368.5518
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6289,
+                        "evi": 1.1077,
+                        "temp_c": 15.54,
+                        "precip_mm": 2.85,
+                        "soil_moisture": 311.5764
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.4671,
+                        "evi": 0.4866,
+                        "temp_c": 15.38,
+                        "precip_mm": 4.54,
+                        "soil_moisture": 278.2882
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6721,
+                        "evi": 1.6474,
+                        "temp_c": 15.37,
+                        "precip_mm": 4.56,
+                        "soil_moisture": 306.6068
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6922,
+                        "evi": 2.3338,
+                        "temp_c": 15.65,
+                        "precip_mm": 3.57,
+                        "soil_moisture": 279.7143
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6111,
+                        "evi": 2.5539,
+                        "temp_c": 15.6,
+                        "precip_mm": 6.21,
+                        "soil_moisture": 266.7619
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6485,
+                        "evi": -14.1419,
+                        "temp_c": 15.6,
+                        "precip_mm": 9.63,
+                        "soil_moisture": 254.186
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7434,
+                        "evi": 2.2417,
+                        "temp_c": 14.92,
+                        "precip_mm": 5.33,
+                        "soil_moisture": 264.7346
+                    }
+                ]
+            },
+            {
+                "year": 2025,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7227,
+                        "evi": 1.8906,
+                        "temp_c": 14.8,
+                        "precip_mm": 3.82,
+                        "soil_moisture": 221.5619
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6777,
+                        "evi": 1.7626,
+                        "temp_c": 15.81,
+                        "precip_mm": 1.05,
+                        "soil_moisture": 192.5523
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5488,
+                        "evi": 1.754,
+                        "temp_c": 16.38,
+                        "precip_mm": 9.51,
+                        "soil_moisture": 180.3078
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.7389,
+                        "evi": 2.0552,
+                        "temp_c": 15.89,
+                        "precip_mm": 9.28,
+                        "soil_moisture": 271.4651
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6409,
+                        "evi": 0.9076,
+                        "temp_c": 15.33,
+                        "precip_mm": 8.04,
+                        "soil_moisture": 301.4754
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7286,
+                        "evi": 2.8121,
+                        "temp_c": 14.73,
+                        "precip_mm": 3.74,
+                        "soil_moisture": 286.954
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.5916,
+                        "evi": 4.9866,
+                        "temp_c": 14.61,
+                        "precip_mm": 4.35,
+                        "soil_moisture": 302.2104
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.5406,
+                        "evi": 0.0989,
+                        "temp_c": 14.52,
+                        "precip_mm": 5.16,
+                        "soil_moisture": 317.7001
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.6692,
+                        "evi": -0.1842,
+                        "temp_c": 15.0,
+                        "precip_mm": 3.63,
+                        "soil_moisture": 307.2512
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.6752,
+                        "evi": 2.7687,
+                        "temp_c": 15.27,
+                        "precip_mm": 9.22,
+                        "soil_moisture": 301.027
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.744,
+                        "evi": 2.0522,
+                        "temp_c": 14.8,
+                        "precip_mm": 3.88,
+                        "soil_moisture": 290.178
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7048,
+                        "evi": 1.8821,
+                        "temp_c": 15.33,
+                        "precip_mm": 7.42,
+                        "soil_moisture": 224.4516
+                    }
+                ]
+            },
+            {
+                "year": 2026,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.7082,
+                        "evi": 1.8763,
+                        "temp_c": 15.09,
+                        "precip_mm": 1.32,
+                        "soil_moisture": 193.7269
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6494,
+                        "evi": 2.01,
+                        "temp_c": 15.28,
+                        "precip_mm": 8.47,
+                        "soil_moisture": 177.2043
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.6399,
+                        "evi": 1.1809,
+                        "temp_c": 15.3,
+                        "precip_mm": 11.72,
+                        "soil_moisture": 397.3877
+                    }
+                ]
+            }
+        ],
+        "metadata": {
+            "last_sync": "2026-04-12",
+            "variables": [
+                "ndvi",
+                "temp_c",
+                "precip_mm",
+                "soil_moisture"
+            ]
+        }
+    },
+    "Alego Usonga": {
+        "monthly_history": [
+            {
+                "year": 2017,
+                "months": [
+                    {
+                        "month": 3,
+                        "ndvi": 0.3651,
+                        "evi": 0.685,
+                        "temp_c": 20.21,
+                        "precip_mm": 5.06,
+                        "soil_moisture": 179.8875
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.4569,
+                        "evi": 0.9052,
+                        "temp_c": 20.25,
+                        "precip_mm": 5.87,
+                        "soil_moisture": 197.4702
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.5794,
+                        "evi": 1.2873,
+                        "temp_c": 19.56,
+                        "precip_mm": 3.51,
+                        "soil_moisture": 306.4187
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5302,
+                        "evi": 1.0657,
+                        "temp_c": 19.58,
+                        "precip_mm": 6.01,
+                        "soil_moisture": 318.14
+                    }
+                ]
+            },
+            {
+                "year": 2018,
+                "months": [
+                    {
+                        "month": 12,
+                        "ndvi": 0.658,
+                        "evi": 1.8674,
+                        "temp_c": 19.38,
+                        "precip_mm": 7.36,
+                        "soil_moisture": 287.9026
+                    }
+                ]
+            },
+            {
+                "year": 2019,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5614,
+                        "evi": 1.2889,
+                        "temp_c": 19.71,
+                        "precip_mm": 3.01,
+                        "soil_moisture": 241.7008
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.4464,
+                        "evi": 0.7141,
+                        "temp_c": 21.03,
+                        "precip_mm": 2.75,
+                        "soil_moisture": 197.5687
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.4635,
+                        "evi": 1.7052,
+                        "temp_c": 20.49,
+                        "precip_mm": 3.13,
+                        "soil_moisture": 199.6629
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.4642,
+                        "evi": 0.9332,
+                        "temp_c": 20.52,
+                        "precip_mm": 8.44,
+                        "soil_moisture": 205.8241
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.5267,
+                        "evi": 2.4206,
+                        "temp_c": 19.79,
+                        "precip_mm": 10.26,
+                        "soil_moisture": 285.7938
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6183,
+                        "evi": 1.8079,
+                        "temp_c": 19.06,
+                        "precip_mm": 6.12,
+                        "soil_moisture": 315.3646
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.5732,
+                        "evi": 0.0666,
+                        "temp_c": 18.89,
+                        "precip_mm": 4.4,
+                        "soil_moisture": 305.9127
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.4807,
+                        "evi": 3.3958,
+                        "temp_c": 19.2,
+                        "precip_mm": 5.29,
+                        "soil_moisture": 269.4174
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.5391,
+                        "evi": 1.424,
+                        "temp_c": 19.56,
+                        "precip_mm": 4.58,
+                        "soil_moisture": 278.4768
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5622,
+                        "evi": 1.3912,
+                        "temp_c": 18.99,
+                        "precip_mm": 12.92,
+                        "soil_moisture": 336.894
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.512,
+                        "evi": 1.5738,
+                        "temp_c": 19.52,
+                        "precip_mm": 8.39,
+                        "soil_moisture": 346.9239
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.7106,
+                        "evi": 1.8829,
+                        "temp_c": 19.1,
+                        "precip_mm": 10.02,
+                        "soil_moisture": 354.1984
+                    }
+                ]
+            },
+            {
+                "year": 2020,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6625,
+                        "evi": 1.7491,
+                        "temp_c": 19.88,
+                        "precip_mm": 7.43,
+                        "soil_moisture": 302.0342
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.6237,
+                        "evi": 1.6511,
+                        "temp_c": 20.0,
+                        "precip_mm": 6.48,
+                        "soil_moisture": 275.0826
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5812,
+                        "evi": 2.5218,
+                        "temp_c": 19.91,
+                        "precip_mm": 11.41,
+                        "soil_moisture": 296.5068
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5749,
+                        "evi": 1.6173,
+                        "temp_c": 20.05,
+                        "precip_mm": 10.31,
+                        "soil_moisture": 317.3717
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.5422,
+                        "evi": 2.4506,
+                        "temp_c": 19.45,
+                        "precip_mm": 9.18,
+                        "soil_moisture": 348.0773
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.5242,
+                        "evi": 3.4591,
+                        "temp_c": 18.86,
+                        "precip_mm": 6.25,
+                        "soil_moisture": 321.7575
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.5629,
+                        "evi": 2.6669,
+                        "temp_c": 18.76,
+                        "precip_mm": 4.39,
+                        "soil_moisture": 302.2255
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.5991,
+                        "evi": 1.5765,
+                        "temp_c": 19.07,
+                        "precip_mm": 4.82,
+                        "soil_moisture": 299.932
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.4908,
+                        "evi": 1.5945,
+                        "temp_c": 19.17,
+                        "precip_mm": 5.43,
+                        "soil_moisture": 308.6252
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5221,
+                        "evi": 1.475,
+                        "temp_c": 19.53,
+                        "precip_mm": 7.82,
+                        "soil_moisture": 297.9739
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.5143,
+                        "evi": 1.8622,
+                        "temp_c": 19.09,
+                        "precip_mm": 9.88,
+                        "soil_moisture": 286.052
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6495,
+                        "evi": 2.0484,
+                        "temp_c": 18.99,
+                        "precip_mm": 4.31,
+                        "soil_moisture": 254.1614
+                    }
+                ]
+            },
+            {
+                "year": 2021,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5966,
+                        "evi": 1.5639,
+                        "temp_c": 19.03,
+                        "precip_mm": 5.11,
+                        "soil_moisture": 190.1928
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5546,
+                        "evi": 1.0033,
+                        "temp_c": 20.05,
+                        "precip_mm": 3.04,
+                        "soil_moisture": 164.6764
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5056,
+                        "evi": 1.0837,
+                        "temp_c": 19.79,
+                        "precip_mm": 5.28,
+                        "soil_moisture": 150.4487
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5717,
+                        "evi": 2.0577,
+                        "temp_c": 19.52,
+                        "precip_mm": 9.73,
+                        "soil_moisture": 197.4759
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6315,
+                        "evi": 2.2074,
+                        "temp_c": 18.99,
+                        "precip_mm": 7.21,
+                        "soil_moisture": 297.8878
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6417,
+                        "evi": 1.6612,
+                        "temp_c": 18.56,
+                        "precip_mm": 4.02,
+                        "soil_moisture": 230.9528
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.516,
+                        "evi": 1.3833,
+                        "temp_c": 18.5,
+                        "precip_mm": 2.91,
+                        "soil_moisture": 208.4808
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.4669,
+                        "evi": 1.3474,
+                        "temp_c": 18.69,
+                        "precip_mm": 4.88,
+                        "soil_moisture": 183.6076
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.5475,
+                        "evi": 1.4484,
+                        "temp_c": 19.0,
+                        "precip_mm": 7.24,
+                        "soil_moisture": 192.6607
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.63,
+                        "evi": 1.8799,
+                        "temp_c": 19.81,
+                        "precip_mm": 4.93,
+                        "soil_moisture": 207.2511
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.5525,
+                        "evi": 1.1931,
+                        "temp_c": 19.63,
+                        "precip_mm": 4.51,
+                        "soil_moisture": 185.7821
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6131,
+                        "evi": 1.5337,
+                        "temp_c": 19.92,
+                        "precip_mm": 3.92,
+                        "soil_moisture": 164.8842
+                    }
+                ]
+            },
+            {
+                "year": 2022,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5407,
+                        "evi": 1.4959,
+                        "temp_c": 19.14,
+                        "precip_mm": 4.64,
+                        "soil_moisture": 149.3725
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.4868,
+                        "evi": 1.1058,
+                        "temp_c": 19.94,
+                        "precip_mm": 4.55,
+                        "soil_moisture": 126.9999
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5332,
+                        "evi": 1.3144,
+                        "temp_c": 19.6,
+                        "precip_mm": 9.59,
+                        "soil_moisture": 161.04
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6601,
+                        "evi": 2.0464,
+                        "temp_c": 19.25,
+                        "precip_mm": 8.22,
+                        "soil_moisture": 177.2469
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6778,
+                        "evi": 1.7069,
+                        "temp_c": 18.37,
+                        "precip_mm": 3.23,
+                        "soil_moisture": 154.8341
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.485,
+                        "evi": 1.3763,
+                        "temp_c": 18.58,
+                        "precip_mm": 4.27,
+                        "soil_moisture": 166.6652
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.6,
+                        "evi": 1.5666,
+                        "temp_c": 18.47,
+                        "precip_mm": 5.6,
+                        "soil_moisture": 213.4268
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.5728,
+                        "evi": 1.4246,
+                        "temp_c": 18.73,
+                        "precip_mm": 7.4,
+                        "soil_moisture": 303.8946
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5663,
+                        "evi": 1.3883,
+                        "temp_c": 19.57,
+                        "precip_mm": 3.76,
+                        "soil_moisture": 287.2945
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6754,
+                        "evi": 1.8672,
+                        "temp_c": 18.65,
+                        "precip_mm": 6.78,
+                        "soil_moisture": 263.3666
+                    }
+                ]
+            },
+            {
+                "year": 2023,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5587,
+                        "evi": 1.3205,
+                        "temp_c": 18.86,
+                        "precip_mm": 1.2,
+                        "soil_moisture": 199.6929
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.3925,
+                        "evi": 0.7981,
+                        "temp_c": 20.54,
+                        "precip_mm": 2.12,
+                        "soil_moisture": 142.8186
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.5957,
+                        "evi": 1.52,
+                        "temp_c": 19.45,
+                        "precip_mm": 13.27,
+                        "soil_moisture": 247.035
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6844,
+                        "evi": 2.0247,
+                        "temp_c": 19.71,
+                        "precip_mm": 4.24,
+                        "soil_moisture": 310.7089
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.6453,
+                        "evi": -4.6005,
+                        "temp_c": 19.26,
+                        "precip_mm": 5.48,
+                        "soil_moisture": 300.4653
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.6113,
+                        "evi": 1.2729,
+                        "temp_c": 18.85,
+                        "precip_mm": 3.01,
+                        "soil_moisture": 303.223
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.4993,
+                        "evi": 1.1755,
+                        "temp_c": 19.69,
+                        "precip_mm": 2.61,
+                        "soil_moisture": 282.1095
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.5058,
+                        "evi": 1.4936,
+                        "temp_c": 19.61,
+                        "precip_mm": 7.36,
+                        "soil_moisture": 269.3641
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.561,
+                        "evi": 1.2915,
+                        "temp_c": 20.1,
+                        "precip_mm": 8.13,
+                        "soil_moisture": 296.3396
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.713,
+                        "evi": 2.2126,
+                        "temp_c": 19.49,
+                        "precip_mm": 16.02,
+                        "soil_moisture": 323.7145
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6884,
+                        "evi": 1.7726,
+                        "temp_c": 19.85,
+                        "precip_mm": 7.64,
+                        "soil_moisture": 285.3012
+                    }
+                ]
+            },
+            {
+                "year": 2024,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.6142,
+                        "evi": 1.5759,
+                        "temp_c": 19.99,
+                        "precip_mm": 6.94,
+                        "soil_moisture": 274.3754
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.5353,
+                        "evi": -7.9853,
+                        "temp_c": 20.53,
+                        "precip_mm": 5.35,
+                        "soil_moisture": 244.0773
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.545,
+                        "evi": 1.4569,
+                        "temp_c": 20.68,
+                        "precip_mm": 5.98,
+                        "soil_moisture": 231.6379
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6004,
+                        "evi": 1.5943,
+                        "temp_c": 20.02,
+                        "precip_mm": 13.24,
+                        "soil_moisture": 262.0375
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.4914,
+                        "evi": -2.2943,
+                        "temp_c": 20.2,
+                        "precip_mm": 6.72,
+                        "soil_moisture": 317.7212
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.563,
+                        "evi": 3.9005,
+                        "temp_c": 19.7,
+                        "precip_mm": 2.05,
+                        "soil_moisture": 264.7052
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.6209,
+                        "evi": 1.6963,
+                        "temp_c": 19.49,
+                        "precip_mm": 3.31,
+                        "soil_moisture": 234.6413
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.5485,
+                        "evi": 1.5122,
+                        "temp_c": 19.34,
+                        "precip_mm": 3.57,
+                        "soil_moisture": 276.0081
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.4985,
+                        "evi": 1.3245,
+                        "temp_c": 19.98,
+                        "precip_mm": 5.25,
+                        "soil_moisture": 268.6166
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5245,
+                        "evi": 2.0471,
+                        "temp_c": 19.76,
+                        "precip_mm": 6.29,
+                        "soil_moisture": 269.2025
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6312,
+                        "evi": 0.8762,
+                        "temp_c": 19.5,
+                        "precip_mm": 10.01,
+                        "soil_moisture": 252.5046
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.6483,
+                        "evi": 1.249,
+                        "temp_c": 19.34,
+                        "precip_mm": 4.82,
+                        "soil_moisture": 257.9862
+                    }
+                ]
+            },
+            {
+                "year": 2025,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.602,
+                        "evi": 1.6077,
+                        "temp_c": 19.6,
+                        "precip_mm": 2.86,
+                        "soil_moisture": 195.7766
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.4647,
+                        "evi": 1.1162,
+                        "temp_c": 20.43,
+                        "precip_mm": 0.86,
+                        "soil_moisture": 160.5156
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.3894,
+                        "evi": 1.5152,
+                        "temp_c": 20.5,
+                        "precip_mm": 9.4,
+                        "soil_moisture": 147.0387
+                    },
+                    {
+                        "month": 4,
+                        "ndvi": 0.6322,
+                        "evi": 1.9698,
+                        "temp_c": 19.78,
+                        "precip_mm": 10.39,
+                        "soil_moisture": 259.9004
+                    },
+                    {
+                        "month": 5,
+                        "ndvi": 0.6057,
+                        "evi": 2.4693,
+                        "temp_c": 19.32,
+                        "precip_mm": 6.83,
+                        "soil_moisture": 304.9247
+                    },
+                    {
+                        "month": 6,
+                        "ndvi": 0.7067,
+                        "evi": 1.5982,
+                        "temp_c": 18.89,
+                        "precip_mm": 3.77,
+                        "soil_moisture": 299.7266
+                    },
+                    {
+                        "month": 7,
+                        "ndvi": 0.6439,
+                        "evi": 1.6209,
+                        "temp_c": 18.74,
+                        "precip_mm": 4.96,
+                        "soil_moisture": 318.3895
+                    },
+                    {
+                        "month": 8,
+                        "ndvi": 0.585,
+                        "evi": 1.541,
+                        "temp_c": 18.65,
+                        "precip_mm": 4.6,
+                        "soil_moisture": 313.2567
+                    },
+                    {
+                        "month": 9,
+                        "ndvi": 0.524,
+                        "evi": 1.3619,
+                        "temp_c": 19.52,
+                        "precip_mm": 3.94,
+                        "soil_moisture": 297.9961
+                    },
+                    {
+                        "month": 10,
+                        "ndvi": 0.5406,
+                        "evi": 5.8052,
+                        "temp_c": 19.5,
+                        "precip_mm": 7.27,
+                        "soil_moisture": 294.3946
+                    },
+                    {
+                        "month": 11,
+                        "ndvi": 0.6355,
+                        "evi": 1.7717,
+                        "temp_c": 19.35,
+                        "precip_mm": 2.82,
+                        "soil_moisture": 288.3248
+                    },
+                    {
+                        "month": 12,
+                        "ndvi": 0.5554,
+                        "evi": 1.443,
+                        "temp_c": 19.36,
+                        "precip_mm": 6.74,
+                        "soil_moisture": 198.396
+                    }
+                ]
+            },
+            {
+                "year": 2026,
+                "months": [
+                    {
+                        "month": 1,
+                        "ndvi": 0.5459,
+                        "evi": 1.545,
+                        "temp_c": 19.79,
+                        "precip_mm": 1.87,
+                        "soil_moisture": 156.0433
+                    },
+                    {
+                        "month": 2,
+                        "ndvi": 0.3504,
+                        "evi": 1.1457,
+                        "temp_c": 19.35,
+                        "precip_mm": 8.44,
+                        "soil_moisture": 138.161
+                    },
+                    {
+                        "month": 3,
+                        "ndvi": 0.5917,
+                        "evi": 1.6639,
+                        "temp_c": 19.49,
+                        "precip_mm": 9.54,
+                        "soil_moisture": 271.1032
+                    }
+                ]
+            }
+        ],
+        "metadata": {
+            "last_sync": "2026-04-12",
+            "variables": [
+                "ndvi",
+                "temp_c",
+                "precip_mm",
+                "soil_moisture"
+            ]
+        }
+    }
+}

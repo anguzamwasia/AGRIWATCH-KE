@@ -1,0 +1,61 @@
+# ============================================================
+# AgriWatch KE — .gitignore
+# © 2026 Cynthia Anguza. All Rights Reserved.
+# ============================================================
+
+# === CREDENTIALS — NEVER COMMIT ===
+.env
+*.env
+secrets/
+
+# === TRAINED MODEL — PROTECT YOUR IP ===
+Backend/models/saved/*.json
+Backend/models/saved/*.pkl
+Backend/models/saved/*.joblib
+
+# === RAW PROPRIETARY DATA — NEVER EXPOSE ===
+Backend/data/afa_official_stats.csv
+Backend/data/raw/
+Backend/data/processed/
+Backend/data/gee_cache.db
+Backend/data/boundaries/
+Backend/data/*.json
+Backend/data/*.csv
+Backend/data/tif_baselines_2017.json
+
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*.pyo
+Backend/venv/
+Backend/.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# === NODE / FRONTEND ===
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env
+
+# === LOGS & TEMP ===
+*.log
+logs/
+Backend/images/*.png
+Backend/images/*.jpg
+Backend/images/*.tif
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# SAFE TO COMMIT:
+#   Backend/.env.example       ← template, no real values
+#   LICENSE                    ← your copyright
+#   Backend/main.py            ← source (with os.environ, not hardcoded keys)
+#   Backend/services/*.py      ← source code
+#   Frontend/src/              ← frontend source
+# ============================================================

@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Agricultural theme colors */
+    --background: 45 15% 97%;
+    --foreground: 25 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 25 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 25% 15%;
+
+    /* Earth green primary */
+    --primary: 120 35% 35%;
+    --primary-foreground: 0 0% 98%;
+
+    /* Warm earth secondary */
+    --secondary: 35 25% 88%;
+    --secondary-foreground: 25 25% 15%;
+
+    --muted: 35 15% 92%;
+    --muted-foreground: 25 15% 45%;
+
+    /* Golden accent */
+    --accent: 45 85% 65%;
+    --accent-foreground: 25 25% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 35 20% 85%;
+    --input: 35 20% 90%;
+    --ring: 120 35% 35%;
+
+    --radius: 0.75rem;
+    
+    /* Agricultural gradients */
+    --gradient-earth: linear-gradient(135deg, hsl(120 35% 35%), hsl(45 85% 65%));
+    --gradient-field: linear-gradient(180deg, hsl(120 45% 85%), hsl(120 35% 75%));
+    --gradient-harvest: linear-gradient(45deg, hsl(45 85% 65%), hsl(35 75% 55%));
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(120 35% 35% / 0.15);
+    --shadow-glow: 0 0 40px hsl(45 85% 65% / 0.25);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark agricultural theme */
+    --background: 25 25% 8%;
+    --foreground: 45 15% 90%;
+
+    --card: 25 20% 12%;
+    --card-foreground: 45 15% 90%;
+
+    --popover: 25 20% 12%;
+    --popover-foreground: 45 15% 90%;
+
+    --primary: 120 35% 55%;
+    --primary-foreground: 25 25% 8%;
+
+    --secondary: 35 15% 18%;
+    --secondary-foreground: 45 15% 90%;
+
+    --muted: 35 10% 15%;
+    --muted-foreground: 35 10% 65%;
+
+    --accent: 45 85% 75%;
+    --accent-foreground: 25 25% 8%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 35 15% 22%;
+    --input: 35 15% 20%;
+    --ring: 120 35% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.smooth-overlay { image-rendering: auto; image-rendering: smooth; }
+
+
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  .no-print, .sidebar, header, nav, button {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+  }
+  .recharts-wrapper * {
+    color: black !important;
+    fill: black !important;
+    stroke: black !important;
+  }
+  .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line {
+    stroke: #ccc !important;
+  }
+  .recharts-line curve {
+    stroke: #10b981 !important;
+  }
+  h2, h3, h4, p, span, td, th {
+    color: black !important;
+  }
+}
+
