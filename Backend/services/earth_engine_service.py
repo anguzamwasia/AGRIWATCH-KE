@@ -247,8 +247,11 @@ class EarthEngineService:
         return result
 
     def get_phenology(self, county: str, subcounty: str, year: int):
-        cached = get_cached("get_phenology", county, subcounty, year)
-        if cached: return cached
+        current_year = datetime.now().year
+        if year < current_year:
+            cached = get_cached("get_phenology", county, subcounty, year)
+            if cached: return cached
+
         
         geom = self.get_geometry(subcounty, county)
         if not geom:
@@ -339,7 +342,8 @@ class EarthEngineService:
             },
             "data": chart_data
         }
-        set_cached("get_phenology", result, county, subcounty, year)
+        if year < current_year:
+            set_cached("get_phenology", result, county, subcounty, year)
         return result
 
     def get_cultivated_area(self, county: str, subcounty: str, year: int):
