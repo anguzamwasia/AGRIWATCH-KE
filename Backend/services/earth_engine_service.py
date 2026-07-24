@@ -272,7 +272,47 @@ class EarthEngineService:
             
         ndvi_ts = ndvi_col.filterDate(start_date, end_date).map(extract_stats).getInfo()['features']
         
+        # Sentinel-2 Fallback/Extension for the current year to bridge MODIS lag
+        if year >= datetime.now().year and ndvi_ts:
+            try:
+                dates = [f['properties'].get('date') for f in ndvi_ts if f['properties'].get('date')]
+                if dates:
+                    last_date_str = max(dates)
+                    last_date = datetime.strptime(last_date_str, "%Y-%m-%d")
+                    if (datetime.now() - last_date).days > 5:
+                        s2_start = (last_date + timedelta(days=1)).strftime("%Y-%m-%d")
+                        s2_end = datetime.now().strftime("%Y-%m-%d")
+                        
+                        s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+                        s2_col = s2.filterBounds(geom).filterDate(s2_start, s2_end).filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+                        
+                        def calc_s2_ndvi(img):
+                            ndvi = img.normalizedDifference(['B8', 'B4']).rename('NDVI')
+                            date = img.date().format('YYYY-MM-dd')
+                            stat = ndvi.reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=1000, maxPixels=1e9)
+                            return ee.Feature(None, stat).set('date', date)
+                            
+                        s2_features = s2_col.map(calc_s2_ndvi).getInfo()['features']
+                        
+                        s2_clean = []
+                        for f in s2_features:
+                            props = f.get('properties', {})
+                            if props.get('NDVI') is not None:
+                                s2_clean.append(f)
+                                
+                        s2_clean.sort(key=lambda x: x['properties']['date'])
+                        
+                        seen_dates = set()
+                        for f in s2_clean:
+                            d = f['properties']['date']
+                            if d not in seen_dates:
+                                ndvi_ts.append(f)
+                                seen_dates.add(d)
+            except Exception as s2_err:
+                logger.warning(f"Sentinel-2 fallback failed: {s2_err}")
+
         chart_data = []
+
         max_ndvi = -1
         max_date = None
         sos_date = None
