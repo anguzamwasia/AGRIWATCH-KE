@@ -18,14 +18,26 @@ class EarthEngineService:
         credentials_json = os.environ.get("EE_CREDENTIALS")
         if credentials_json:
             try:
-                creds_dict = json.loads(credentials_json)
-                from google.oauth2 import service_account
-                credentials = service_account.Credentials.from_service_account_info(creds_dict)
-                ee.Initialize(credentials, project='ee-penguincynthia')
-                self.initialized = True
-                logger.info("Successfully initialized Earth Engine using Service Account Credentials.")
+                home = Path.home()
+                ee_dir = home / ".config" / "earthengine"
+                ee_dir.mkdir(parents=True, exist_ok=True)
+                with open(ee_dir / "credentials", "w", encoding="utf-8") as f:
+                    f.write(credentials_json)
+                logger.info("Successfully wrote GEE credentials to disk at ~/.config/earthengine/credentials")
             except Exception as e:
-                logger.error(f"Failed to init GEE with EE_CREDENTIALS: {e}")
+                logger.warning(f"Could not write credentials to disk: {e}")
+
+            try:
+                creds_dict = json.loads(credentials_json)
+                if "private_key" in creds_dict:
+                    from google.oauth2 import service_account
+                    credentials = service_account.Credentials.from_service_account_info(creds_dict)
+                    ee.Initialize(credentials, project='ee-penguincynthia')
+                    self.initialized = True
+                    logger.info("Successfully initialized Earth Engine using Service Account Credentials.")
+            except Exception as e:
+                logger.error(f"Failed direct service account GEE init: {e}")
+
 
         if not self.initialized:
             try:

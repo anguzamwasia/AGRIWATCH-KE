@@ -122,30 +122,24 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
     data_dir = Path(__file__).parent / "data"
 
 
-    # Yield TIF  +  Harvested-area TIF (used as crop-presence mask)
-    CROP_FILES = {
-        "maize": (
-            data_dir / "raw" / "maize_yield_0.1km.tif",
-            data_dir / "raw" / "maize_harvest_0.1km.tif",
-        ),
-        "wheat": (
-            data_dir / "raw" / "spam2017V2r1_SSA_Y_WHEA_A.tif",
-            data_dir / "raw" / "spam2017V2r1_SSA_H_WHEA_A.tif",
-        ),
-        "potatoes": (
-            data_dir / "raw" / "spam2017V2r1_SSA_Y_POTA_A.tif",
-            data_dir / "raw" / "spam2017V2r1_SSA_H_POTA_A.tif",
-        ),
-        "pigeonpeas": (
-            data_dir / "raw" / "spam2017V2r1_SSA_Y_PIGE_A.tif",
-            data_dir / "raw" / "spam2017V2r1_SSA_H_PIGE_A.tif",
-        ),
+    # Dynamic resolution: use raw if available (dev machine), otherwise processed fallback (Render)
+    CROP_PREFIXES = {
+        "maize": "MAIZ",
+        "wheat": "WHEA",
+        "potatoes": "POTA",
+        "pigeonpeas": "PIGE",
     }
-    entry = CROP_FILES.get(crop.lower())
-    if not entry:
-        logger.error(f"Unknown crop: {crop}")
-        return ""
-    y_path, h_path = entry
+    prefix = CROP_PREFIXES.get(crop.lower(), "MAIZ")
+
+    raw_y = data_dir / "raw" / ("maize_yield_0.1km.tif" if crop.lower() == "maize" else f"spam2017V2r1_SSA_Y_{prefix}_A.tif")
+    raw_h = data_dir / "raw" / ("maize_harvest_0.1km.tif" if crop.lower() == "maize" else f"spam2017V2r1_SSA_H_{prefix}_A.tif")
+
+    if raw_y.exists() and raw_h.exists():
+        y_path, h_path = raw_y, raw_h
+    else:
+        y_path = data_dir / "processed" / f"kenya_Y_{prefix}.tif"
+        h_path = data_dir / "processed" / f"kenya_H_{prefix}.tif"
+
     if not y_path.exists():
         logger.error(f"Yield TIF missing: {y_path}")
         return ""
@@ -349,7 +343,11 @@ def generate_county_map(county: str, crop: str, year: int, map_type: str = 'crop
 
 
             if crop.lower() == 'maize':
-                tif_path = old_project / "raw" / "maize_harvest_0.1km.tif"
+                raw_path = old_project / "raw" / "maize_harvest_0.1km.tif"
+                if raw_path.exists():
+                    tif_path = raw_path
+                else:
+                    tif_path = old_project / "processed" / "kenya_H_MAIZ.tif"
             else:
                 crop_prefix = {'wheat': 'WHEA', 'potatoes': 'POTA', 'pigeonpeas': 'PIGE'}.get(crop.lower(), 'MAIZ')
                 tif_path = old_project / "processed" / f"kenya_H_{crop_prefix}.tif"
