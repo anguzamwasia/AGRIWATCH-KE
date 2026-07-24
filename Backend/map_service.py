@@ -278,6 +278,17 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
             out_band[out_band < min_yield] = 0.0
             out_band[out_band == y_nodata] = 0.0
 
+            # Re-clip to exact boundary polygon to prevent bilinear bleeding/out-of-boundary artifacts
+            boundary_mask = rasterize(
+                [(geom, 1) for geom in shapes_crs.geometry],
+                out_shape=(out_band.shape[1], out_band.shape[2]),
+                transform=y_transform,
+                fill=0,
+                dtype=np.uint8
+            )
+            out_band[0] = out_band[0] * boundary_mask
+
+
             out_meta = y_src.meta.copy()
             out_meta.update({
                 "driver": "GTiff",
