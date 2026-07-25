@@ -369,10 +369,16 @@ def get_predictors(county: str, subcounty: str, year: int, crop: str = "Maize"):
 
 @app.get("/api/analytics/phenology")
 def get_phenology(county: str, subcounty: str, year: int):
-    data = ee_service.get_phenology(county, subcounty, year)
-    if not data:
-        raise HTTPException(status_code=404, detail="Data not found")
-    return data
+    try:
+        data = ee_service.get_phenology(county, subcounty, year)
+        if not data:
+            raise HTTPException(status_code=404, detail="Data not found")
+        return data
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Phenology endpoint error: {e}")
+        raise HTTPException(status_code=500, detail=f"Earth Engine Error: {str(e)}")
+
 
 from fastapi.responses import FileResponse
 import time as _time
