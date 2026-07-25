@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
   Calendar, MapPin, Droplets, Thermometer, 
-  AlertTriangle, CheckCircle2, Lightbulb, Printer,
+  AlertTriangle, CheckCircle2, Lightbulb, Printer, Download,
   Activity, Sprout, History
 } from "lucide-react";
 import {
@@ -107,9 +107,10 @@ export const ReportGenerator = ({
             disabled={isGenerating}
             className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2 px-6 h-12 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.4)] transition-all"
           >
-            {isGenerating ? <Activity className="h-5 w-5 animate-spin" /> : <Printer className="h-5 w-5" />}
-            {isGenerating ? "Preparing Print..." : "Print Official Report"}
+            {isGenerating ? <Activity className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
+            {isGenerating ? "Compiling PDF..." : "Download PDF Report"}
           </Button>
+
 
         </div>
 

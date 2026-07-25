@@ -167,13 +167,48 @@ const Index = () => {
     };
   });
 
-  const handleDownloadReport = () => {
+  const handleDownloadReport = async () => {
     setIsReportGenerating(true);
-    setTimeout(() => {
+    try {
+      const element = document.getElementById("pdf-content");
+      if (!element) {
+        window.print();
+        return;
+      }
+      
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#020617",
+      });
+      
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      pdf.save(`agriwatch_report_${selectedCounty.toLowerCase().replace(/ /g, "_")}_${selectedYear}.pdf`);
+    } catch (error) {
+      console.error("PDF download failed - falling back to browser print:", error);
       window.print();
+    } finally {
       setIsReportGenerating(false);
-    }, 500);
+    }
   };
+
 
   return (
     <div className="dark min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans">
