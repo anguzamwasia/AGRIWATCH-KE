@@ -683,27 +683,40 @@ import re
 from map_service import generate_county_map
 @app.post("/api/chat")
 def handle_chat(req: ChatRequest):
+    # Detect crop and county from query to dynamically fetch correct 2026 predictions
+    detected_crop = req.context_crop
+    for crop_name in ["Maize", "Wheat", "Potatoes", "Pigeonpeas"]:
+        if crop_name.lower() in req.query.lower():
+            detected_crop = crop_name
+            break
+            
+    detected_county = req.context_county
+    for c_name in stats_data.get("counties", {}).keys():
+        if c_name.lower() in req.query.lower():
+            detected_county = c_name
+            break
+
     # Context statistics to ground Gemini
     context_stats = ""
     pred_2026_context = ""
     rankings_context = ""
     
     try:
-        county_data = stats_data.get("counties", {}).get(req.context_county, {})
-        crop_data = county_data.get("county_summary", {}).get(req.context_crop, {})
+        county_data = stats_data.get("counties", {}).get(detected_county, {})
+        crop_data = county_data.get("county_summary", {}).get(detected_crop, {})
         if crop_data:
-            context_stats = f"Baseline for {req.context_crop} in {req.context_county}: Yield: {crop_data.get('yield_tha')} t/ha, Production: {crop_data.get('production_tons')} tons, Area: {crop_data.get('area_harvested_ha')} ha.\n"
+            context_stats = f"Baseline for {detected_crop} in {detected_county}: Yield: {crop_data.get('yield_tha')} t/ha, Production: {crop_data.get('production_tons')} tons, Area: {crop_data.get('area_harvested_ha')} ha.\n"
     except Exception as e:
         print("Chat Context Error:", e)
 
     # Calculate 2026 predictions and historical timeline context for active county & Kenya
     try:
-        # Get 2026 prediction for active county
-        county_pred = get_yield_analysis(req.context_county, "", 2026, req.context_crop)
+        # Get 2026 prediction for detected county
+        county_pred = get_yield_analysis(detected_county, "", 2026, detected_crop)
         if county_pred and "cards" in county_pred:
             cards = county_pred["cards"]
             pred_2026_context += (
-                f"2026 PREDICTED STATISTICS FOR {req.context_county.upper()} ({req.context_crop.upper()}):\n"
+                f"2026 PREDICTED STATISTICS FOR {detected_county.upper()} ({detected_crop.upper()}):\n"
                 f"- Yield: {cards.get('predicted_yield', 0):.2f} t/ha\n"
                 f"- Production: {cards.get('production', 0):.1f} tons\n"
                 f"- Cultivated Area: {cards.get('area_ha', 0):.1f} hectares\n"
@@ -711,12 +724,12 @@ def handle_chat(req: ChatRequest):
                 f"- Expected average temperature: {cards.get('temp', 0):.1f} °C\n\n"
             )
             
-        # Get 2026 prediction for Kenya (National)
-        kenya_pred = get_yield_analysis("Kenya", "", 2026, req.context_crop)
+        # Get 2026 prediction for Kenya (National) for the detected crop
+        kenya_pred = get_yield_analysis("Kenya", "", 2026, detected_crop)
         if kenya_pred and "cards" in kenya_pred:
             cards = kenya_pred["cards"]
             pred_2026_context += (
-                f"2026 PREDICTED STATISTICS FOR KENYA (NATIONAL) ({req.context_crop.upper()}):\n"
+                f"2026 PREDICTED STATISTICS FOR KENYA (NATIONAL) ({detected_crop.upper()}):\n"
                 f"- Yield: {cards.get('predicted_yield', 0):.2f} t/ha\n"
                 f"- Production: {cards.get('production', 0):.1f} tons\n"
                 f"- Cultivated Area: {cards.get('area_ha', 0):.1f} hectares\n"
@@ -724,18 +737,55 @@ def handle_chat(req: ChatRequest):
                 f"- Expected average temperature: {cards.get('temp', 0):.1f} °C\n\n"
             )
             
-        # Trends data for the active county
-        county_trends = _get_county_trends(req.context_county, "", req.context_crop, 2026)
+        # If the detected crop is Wheat, explicitly inject Narok and Nakuru statistics for comparison
+        if detected_crop == "Wheat":
+            for c in ["Narok", "Nakuru"]:
+                c_pred = get_yield_analysis(c, "", 2026, "Wheat")
+                if c_pred and "cards" in c_pred:
+                    cards = c_pred["cards"]
+                    pred_2026_context += (
+                        f"2026 PREDICTED STATISTICS FOR {c.upper()} (WHEAT):\n"
+                        f"- Yield: {cards.get('predicted_yield', 0):.2f} t/ha\n"
+                        f"- Production: {cards.get('production', 0):.1f} tons\n"
+                        f"- Cultivated Area: {cards.get('area_ha', 0):.1f} hectares\n\n"
+                    )
+        # If Maize, inject Uasin Gishu and Trans Nzoia
+        elif detected_crop == "Maize":
+            for c in ["Uasin Gishu", "Trans Nzoia"]:
+                c_pred = get_yield_analysis(c, "", 2026, "Maize")
+                if c_pred and "cards" in c_pred:
+                    cards = c_pred["cards"]
+                    pred_2026_context += (
+                        f"2026 PREDICTED STATISTICS FOR {c.upper()} (MAIZE):\n"
+                        f"- Yield: {cards.get('predicted_yield', 0):.2f} t/ha\n"
+                        f"- Production: {cards.get('production', 0):.1f} tons\n"
+                        f"- Cultivated Area: {cards.get('area_ha', 0):.1f} hectares\n\n"
+                    )
+        # If Potatoes, inject Nyandarua and Nakuru
+        elif detected_crop == "Potatoes":
+            for c in ["Nyandarua", "Nakuru"]:
+                c_pred = get_yield_analysis(c, "", 2026, "Potatoes")
+                if c_pred and "cards" in c_pred:
+                    cards = c_pred["cards"]
+                    pred_2026_context += (
+                        f"2026 PREDICTED STATISTICS FOR {c.upper()} (POTATOES):\n"
+                        f"- Yield: {cards.get('predicted_yield', 0):.2f} t/ha\n"
+                        f"- Production: {cards.get('production', 0):.1f} tons\n"
+                        f"- Cultivated Area: {cards.get('area_ha', 0):.1f} hectares\n\n"
+                    )
+                    
+        # Trends data for the detected county
+        county_trends = _get_county_trends(detected_county, "", detected_crop, 2026)
         trends_lines = []
         for t in county_trends:
             trends_lines.append(
                 f"- Year {t['year']}{' (Predicted)' if t['is_predicted'] else ''}: "
                 f"yield={t['yield_tha']:.2f} t/ha, area={t['area_ha']:.0f} ha, production={t['production_tons']:.0f} tons"
             )
-        pred_2026_context += f"HISTORICAL TIMELINE (2017-2026) FOR {req.context_county.upper()} ({req.context_crop.upper()}):\n" + "\n".join(trends_lines) + "\n\n"
+        pred_2026_context += f"HISTORICAL TIMELINE (2017-2026) FOR {detected_county.upper()} ({detected_crop.upper()}):\n" + "\n".join(trends_lines) + "\n\n"
         
         # Trends data for Kenya (National)
-        kenya_trends = get_trends("Kenya", "", req.context_crop, 2026)
+        kenya_trends = get_trends("Kenya", "", detected_crop, 2026)
         kenya_trends_lines = []
         if kenya_trends and "trends" in kenya_trends:
             for t in kenya_trends["trends"]:
@@ -743,7 +793,7 @@ def handle_chat(req: ChatRequest):
                     f"- Year {t['year']}{' (Predicted)' if t['is_predicted'] else ''}: "
                     f"yield={t['yield_tha']:.2f} t/ha, area={t['area_ha']:.0f} ha, production={t['production_tons']:.0f} tons"
                 )
-        pred_2026_context += f"HISTORICAL TIMELINE (2017-2026) FOR KENYA (NATIONAL) ({req.context_crop.upper()}):\n" + "\n".join(kenya_trends_lines) + "\n\n"
+        pred_2026_context += f"HISTORICAL TIMELINE (2017-2026) FOR KENYA (NATIONAL) ({detected_crop.upper()}):\n" + "\n".join(kenya_trends_lines) + "\n\n"
     except Exception as e:
         print("Chat Prediction Context Injection Error:", e)
 
