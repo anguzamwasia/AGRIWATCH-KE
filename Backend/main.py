@@ -845,7 +845,7 @@ OUTPUT FORMAT — you MUST respond with ONLY this JSON (no markdown fences):
         config = types.GenerateContentConfig(
             response_mime_type="application/json"
         )
-        chat_session = gemini_client.chats.create(model='gemini-2.5-flash', config=config, history=formatted_history)
+        chat_session = gemini_client.chats.create(model='gemini-flash-latest', config=config, history=formatted_history)
 
 
         
