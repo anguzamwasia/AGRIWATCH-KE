@@ -297,8 +297,13 @@ def get_yield_analysis(county: str, subcounty: str, year: int, crop: str = "Maiz
                 total_pred_area = 0
                 for c_name in stats_data.get("counties", {}).keys():
                     c_afa_a, c_afa_y = _get_afa_baseline(c_name, crop)
+                    c_baseline = _get_baseline(c_name, "", crop)
+                    c_base_yield = c_baseline.get("yield_tha", 0)
+                    c_base_area = c_baseline.get("area_harvested_ha", 0)
                     
                     c_input = input_data.copy()
+                    c_input['base_area'] = c_base_area
+                    c_input['base_yield'] = c_base_yield
                     c_input['afa_area'] = c_afa_a
                     c_input['afa_yield'] = c_afa_y
                     
@@ -313,13 +318,18 @@ def get_yield_analysis(county: str, subcounty: str, year: int, crop: str = "Maiz
                     
                     c_yield = max(0.0, float(xgb_model.predict(c_df_in)[0]))
                     
-                    # Use AFA area if available, else fallback to TIF baseline
-                    c_area_use = c_afa_a if c_afa_a > 0 else _get_total_baseline_area(c_name, "")
+                    # Apply drift if predicted year to match trends logic
+                    c_area_use = c_afa_a if c_afa_a > 0 else c_base_area
+                    if year > 2025:
+                        drift = 1.0 + ((year - 2017) * 0.005)
+                        c_area_use = c_area_use * drift
+                        
                     total_pred_prod += c_yield * c_area_use
                     total_pred_area += c_area_use
                     
                 if total_pred_area > 0:
                     predicted_yield = total_pred_prod / total_pred_area
+                    current_area = total_pred_area
                 else:
                     predicted_yield = 0.0
                 is_predicted = True
