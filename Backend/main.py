@@ -686,6 +686,9 @@ from map_service import generate_county_map
 def handle_chat(req: ChatRequest):
     # Context statistics to ground Gemini
     context_stats = ""
+    pred_2026_context = ""
+    rankings_context = ""
+    
     try:
         county_data = stats_data.get("counties", {}).get(req.context_county, {})
         crop_data = county_data.get("county_summary", {}).get(req.context_crop, {})
@@ -703,6 +706,81 @@ def handle_chat(req: ChatRequest):
             context_stats += f"\nREAL STATS FOR {crop_name.upper()} PRODUCTION (USE THIS EXACT DATA IF ASKED FOR RANKINGS):\n{top_str}\n"
     except Exception as e:
         print("Chat Context Error:", e)
+
+    # Calculate 2026 predictions and historical timeline context for active county & Kenya
+    try:
+        # Get 2026 prediction for active county
+        county_pred = get_yield_analysis(req.context_county, "", 2026, req.context_crop)
+        if county_pred and "cards" in county_pred:
+            cards = county_pred["cards"]
+            pred_2026_context += (
+                f"2026 PREDICTED STATISTICS FOR {req.context_county.upper()} ({req.context_crop.upper()}):\n"
+                f"- Yield: {cards.get('predicted_yield', 0):.2f} t/ha\n"
+                f"- Production: {cards.get('production', 0):.1f} tons\n"
+                f"- Cultivated Area: {cards.get('area_ha', 0):.1f} hectares\n"
+                f"- Expected annual rainfall: {cards.get('rainfall', 0):.1f} mm\n"
+                f"- Expected average temperature: {cards.get('temp', 0):.1f} °C\n\n"
+            )
+            
+        # Get 2026 prediction for Kenya (National)
+        kenya_pred = get_yield_analysis("Kenya", "", 2026, req.context_crop)
+        if kenya_pred and "cards" in kenya_pred:
+            cards = kenya_pred["cards"]
+            pred_2026_context += (
+                f"2026 PREDICTED STATISTICS FOR KENYA (NATIONAL) ({req.context_crop.upper()}):\n"
+                f"- Yield: {cards.get('predicted_yield', 0):.2f} t/ha\n"
+                f"- Production: {cards.get('production', 0):.1f} tons\n"
+                f"- Cultivated Area: {cards.get('area_ha', 0):.1f} hectares\n"
+                f"- Expected annual rainfall: {cards.get('rainfall', 0):.1f} mm\n"
+                f"- Expected average temperature: {cards.get('temp', 0):.1f} °C\n\n"
+            )
+            
+        # Trends data for the active county
+        county_trends = _get_county_trends(req.context_county, "", req.context_crop, 2026)
+        trends_lines = []
+        for t in county_trends:
+            trends_lines.append(
+                f"- Year {t['year']}{' (Predicted)' if t['is_predicted'] else ''}: "
+                f"yield={t['yield_tha']:.2f} t/ha, area={t['area_ha']:.0f} ha, production={t['production_tons']:.0f} tons"
+            )
+        pred_2026_context += f"HISTORICAL TIMELINE (2017-2026) FOR {req.context_county.upper()} ({req.context_crop.upper()}):\n" + "\n".join(trends_lines) + "\n\n"
+        
+        # Trends data for Kenya (National)
+        kenya_trends = get_trends("Kenya", "", req.context_crop, 2026)
+        kenya_trends_lines = []
+        if kenya_trends and "trends" in kenya_trends:
+            for t in kenya_trends["trends"]:
+                kenya_trends_lines.append(
+                    f"- Year {t['year']}{' (Predicted)' if t['is_predicted'] else ''}: "
+                    f"yield={t['yield_tha']:.2f} t/ha, area={t['area_ha']:.0f} ha, production={t['production_tons']:.0f} tons"
+                )
+        pred_2026_context += f"HISTORICAL TIMELINE (2017-2026) FOR KENYA (NATIONAL) ({req.context_crop.upper()}):\n" + "\n".join(kenya_trends_lines) + "\n\n"
+    except Exception as e:
+        print("Chat Prediction Context Injection Error:", e)
+
+    # Calculate top producing counties for Maize, Wheat, Potatoes for the latest historical year (2025)
+    try:
+        for crop_name in ["Maize", "Wheat", "Potatoes"]:
+            crop_counties_2025 = []
+            for c_name, c_data in afa_data_cache.items():
+                if crop_name in c_data and 2025 in c_data[crop_name]:
+                    prod = c_data[crop_name][2025].get("prod", 0)
+                    if prod > 0:
+                        crop_counties_2025.append((c_name, prod))
+            
+            # Sort by production
+            crop_counties_2025.sort(key=lambda x: x[1], reverse=True)
+            
+            top_10 = crop_counties_2025[:10]
+            top_10_str = ", ".join([f"{idx+1}. {name} ({int(p):,} tons)" for idx, (name, p) in enumerate(top_10)])
+            rankings_context += f"- Top 10 {crop_name} Counties (2025 AFA): {top_10_str}\n"
+            
+            # List all counties producing wheat
+            if crop_name == "Wheat":
+                wheat_counties = [name for name, p in crop_counties_2025]
+                rankings_context += f"- All Wheat Producing Counties (2025): {', '.join(wheat_counties)}\n"
+    except Exception as e:
+        print("Chat Rankings Context Error:", e)
 
     # Build a rich, grounded context from the AFA database for ALL counties and crops
     afa_context_lines = []
@@ -725,22 +803,29 @@ CURRENT USER CONTEXT:
 - Available crops in this system: Maize, Wheat, Potatoes, Pigeonpeas — ONLY these four.
 
 STRICT RULES (NEVER BREAK THESE):
-1. For specific statistical figures (yields, production, area) for Maize, Wheat, Potatoes, and Pigeonpeas, ONLY refer to the AFA database below. Never invent or estimate these numbers.
+1. For specific statistical figures (yields, production, area) for Maize, Wheat, Potatoes, and Pigeonpeas, ONLY refer to the AFA database, predicted statistics, and timeline blocks below. Never invent or estimate these numbers.
 2. For general agricultural knowledge, farming practices, agronomy advice, climate details, and descriptions of Kenyan agriculture, you are encouraged to use your general intelligence and broad agricultural knowledge to provide a helpful, comprehensive response.
 3. If asked about any crop NOT in [Maize, Wheat, Potatoes, Pigeonpeas], say: "I only have statistical database records for Maize, Wheat, Potatoes, and Pigeonpeas in this system."
 4. If asked about a county not in the data for statistics, say you don't have statistical data for it.
 5. Never say "approximately", "around", "I think" or similar hedges when citing database numbers — use exact values from the data.
 6. If the user asks for a map or spatial distribution, set "map_requested" to true.
+7. Explain any production shifts (e.g. between 2025 and 2026) using climatic factors (rainfall and temperature variations). For example, optimal rainfall increases yield, while drought/temperature stress decreases it. Cite the exact rainfall and temperature values from the predicted 2026 block!
 
-REAL AFA DATABASE (cite ONLY these numbers for statistics):
+REAL AFA DATABASE (2021-2025):
 {afa_block}
+
+PREDICTED 2026 STATISTICS & HISTORICAL TIMELINES:
+{pred_2026_context}
+
+TOP PRODUCING COUNTIES & CROP RANKINGS:
+{rankings_context}
 
 QUICK REFERENCE for {req.context_county} / {req.context_crop}:
 {context_stats}
 
 OUTPUT FORMAT — you MUST respond with ONLY this JSON (no markdown fences):
 {{
-  "answer": "Your detailed, helpful response. Use dashes (-) for lists, not asterisks. Use <b>text</b> for bold.",
+  "answer": "Your detailed, helpful response. Use dashes (-) for lists, not asterisks. Do not use HTML tags in the answer.",
   "map_requested": false,
   "crop": "The crop being discussed — must be one of: Maize, Wheat, Potatoes, Pigeonpeas. Default: {req.context_crop}",
   "county": "The county being discussed, or 'Kenya' for national. Default: {req.context_county}",
