@@ -681,7 +681,6 @@ class ChatRequest(BaseModel):
 
 import re
 from map_service import generate_county_map
-
 @app.post("/api/chat")
 def handle_chat(req: ChatRequest):
     # Context statistics to ground Gemini
@@ -694,16 +693,6 @@ def handle_chat(req: ChatRequest):
         crop_data = county_data.get("county_summary", {}).get(req.context_crop, {})
         if crop_data:
             context_stats = f"Baseline for {req.context_crop} in {req.context_county}: Yield: {crop_data.get('yield_tha')} t/ha, Production: {crop_data.get('production_tons')} tons, Area: {crop_data.get('area_harvested_ha')} ha.\n"
-            
-        for crop_name in ["Maize", "Wheat", "Potatoes", "Pigeonpeas"]:
-            crop_totals = []
-            for c, c_data in stats_data.get("counties", {}).items():
-                prod = c_data.get("county_summary", {}).get(crop_name, {}).get("production_tons", 0)
-                if prod > 0:
-                    crop_totals.append((c, prod))
-            crop_totals.sort(key=lambda x: x[1], reverse=True)
-            top_str = "\n".join([f"{i+1}. {c} (~{int(p):,} tonnes)" for i, (c, p) in enumerate(crop_totals[:15])])
-            context_stats += f"\nREAL STATS FOR {crop_name.upper()} PRODUCTION (USE THIS EXACT DATA IF ASKED FOR RANKINGS):\n{top_str}\n"
     except Exception as e:
         print("Chat Context Error:", e)
 
@@ -772,13 +761,13 @@ def handle_chat(req: ChatRequest):
             crop_counties_2025.sort(key=lambda x: x[1], reverse=True)
             
             top_10 = crop_counties_2025[:10]
-            top_10_str = ", ".join([f"{idx+1}. {name} ({int(p):,} tons)" for idx, (name, p) in enumerate(top_10)])
-            rankings_context += f"- Top 10 {crop_name} Counties (2025 AFA): {top_10_str}\n"
+            top_10_str = ", ".join([f"{idx+1}. {name}" for idx, (name, p) in enumerate(top_10)])
+            rankings_context += f"- Top 10 {crop_name} Counties: {top_10_str}\n"
             
             # List all counties producing wheat
             if crop_name == "Wheat":
                 wheat_counties = [name for name, p in crop_counties_2025]
-                rankings_context += f"- All Wheat Producing Counties (2025): {', '.join(wheat_counties)}\n"
+                rankings_context += f"- All Wheat Producing Counties: {', '.join(wheat_counties)}\n"
     except Exception as e:
         print("Chat Rankings Context Error:", e)
 
@@ -800,16 +789,15 @@ You answer questions about crop yields, area cultivated, production volumes, and
 CURRENT USER CONTEXT:
 - County: {req.context_county}
 - Crop: {req.context_crop}
-- Available crops in this system: Maize, Wheat, Potatoes, Pigeonpeas — ONLY these four.
+- Available crops in this system: Maize, Wheat, Potatoes, Pigeonpeas.
 
 STRICT RULES (NEVER BREAK THESE):
-1. For specific statistical figures (yields, production, area) for Maize, Wheat, Potatoes, and Pigeonpeas, ONLY refer to the AFA database, predicted statistics, and timeline blocks below. Never invent or estimate these numbers.
-2. For general agricultural knowledge, farming practices, agronomy advice, climate details, and descriptions of Kenyan agriculture, you are encouraged to use your general intelligence and broad agricultural knowledge to provide a helpful, comprehensive response.
-3. If asked about any crop NOT in [Maize, Wheat, Potatoes, Pigeonpeas], say: "I only have statistical database records for Maize, Wheat, Potatoes, and Pigeonpeas in this system."
-4. If asked about a county not in the data for statistics, say you don't have statistical data for it.
-5. Never say "approximately", "around", "I think" or similar hedges when citing database numbers — use exact values from the data.
-6. If the user asks for a map or spatial distribution, set "map_requested" to true.
-7. Explain any production shifts (e.g. between 2025 and 2026) using climatic factors (rainfall and temperature variations). For example, optimal rainfall increases yield, while drought/temperature stress decreases it. Cite the exact rainfall and temperature values from the predicted 2026 block!
+1. DEFAULT TO 2026 PREDICTED VALUES: If the user asks about crop statistics (yield, production, area) for the current year ("this year", "2026", or without specifying a year), you MUST only use the predicted 2026 values provided below.
+2. NO DOUBLE ANSWERS: Never present two different sets of statistics (e.g. do not show both baseline and predicted values, or both AFA and baseline values). Only output the 2026 predicted values by default unless a specific historical year is requested.
+3. NO SOURCE MENTIONS: Never mention the source names, database names, model names, or years in your introductory sentences (e.g. DO NOT say "According to the AFA database...", "Based on baseline statistics...", "XGBoost predicts...", "Our models show...", or "In the 2025 database..."). Present the facts directly (e.g., "The top producing counties are...").
+4. LISTING COUNTIES: If asked to list or name producing counties for a crop (e.g. "name wheat producing counties"), list ONLY the county names as a comma-separated list or bullet points. DO NOT output any production, yield, or area figures, and do not mention any years, unless the user explicitly asks for figures or a specific year.
+5. CROP ALIGNMENT: Ensure your numbers align exactly with the predicted 2026 statistics provided below.
+6. Explain any production shifts (e.g. between 2025 and 2026) using climatic factors (rainfall and temperature variations). For example, optimal rainfall increases yield, while drought/temperature stress decreases it. Cite the exact rainfall and temperature values from the predicted 2026 block!
 
 REAL AFA DATABASE (2021-2025):
 {afa_block}
