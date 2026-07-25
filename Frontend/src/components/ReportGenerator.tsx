@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
   Calendar, MapPin, Droplets, Thermometer, 
-  AlertTriangle, CheckCircle2, Lightbulb, Download,
+  AlertTriangle, CheckCircle2, Lightbulb, Printer,
   Activity, Sprout, History
 } from "lucide-react";
 import {
@@ -66,8 +66,9 @@ export const ReportGenerator = ({
     
     let zoneDesc = "a critical agricultural zone";
     if (county === "Kenya") {
-      zoneDesc = "the national agricultural baseline";
-    } else if (predicted < 1.5) {
+      zoneDesc = "the national agricultural baseline, with agriculture contributing approximately 33% of Kenya's GDP";
+    }
+ else if (predicted < 1.5) {
       zoneDesc = "a marginal or arid agricultural zone";
     } else if (predicted < 3.5) {
       zoneDesc = "a moderate agricultural zone";
@@ -106,9 +107,10 @@ export const ReportGenerator = ({
             disabled={isGenerating}
             className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2 px-6 h-12 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.4)] transition-all"
           >
-            {isGenerating ? <Activity className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
-            {isGenerating ? "Compiling Document..." : "Print / Save as PDF"}
+            {isGenerating ? <Activity className="h-5 w-5 animate-spin" /> : <Printer className="h-5 w-5" />}
+            {isGenerating ? "Preparing Print..." : "Print Official Report"}
           </Button>
+
         </div>
 
         <div id="pdf-content" className="space-y-8 bg-[#020617] p-2 md:p-6 rounded-2xl">

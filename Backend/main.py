@@ -204,6 +204,12 @@ def get_yield_analysis(county: str, subcounty: str, year: int, crop: str = "Maiz
     
     afa_area, afa_yield = _get_afa_baseline(county, crop)
     current_area = afa_area if afa_area > 0 and subcounty == "" else base_area
+    
+    # Apply land cultivation drift for future predicted years to match trends timeline
+    if year > 2025:
+        drift = 1.0 + ((year - 2017) * 0.005)
+        current_area = current_area * drift
+
 
     if current_area == 0:
         return {
