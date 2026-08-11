@@ -243,7 +243,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
   return (
     <Card className="relative h-full w-full overflow-hidden shadow-soft min-h-[600px] border-none group">
       <MapContainer
-        key={`${county}-${subcounty}-${crop}-${year}-${layer}`}
+        key={`${county}-${subcounty}-${crop}-${year}-${layer}-${predictedYield ?? 0}`}
         center={[-0.0236, 37.9062]} zoom={6}
         style={{ height: "100%", width: "100%", background: "#f8f9fa" }}
         zoomControl={false}

@@ -247,7 +247,8 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "", 
     out_dir.mkdir(exist_ok=True)
     safe_county = county.lower().replace(" ", "_")
     safe_sub = subcounty.lower().replace(" ", "_") if subcounty else ""
-    filename = f"{safe_county}_{safe_sub}_{crop.lower()}_{year}_yield.tif"
+    pred_str = f"_{predicted_yield:.2f}" if predicted_yield is not None else ""
+    filename = f"{safe_county}_{safe_sub}_{crop.lower()}_{year}{pred_str}_yield.tif"
     out_path = out_dir / filename
 
     # Use cached TIF if it already exists to achieve instant rendering
@@ -258,103 +259,100 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "", 
         with rasterio.open(y_path) as y_src:
             y_nodata = y_src.nodata if y_src.nodata is not None else -1
             shapes_crs = target_gdf.to_crs(y_src.crs)
-            shapes = [geom for geom in shapes_crs.geometry]
-
-            # Clip yield to county/subcounty
-            y_clipped, y_transform = mask(y_src, shapes, crop=True, nodata=y_nodata)
-            y_data = y_clipped[0].astype(np.float32)
-
+            
+            # Get bounding box envelope of target geometries
+            bounds = target_gdf.to_crs(y_src.crs).total_bounds  # [minx, miny, maxx, maxy]
+            buffer = 0.02
+            minx, miny, maxx, maxy = bounds
+            minx -= buffer
+            miny -= buffer
+            maxx += buffer
+            maxy += buffer
+            
+            # Setup 0.1 km grid coordinates (~0.000833 deg)
+            TARGET_RES = 0.000833333
+            out_w = max(1, int(round((maxx - minx) / TARGET_RES)))
+            out_h = max(1, int(round((maxy - miny) / TARGET_RES)))
+            out_transform = rasterio.transform.from_bounds(minx, miny, maxx, maxy, out_w, out_h)
+            
+            # 1. Reproject yield values to high-res grid
+            y_data = np.zeros((out_h, out_w), dtype=np.float32)
+            reproject(
+                source=rasterio.band(y_src, 1),
+                destination=y_data,
+                src_transform=y_src.transform,
+                src_crs=y_src.crs,
+                dst_transform=out_transform,
+                dst_crs=y_src.crs,
+                resampling=Resampling.bilinear
+            )
+            
+            # 2. Reproject harvested-area values to high-res grid
+            h_data = np.zeros((out_h, out_w), dtype=np.float32)
+            if h_path.exists():
+                with rasterio.open(h_path) as h_src:
+                    reproject(
+                        source=rasterio.band(h_src, 1),
+                        destination=h_data,
+                        src_transform=h_src.transform,
+                        src_crs=h_src.crs,
+                        dst_transform=out_transform,
+                        dst_crs=h_src.crs,
+                        resampling=Resampling.bilinear
+                    )
+            
+            # 3. Create high-resolution exact boundary mask
+            boundary_mask = rasterize(
+                [(geom, 1) for geom in shapes_crs.geometry],
+                out_shape=(out_h, out_w),
+                transform=out_transform,
+                fill=0,
+                dtype=np.uint8
+            )
+            
+            # 4. Check for synthetic fill (if raw yield has no pixels but county/subcounty grows it)
+            # We check if there are non-zero values inside the boundary mask
+            masked_y = y_data * boundary_mask
             is_synthetic = False
-            if y_data.max() <= 0.0 and not has_zero_area:
-                # Synthetic fill for counties that grow the crop but lack SPAM pixels
+            if masked_y.max() <= 0.0 and not has_zero_area:
                 is_synthetic = True
                 fill_val = (base_yield * 1000.0) if (base_yield and base_yield > 0.0) else 1500.0
-                county_mask = rasterize(
-                    [(geom, 1) for geom in shapes_crs.geometry],
-                    out_shape=y_data.shape,
-                    transform=y_transform,
-                    fill=0,
-                    dtype=np.uint8
-                )
-                y_data[county_mask == 1] = fill_val
-
-            # Apply harvested-area mask: only keep pixels where crop is actually grown
+                y_data[boundary_mask == 1] = fill_val
+            
+            # 5. Apply harvested area mask
             if h_path.exists() and not is_synthetic:
-                with rasterio.open(h_path) as h_src:
-                    h_nodata = h_src.nodata if h_src.nodata is not None else -1
-                    h_clipped, _ = mask(h_src, shapes, crop=True, nodata=h_nodata)
-                    h_data = h_clipped[0].astype(np.float32)
-                    no_crop = (h_data <= 0.0001) | (h_data == h_nodata)
-                    y_data[no_crop] = 0.0
-
-            # ── Apply Dynamic Yield Scaling (XGBoost Ratio) ──
+                no_crop = (h_data <= 0.0001)
+                y_data[no_crop] = 0.0
+                
+            # 6. Apply dynamic yield scaling (XGBoost Ratio)
             if predicted_yield is not None and base_yield is not None and base_yield > 0.0:
                 scale_factor = predicted_yield / base_yield
-                # Limit scale factor to a reasonable range [0.1, 5.0] to prevent extreme artifacts
                 scale_factor = max(0.1, min(5.0, scale_factor))
                 y_data = y_data * scale_factor
-
-            # ── Apply Official Stats Mask ──
+                
+            # 7. Apply official stats zero masking
             if has_zero_area:
-                # Officially not grown here, zero out the whole map
                 y_data.fill(0.0)
             elif is_national and zero_counties:
-                # Zero out any county that does not grow this crop
                 zero_gdf = gdf[gdf["shapeName"].str.lower().isin([c.lower() for c in zero_counties])]
                 if not zero_gdf.empty:
                     zero_mask = rasterize(
                         [(geom, 1) for geom in zero_gdf.to_crs(y_src.crs).geometry],
-                        out_shape=y_data.shape,
-                        transform=y_transform,
+                        out_shape=(out_h, out_w),
+                        transform=out_transform,
                         fill=0,
                         dtype=np.uint8
                     )
                     y_data[zero_mask == 1] = 0.0
-
-            # Clean up remaining nodata / negatives
-            y_data[y_data < 0] = 0.0
-            y_data[y_data == y_nodata] = 0.0
-
-            out_band = y_data[np.newaxis, ...]  # restore band dimension
-
-            # Resample to ~0.1 km (~0.000833 deg) if source is coarser
-            TARGET_RES = 0.000833333
-            current_res = y_src.res[0]
-            if current_res > TARGET_RES * 1.5:
-                h, w = out_band.shape[1], out_band.shape[2]
-                scale = current_res / TARGET_RES
-                new_h = max(1, int(round(h * scale)))
-                new_w = max(1, int(round(w * scale)))
-                new_transform = rasterio.transform.from_bounds(
-                    *rasterio.transform.array_bounds(h, w, y_transform),
-                    new_w, new_h
-                )
-                resampled = np.zeros((1, new_h, new_w), dtype=np.float32)
-                reproject(
-                    source=out_band, destination=resampled,
-                    src_transform=y_transform, src_crs=y_src.crs,
-                    dst_transform=new_transform, dst_crs=y_src.crs,
-                    resampling=Resampling.bilinear,
-                )
-                out_band = resampled
-                y_transform = new_transform
-
-            # Clean up remaining nodata / negatives and low-yield noise (post-resampling)
+                    
+            # 8. Clean up low-yield noise and re-apply strict boundary clip
             min_yield = 200.0 if crop.lower() == "potatoes" else 50.0
-            out_band[out_band < min_yield] = 0.0
-            out_band[out_band == y_nodata] = 0.0
-
-            # Re-clip to exact boundary polygon to prevent bilinear bleeding/out-of-boundary artifacts
-            boundary_mask = rasterize(
-                [(geom, 1) for geom in shapes_crs.geometry],
-                out_shape=(out_band.shape[1], out_band.shape[2]),
-                transform=y_transform,
-                fill=0,
-                dtype=np.uint8
-            )
-            out_band[0] = out_band[0] * boundary_mask
-
-
+            y_data[y_data < min_yield] = 0.0
+            y_data = y_data * boundary_mask
+            
+            out_band = y_data[np.newaxis, ...]
+            y_transform = out_transform
+            
             out_meta = y_src.meta.copy()
             out_meta.update({
                 "driver": "GTiff",

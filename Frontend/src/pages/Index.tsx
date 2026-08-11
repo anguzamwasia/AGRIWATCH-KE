@@ -422,6 +422,7 @@ const Index = () => {
                     crop={selectedCrop}
                     onCountySelect={(county) => {
                       setSelectedCounty(county);
+                      setSelectedSubcounty("");
                       setActiveTab("map");
                     }}
                   />
