@@ -269,8 +269,8 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "", 
             maxx += buffer
             maxy += buffer
             
-            # Setup 0.1 km grid coordinates (~0.000833 deg)
-            TARGET_RES = 0.000833333
+            # Setup grid coordinates (1km resolution for national map, 0.1km for county/subcounty map)
+            TARGET_RES = 0.008333333 if is_national else 0.000833333
             out_w = max(1, int(round((maxx - minx) / TARGET_RES)))
             out_h = max(1, int(round((maxy - miny) / TARGET_RES)))
             out_transform = rasterio.transform.from_bounds(minx, miny, maxx, maxy, out_w, out_h)
