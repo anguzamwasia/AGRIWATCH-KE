@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from "../config";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
   ResponsiveContainer, AreaChart, Area
@@ -8,7 +11,8 @@ import {
 import { 
   Satellite, CloudRain, Thermometer, 
   Layers, Map as MapIcon, Loader2,
-  FlaskConical, Droplets, Info
+  FlaskConical, Droplets, Info,
+  Brain, Cpu, CheckCircle2, RefreshCw, AlertCircle, Database
 } from "lucide-react";
 import { SoilMap } from "@/components/SoilMap";
 
@@ -42,6 +46,56 @@ export const PredictorDeepDive = ({
 }: PredictorDeepDiveProps) => {
 
   const [activeMapLayer, setActiveMapLayer] = useState<'osm' | 'satellite' | 'pixel' | 'lulc'>('osm');
+  
+  // Model retraining states
+  interface ModelMetrics {
+    mae: number;
+    rmse: number;
+    total_observations: number;
+    real_observations: number;
+    features_count: number;
+    last_trained: string;
+    status?: string;
+  }
+
+  const [metrics, setMetrics] = useState<ModelMetrics | null>(null);
+  const [retraining, setRetraining] = useState(false);
+  const [retrainSuccess, setRetrainSuccess] = useState(false);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
+
+  const fetchModelStatus = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/model/status`);
+      setMetrics(res.data);
+    } catch (err) {
+      console.error("Error fetching model status:", err);
+      setMetricsError("Failed to fetch model learning status.");
+    }
+  };
+
+  useEffect(() => {
+    fetchModelStatus();
+  }, []);
+
+  const handleRetrain = async () => {
+    setRetraining(true);
+    setRetrainSuccess(false);
+    setMetricsError(null);
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/model/retrain`);
+      if (res.data.status === "success") {
+        setMetrics(res.data.metrics);
+        setRetrainSuccess(true);
+      } else {
+        setMetricsError("Training failed. Please check backend logs.");
+      }
+    } catch (err) {
+      console.error("Retraining error:", err);
+      setMetricsError("Failed to retrain the XGBoost model.");
+    } finally {
+      setRetraining(false);
+    }
+  };
   
   const hasMonthlyData = monthlyData && monthlyData.length > 0;
   const hasSoilData = !!soilData;
@@ -265,6 +319,85 @@ export const PredictorDeepDive = ({
 
             </CardContent>
           </Card>
+
+          {/* GeoAI Model Retraining / Active Learning Panel */}
+          <Card className="border border-slate-800 shadow-2xl overflow-hidden bg-slate-900 rounded-[2rem]">
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-purple-500 text-white rounded-xl">
+                  <Brain className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-black text-slate-100 tracking-tight">Active Learning Engine</CardTitle>
+                  <p className="text-[10px] text-purple-400 font-bold uppercase tracking-widest text-left">Self-Retraining Model Status</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-[11px] text-slate-400 leading-relaxed text-left">
+                AgriWatch's GeoAI model retrains itself dynamically as new predictor inputs (NDVI, soil moisture, rainfall anomalies) are registered. Only future projections (2026+) update; historical AFA ground-truth is preserved as verified fact.
+              </p>
+
+              {metricsError && (
+                <div className="p-3 bg-red-950/40 border border-red-800 rounded-xl text-red-400 text-xs flex gap-2 items-center">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                  <span>{metricsError}</span>
+                </div>
+              )}
+
+              {retrainSuccess && (
+                <div className="p-3 bg-emerald-950/40 border border-emerald-800 rounded-xl text-emerald-400 text-xs flex gap-2 items-center">
+                  <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                  <span>Model retrained and weights updated!</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800 text-left">
+                  <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block">Mean Abs. Error (MAE)</span>
+                  <span className="text-lg font-black text-purple-400">{metrics?.mae ? `${metrics.mae.toFixed(3)} t/ha` : "---"}</span>
+                </div>
+                <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800 text-left">
+                  <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block">RMSE Deviation</span>
+                  <span className="text-lg font-black text-blue-400">{metrics?.rmse ? `${metrics.rmse.toFixed(3)} t/ha` : "---"}</span>
+                </div>
+                <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800 col-span-2 flex justify-between items-center px-3">
+                  <div className="text-left">
+                    <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block">Training Size</span>
+                    <span className="text-xs font-bold text-slate-300">{metrics?.total_observations || 0} total records</span>
+                  </div>
+                  <Badge className="bg-slate-800 text-slate-400 hover:bg-slate-800 text-[8px] font-black">
+                    {metrics?.real_observations || 0} AFA TRUTH
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center pt-2">
+                <span className="text-[9px] font-bold text-slate-500">
+                  Last: {metrics?.last_trained ? new Date(metrics.last_trained).toLocaleTimeString() : "Pending"}
+                </span>
+                <Button 
+                  size="sm" 
+                  disabled={retraining} 
+                  onClick={handleRetrain}
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-bold gap-2 text-xs py-1.5 px-3 rounded-xl"
+                >
+                  {retraining ? (
+                    <>
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Fitting trees...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-3 w-3" />
+                      Retrain model
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
         </div>
       </div>
     </div>

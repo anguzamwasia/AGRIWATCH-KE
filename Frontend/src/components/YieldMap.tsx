@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, ImageOverlay, useMap, GeoJSON, ZoomControl } f
 
 import { API_BASE_URL } from "../config";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { LatLngBoundsExpression } from "leaflet";
 import { Activity, Layers, Info } from "lucide-react";
@@ -19,6 +19,7 @@ interface YieldMapProps {
   year: number;
   layer: "osm" | "satellite" | "pixel" | "lulc";
   lulcMapPath?: string;
+  predictedYield?: number;
 }
 
 import countyGeometryData from "@/data/county_geometry.json";
@@ -133,13 +134,12 @@ const GeoTiffLayerComponent = ({ url, opacity, crop }: { url: string; opacity: n
           opacity,
           pixelValuesToColorFn: (values: number[]) => {
             const v = values[0];
-            if (!v || v <= 0 || v === noData || !isFinite(v)) return null;
+            if (!v || v < 10.0 || v === noData || !isFinite(v)) return null;
             if (v < thresholds.lo) return "#ef4444";   // Low - Red
             if (v < thresholds.hi) return "#f59e0b";   // Mid - Orange
             return "#10b981";                           // High - Green
           },
           resolution: 64,
-
         });
 
         // Set custom properties to ensure safe, minification-proof removal
@@ -195,7 +195,7 @@ const GeoTiffLayerComponent = ({ url, opacity, crop }: { url: string; opacity: n
 };
 
 // --- YieldMap -----------------------------------------------------------------
-export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath }: YieldMapProps) => {
+export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, predictedYield }: YieldMapProps) => {
   const [opacity, setOpacity] = useState(0.85);
   const [exactBounds, setExactBounds] = useState<any>(null);
   const [boundaryGeojson, setBoundaryGeojson] = useState<any>(null);
@@ -210,13 +210,19 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath }: 
   const displayBounds = exactBounds || fallbackGeo?.bounds;
 
   // Append timestamp parameter to bypass browser disk cache completely
-  const tifUrl =
-    `${API_BASE_URL}/api/yield-tif` +
-    `?county=${encodeURIComponent(county)}` +
-    `&year=${year}` +
-    `&subcounty=${encodeURIComponent(subcounty)}` +
-    `&crop=${encodeURIComponent(crop)}` +
-    `&_t=${Date.now()}`;
+  // Wrapped in useMemo to prevent race conditions on every single re-render
+  const tifUrl = useMemo(() => {
+    let url = `${API_BASE_URL}/api/yield-tif` +
+      `?county=${encodeURIComponent(county)}` +
+      `&year=${year}` +
+      `&subcounty=${encodeURIComponent(subcounty)}` +
+      `&crop=${encodeURIComponent(crop)}` +
+      `&_t=${Date.now()}`;
+    if (predictedYield !== undefined) {
+      url += `&predicted_yield=${predictedYield}`;
+    }
+    return url;
+  }, [county, subcounty, year, crop, predictedYield]);
 
   const getTileUrl = () => {
     switch (layer) {
@@ -237,6 +243,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath }: 
   return (
     <Card className="relative h-full w-full overflow-hidden shadow-soft min-h-[600px] border-none group">
       <MapContainer
+        key={`${county}-${subcounty}-${crop}-${year}-${layer}`}
         center={[-0.0236, 37.9062]} zoom={6}
         style={{ height: "100%", width: "100%", background: "#f8f9fa" }}
         zoomControl={false}

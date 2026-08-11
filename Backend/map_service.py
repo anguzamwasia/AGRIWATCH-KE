@@ -109,18 +109,68 @@ def _soil_map_from_gee(target_gdf, ax, display_name, year):
         logger.warning(f"GEE soil fallback failed: {e}")
         return False
 
-def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") -> str:
+_afa_data = None
+
+def _does_county_grow_crop(county: str, crop: str) -> bool:
+    """
+    Determines if a county actually cultivates a crop above a 10 ha threshold.
+    - If the crop has official AFA stats, checks if county is in AFA dataset with >= 10 ha average.
+    - Otherwise, checks baseline statistics in base_crops_stats.json.
+    """
+    global _afa_data
+    c_name = county.strip()
+    cr_name = crop.strip().capitalize()
+    
+    # 1. Check AFA CSV first
+    afa_file = Path(__file__).parent / "data" / "afa_official_stats.csv"
+    if afa_file.exists():
+        try:
+            import pandas as pd
+            if _afa_data is None:
+                _afa_data = pd.read_csv(afa_file)
+            
+            crop_rows = _afa_data[_afa_data['crop'].str.lower() == cr_name.lower()]
+            if not crop_rows.empty:
+                county_rows = crop_rows[crop_rows['county'].str.lower() == c_name.lower()]
+                if not county_rows.empty:
+                    return county_rows['area_ha'].mean() >= 10.0
+                # If the crop is in AFA but this county isn't, fall through to baseline check
+        except Exception:
+            pass
+
+    # 2. Check base_crops_stats.json fallback
+    stats_file = Path(__file__).parent.parent / "Frontend" / "src" / "data" / "base_crops_stats.json"
+    if stats_file.exists():
+        try:
+            with open(stats_file, 'r', encoding='utf-8') as f:
+                stats = json.load(f)
+            c_data = stats.get("counties", {}).get(county, {})
+            tot_area = 0
+            for s, s_data in c_data.get("subcounties", {}).items():
+                tot_area += s_data.get(cr_name, {}).get("area_harvested_ha", 0)
+            return tot_area >= 10.0
+        except Exception:
+            pass
+
+    return True
+
+def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "", predicted_yield: float = None, base_yield: float = None) -> str:
     """
     Generates a clipped, 0.1km-resolution yield TIF for georaster client rendering.
     Uses SPAM yield (kg/ha) masked by harvested-area presence AND official county stats.
     Counties or subcounties that do not officially grow the crop will show as completely blank.
     """
+    # Normalize subcounty parameter
+    if subcounty:
+        s_clean = subcounty.strip().lower()
+        if s_clean in ["", "select subcounty", "entire county", "entire-county", "select_subcounty", "select_sub_county"]:
+            subcounty = ""
+
     from rasterio.enums import Resampling
     from rasterio.warp import reproject
     from rasterio.features import rasterize
 
     data_dir = Path(__file__).parent / "data"
-
 
     # Dynamic resolution: use raw if available (dev machine), otherwise processed fallback (Render)
     CROP_PREFIXES = {
@@ -156,10 +206,6 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
 
     # Standardize crop name to match stats keys
     title_crop = crop.capitalize()
-    if title_crop == "Pigeonpeas":
-        title_crop = "Pigeonpeas"
-    elif title_crop == "Potatoes":
-        title_crop = "Potatoes"
 
     # Resolve target geography
     gdf = _get_kenya_raw_gdf()
@@ -171,17 +217,15 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
 
     if stats_data:
         if is_national:
-            for c_name, c_data in stats_data.get("counties", {}).items():
-                crop_sum = c_data.get("county_summary", {}).get(title_crop, {})
-                if crop_sum.get("area_harvested_ha", 0) == 0:
+            for c_name in stats_data.get("counties", {}).keys():
+                if not _does_county_grow_crop(c_name, title_crop):
                     zero_counties.append(c_name)
         elif subcounty and subcounty not in ["", "Select subcounty"]:
             crop_sum = stats_data.get("counties", {}).get(county, {}).get("subcounties", {}).get(subcounty, {}).get(title_crop, {})
-            if crop_sum.get("area_harvested_ha", 0) == 0:
+            if crop_sum.get("area_harvested_ha", 0) < 1.0:
                 has_zero_area = True
         else:
-            crop_sum = stats_data.get("counties", {}).get(county, {}).get("county_summary", {}).get(title_crop, {})
-            if crop_sum.get("area_harvested_ha", 0) == 0:
+            if not _does_county_grow_crop(county, title_crop):
                 has_zero_area = True
 
     if is_national:
@@ -210,7 +254,6 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
     if out_path.exists():
         return filename
 
-
     try:
         with rasterio.open(y_path) as y_src:
             y_nodata = y_src.nodata if y_src.nodata is not None else -1
@@ -221,14 +264,35 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
             y_clipped, y_transform = mask(y_src, shapes, crop=True, nodata=y_nodata)
             y_data = y_clipped[0].astype(np.float32)
 
+            is_synthetic = False
+            if y_data.max() <= 0.0 and not has_zero_area:
+                # Synthetic fill for counties that grow the crop but lack SPAM pixels
+                is_synthetic = True
+                fill_val = (base_yield * 1000.0) if (base_yield and base_yield > 0.0) else 1500.0
+                county_mask = rasterize(
+                    [(geom, 1) for geom in shapes_crs.geometry],
+                    out_shape=y_data.shape,
+                    transform=y_transform,
+                    fill=0,
+                    dtype=np.uint8
+                )
+                y_data[county_mask == 1] = fill_val
+
             # Apply harvested-area mask: only keep pixels where crop is actually grown
-            if h_path.exists():
+            if h_path.exists() and not is_synthetic:
                 with rasterio.open(h_path) as h_src:
                     h_nodata = h_src.nodata if h_src.nodata is not None else -1
                     h_clipped, _ = mask(h_src, shapes, crop=True, nodata=h_nodata)
                     h_data = h_clipped[0].astype(np.float32)
-                    no_crop = (h_data < 0.1) | (h_data == h_nodata)
+                    no_crop = (h_data <= 0.0001) | (h_data == h_nodata)
                     y_data[no_crop] = 0.0
+
+            # ── Apply Dynamic Yield Scaling (XGBoost Ratio) ──
+            if predicted_yield is not None and base_yield is not None and base_yield > 0.0:
+                scale_factor = predicted_yield / base_yield
+                # Limit scale factor to a reasonable range [0.1, 5.0] to prevent extreme artifacts
+                scale_factor = max(0.1, min(5.0, scale_factor))
+                y_data = y_data * scale_factor
 
             # ── Apply Official Stats Mask ──
             if has_zero_area:
@@ -245,6 +309,8 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "") 
                         fill=0,
                         dtype=np.uint8
                     )
+                    y_data[zero_mask == 1] = 0.0
+
             # Clean up remaining nodata / negatives
             y_data[y_data < 0] = 0.0
             y_data[y_data == y_nodata] = 0.0

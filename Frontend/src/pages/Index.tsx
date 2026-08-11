@@ -15,7 +15,9 @@ import { PredictorDeepDive } from "@/components/PredictorDeepDive";
 import PhenologyAnalysis from "@/components/PhenologyAnalysis";
 import LandingPage from "@/components/LandingPage";
 import { DataChatbot } from "@/components/DataChatbot";
-import { motion } from "framer-motion";
+import { NationalTriageMap } from "@/components/NationalTriageMap";
+import { ActionTriggerCard } from "@/components/ActionTriggerCard";
+import { motion, AnimatePresence } from "framer-motion";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -36,7 +38,8 @@ import {
   TrendingUp,
   Maximize,
   Layers,
-  MessageSquare
+  MessageSquare,
+  ShieldAlert
 } from "lucide-react";
 
 const Index = () => {
@@ -48,6 +51,8 @@ const Index = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [mapLayer, setMapLayer] = useState<'osm' | 'satellite' | 'pixel'>('osm');
   const [isReportGenerating, setIsReportGenerating] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("map");
+  const [showAlertPanel, setShowAlertPanel] = useState(false);
   
   const [apiData, setApiData] = useState<any>(null);
   const [trendData, setTrendData] = useState<any[]>([]);
@@ -254,19 +259,20 @@ const Index = () => {
             {isLoading && <div className="p-4 bg-emerald-900/20 border border-emerald-800 rounded-xl flex items-center gap-3 text-emerald-400 mb-6"><div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-400" /><p className="text-sm font-bold uppercase">Running GeoAI Models...</p></div>}
             {error && <div className="p-4 bg-red-900/20 border border-red-800 rounded-xl flex items-center gap-3 text-red-400 mb-6"><AlertCircle className="h-5 w-5" /><p className="text-sm font-bold uppercase">{error}</p></div>}
 
-            <Tabs defaultValue="map" className="w-full">
-              <TabsList className="grid w-full grid-cols-6 mb-6 bg-slate-900/50 p-1 shadow-2xl border border-slate-800 rounded-2xl backdrop-blur-xl">
-                <TabsTrigger value="map" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><MapIcon className="w-4 h-4 mr-2" /> Map</TabsTrigger>
-                <TabsTrigger value="predictors" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><Activity className="w-4 h-4 mr-2" /> Predictors</TabsTrigger>
-                <TabsTrigger value="phenology" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><Sprout className="w-4 h-4 mr-2" /> Growth</TabsTrigger>
-                <TabsTrigger value="charts" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ChartIcon className="w-4 h-4 mr-2" /> Trends</TabsTrigger>
-                <TabsTrigger value="report" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ClipboardCheck className="w-4 h-4 mr-2" /> Report</TabsTrigger>
-                <TabsTrigger value="chatbot" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><MessageSquare className="w-4 h-4 mr-2" /> Advisor</TabsTrigger>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-7 mb-6 bg-slate-900/50 p-1 shadow-2xl border border-slate-800 rounded-2xl backdrop-blur-xl">
+                <TabsTrigger value="map" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><MapIcon className="w-4 h-4 mr-1" /> Map</TabsTrigger>
+                <TabsTrigger value="predictors" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><Activity className="w-4 h-4 mr-1" /> Predictors</TabsTrigger>
+                <TabsTrigger value="phenology" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><Sprout className="w-4 h-4 mr-1" /> Growth</TabsTrigger>
+                <TabsTrigger value="charts" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ChartIcon className="w-4 h-4 mr-1" /> Trends</TabsTrigger>
+                <TabsTrigger value="report" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ClipboardCheck className="w-4 h-4 mr-1" /> Report</TabsTrigger>
+                <TabsTrigger value="triage" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-red-700 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ShieldAlert className="w-4 h-4 mr-1" /> Risk Alerts</TabsTrigger>
+                <TabsTrigger value="chatbot" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><MessageSquare className="w-4 h-4 mr-1" /> Advisor</TabsTrigger>
               </TabsList>
 
               <TabsContent value="map">
                 <Card className="border-slate-800 shadow-2xl overflow-hidden rounded-[2.5rem] bg-slate-900 h-[650px] relative">
-                  <YieldMap crop={selectedCrop} county={selectedCounty} subcounty={selectedSubcounty} year={selectedYear} layer={mapLayer} lulcMapPath={predictorData?.lulcMapPath || ""} />
+                  <YieldMap crop={selectedCrop} county={selectedCounty} subcounty={selectedSubcounty} year={selectedYear} layer={mapLayer} lulcMapPath={predictorData?.lulcMapPath || ""} predictedYield={apiData?.cards?.predicted_yield} />
                 </Card>
               </TabsContent>
 
@@ -373,18 +379,51 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="report">
-                <Card className="print-wrapper print-only p-8 border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900">
-                  <ReportGenerator 
-                    county={selectedCounty} 
-                    subcounty={selectedSubcounty} 
-                    year={selectedYear} 
+                <div className="space-y-6">
+                  {/* Action Trigger Card — decision maker layer */}
+                  {apiData?.cards && (
+                    <Card className="border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900 p-6 md:p-8">
+                      <ActionTriggerCard
+                        county={selectedCounty}
+                        crop={selectedCrop}
+                        year={selectedYear}
+                        predictedYield={parseFloat(String(apiData.cards.predicted_yield || 0))}
+                        historicalMean={(() => {
+                          const hist = trendData.filter((d: any) => d.year >= 2017 && d.year <= 2025);
+                          if (hist.length === 0) return parseFloat(String(apiData.cards.predicted_yield || 0));
+                          const avg = hist.reduce((s: number, d: any) => s + (d.yield_tha || 0), 0) / hist.length;
+                          return avg;
+                        })()}
+                      />
+                    </Card>
+                  )}
+                  {/* Full Yield Report */}
+                  <Card className="print-wrapper print-only p-8 border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900">
+                    <ReportGenerator 
+                      county={selectedCounty} 
+                      subcounty={selectedSubcounty} 
+                      year={selectedYear} 
+                      crop={selectedCrop}
+                      yieldData={apiData?.cards} 
+                      trendData={trendData}
+                      predictorData={predictorData}
+                      phenologyData={phenologyData}
+                      onDownload={handleDownloadReport}
+                      isGenerating={isReportGenerating}
+                    />
+                  </Card>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="triage">
+                <Card className="border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900 p-6 md:p-8">
+                  <NationalTriageMap
+                    year={selectedYear}
                     crop={selectedCrop}
-                    yieldData={apiData?.cards} 
-                    trendData={trendData}
-                    predictorData={predictorData}
-                    phenologyData={phenologyData}
-                    onDownload={handleDownloadReport}
-                    isGenerating={isReportGenerating}
+                    onCountySelect={(county) => {
+                      setSelectedCounty(county);
+                      setActiveTab("map");
+                    }}
                   />
                 </Card>
               </TabsContent>
