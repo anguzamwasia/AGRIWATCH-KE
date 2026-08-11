@@ -71,7 +71,7 @@ const MapController = ({
 };
 
 // --- GeoTiffLayerComponent ----------------------------------------------------
-const GeoTiffLayerComponent = ({ url, opacity, crop }: { url: string; opacity: number; crop: string }) => {
+const GeoTiffLayerComponent = ({ url, opacity, crop, onStatsLoaded }: { url: string; opacity: number; crop: string; onStatsLoaded: (stats: { min: number; max: number }) => void }) => {
   const map = useMap();
   const layerRef = useRef<any>(null);
 
@@ -127,7 +127,22 @@ const GeoTiffLayerComponent = ({ url, opacity, crop }: { url: string; opacity: n
         });
 
         const noData = georaster.noDataValue ?? 0;
-        const thresholds = CROP_THRESHOLDS[crop] ?? { lo: 1000, hi: 2000 };
+        // Calculate dynamic relative thresholds based on the actual min/max of the raster
+        const minVal = georaster.mins?.[0] ?? 0;
+        const maxVal = georaster.maxs?.[0] ?? 0;
+        const range = maxVal - minVal;
+        
+        onStatsLoaded({ min: minVal, max: maxVal });
+        
+        const cropThresholds = CROP_THRESHOLDS[crop] ?? { lo: 1000, hi: 2000 };
+        let lo = cropThresholds.lo;
+        let hi = cropThresholds.hi;
+        
+        // If there's spatial variation, use relative styling to show yield zones
+        if (range > 10.0) {
+          lo = minVal + range * 0.33;
+          hi = minVal + range * 0.67;
+        }
 
         const gl = new GeoRasterLayer({
           georaster,
@@ -135,9 +150,9 @@ const GeoTiffLayerComponent = ({ url, opacity, crop }: { url: string; opacity: n
           pixelValuesToColorFn: (values: number[]) => {
             const v = values[0];
             if (!v || v < 10.0 || v === noData || !isFinite(v)) return null;
-            if (v < thresholds.lo) return "#ef4444";   // Low - Red
-            if (v < thresholds.hi) return "#f59e0b";   // Mid - Orange
-            return "#10b981";                           // High - Green
+            if (v < lo) return "#ef4444";   // Low - Red
+            if (v < hi) return "#f59e0b";   // Mid - Orange
+            return "#10b981";                // High - Green
           },
           resolution: 64,
         });
@@ -197,14 +212,14 @@ const GeoTiffLayerComponent = ({ url, opacity, crop }: { url: string; opacity: n
 // --- YieldMap -----------------------------------------------------------------
 export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, predictedYield }: YieldMapProps) => {
   const [opacity, setOpacity] = useState(0.85);
-  const [exactBounds, setExactBounds] = useState<any>(null);
-  const [boundaryGeojson, setBoundaryGeojson] = useState<any>(null);
+  const [rasterStats, setRasterStats] = useState<{ min: number; max: number } | null>(null);
 
   // Reset boundary state whenever selection changes
   useEffect(() => {
     setExactBounds(null);
     setBoundaryGeojson(null);
-  }, [county, subcounty]);
+    setRasterStats(null);
+  }, [county, subcounty, crop, year]);
 
   const fallbackGeo = COUNTY_GEOMETRY[county] || COUNTY_GEOMETRY["Kenya"];
   const displayBounds = exactBounds || fallbackGeo?.bounds;
@@ -236,9 +251,24 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
   };
 
   const geojsonKey = `bnd-${county}-${subcounty}-${boundaryGeojson ? "ok" : "none"}`;
-  const { lo, hi } = CROP_THRESHOLDS[crop] ?? { lo: 0, hi: 0 };
+  
+  const { lo, hi } = useMemo(() => {
+    const cropThresholds = CROP_THRESHOLDS[crop] ?? { lo: 1000, hi: 2000 };
+    if (rasterStats) {
+      const range = rasterStats.max - rasterStats.min;
+      if (range > 10.0) {
+        return {
+          lo: rasterStats.min + range * 0.33,
+          hi: rasterStats.min + range * 0.67,
+        };
+      }
+    }
+    return cropThresholds;
+  }, [crop, rasterStats]);
+
   const loLabel = lo >= 1000 ? `< ${(lo/1000).toFixed(1)} t/ha` : `< ${lo} kg/ha`;
   const hiLabel = hi >= 1000 ? `> ${(hi/1000).toFixed(1)} t/ha` : `> ${hi} kg/ha`;
+  const midLabel = `${lo >= 1000 ? (lo/1000).toFixed(1) : lo} - ${hi >= 1000 ? (hi/1000).toFixed(1) : hi} ${lo >= 1000 ? "t/ha" : "kg/ha"}`;
 
   return (
     <Card className="relative h-full w-full overflow-hidden shadow-soft min-h-[600px] border-none group">
@@ -253,7 +283,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
 
 
         {layer === "pixel" && (
-          <GeoTiffLayerComponent url={tifUrl} opacity={opacity} crop={crop} />
+          <GeoTiffLayerComponent url={tifUrl} opacity={opacity} crop={crop} onStatsLoaded={setRasterStats} />
         )}
 
         {layer === "lulc" && lulcMapPath && displayBounds && (
@@ -331,7 +361,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: "#f59e0b", boxShadow: "0 0 8px rgba(245,158,11,0.5)" }} />
-              <span className="text-[10px] font-bold text-slate-300">Average yield</span>
+              <span className="text-[10px] font-bold text-slate-300">Average – {midLabel}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: "#ef4444", boxShadow: "0 0 8px rgba(239,68,68,0.5)" }} />
