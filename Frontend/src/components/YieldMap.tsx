@@ -213,6 +213,8 @@ const GeoTiffLayerComponent = ({ url, opacity, crop, onStatsLoaded }: { url: str
 export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, predictedYield }: YieldMapProps) => {
   const [opacity, setOpacity] = useState(0.85);
   const [rasterStats, setRasterStats] = useState<{ min: number; max: number } | null>(null);
+  const [exactBounds, setExactBounds] = useState<any>(null);
+  const [boundaryGeojson, setBoundaryGeojson] = useState<any>(null);
 
   // Reset boundary state whenever selection changes
   useEffect(() => {
