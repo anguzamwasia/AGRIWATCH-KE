@@ -64,16 +64,26 @@ export const ReportGenerator = ({
     const actionText = isPred ? 'is forecasted to stand at' : 'stood at';
     const yieldText = isPred ? 'is predicting' : 'recorded';
     
-    let zoneDesc = "a critical agricultural zone";
+    const asalCounties = [
+      "Turkana", "Marsabit", "Mandera", "Wajir", "Garissa", 
+      "Isiolo", "Samburu", "Tana River", "Kajiado", "West Pokot", 
+      "Baringo", "Kitui", "Makueni", "Lamu"
+    ];
+    
+    const highPotentialCounties = [
+      "Trans Nzoia", "Uasin Gishu", "Nandi", "Nakuru", "Kakamega", 
+      "Bungoma", "Meru", "Kirinyaga", "Bomet", "Kericho", "Nyeri", 
+      "Kiambu", "Murang'a", "Embu", "Nyandarua", "Kisii", "Nyamira", 
+      "Vihiga"
+    ];
+
+    let zoneDesc = "a medium-potential agricultural zone supporting mixed crop-livestock farming";
     if (county === "Kenya") {
       zoneDesc = "the national agricultural baseline, with agriculture contributing approximately 33% of Kenya's GDP";
-    }
- else if (predicted < 1.5) {
-      zoneDesc = "a marginal or arid agricultural zone";
-    } else if (predicted < 3.5) {
-      zoneDesc = "a moderate agricultural zone";
-    } else {
-      zoneDesc = "a high-potential agricultural zone";
+    } else if (highPotentialCounties.includes(county)) {
+      zoneDesc = "a high-potential agricultural highland zone characterized by fertile soils and favorable rainfall";
+    } else if (asalCounties.includes(county)) {
+      zoneDesc = "a semi-arid or marginal agricultural zone (ASAL) vulnerable to seasonal rainfall variability";
     }
     
     return `${loc} serves as ${zoneDesc}. ${yearText}, the total cultivation area for ${crop} ${actionText} ${area > 0 ? Math.round(area).toLocaleString() : '0'} hectares. Based on the geographic and climatic profile, the system ${yieldText} an average crop yield of ${predicted > 0 ? predicted.toFixed(2) : '0.00'} tonnes per hectare, resulting in a cumulative production volume of ${production > 0 ? (production/1000).toFixed(1) : '0.0'} thousand metric tonnes. Local environmental conditions reflect an annual rainfall aggregation of ${rainfall > 0 ? Math.round(rainfall) : '0'} mm and an average temperature of ${temperature > 0 ? temperature.toFixed(1) : '0.0'}°C.`;
