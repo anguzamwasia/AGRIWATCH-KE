@@ -99,6 +99,14 @@ const TRIGGERS = [
   },
 ];
 
+// Crop-specific trigger thresholds in deviation % (reflecting agronomic drought tolerance)
+const CROP_TRIGGER_THRESHOLDS: Record<string, { critical: number; alert: number; watch: number }> = {
+  Maize:      { critical: -20, alert: -15, watch: -8 },
+  Wheat:      { critical: -25, alert: -18, watch: -10 },
+  Potatoes:   { critical: -30, alert: -20, watch: -12 },
+  Pigeonpeas: { critical: -40, alert: -30, watch: -15 },
+};
+
 export const ActionTriggerCard = ({
   county,
   crop,
@@ -114,14 +122,36 @@ export const ActionTriggerCard = ({
       ? ((predictedYield - historicalMean) / historicalMean) * 100
       : 0;
 
+  const thresh = CROP_TRIGGER_THRESHOLDS[crop] ?? CROP_TRIGGER_THRESHOLDS.Maize;
+
+  // Build dynamic trigger reference list with crop-specific thresholds
+  const dynamicTriggers = [
+    {
+      ...TRIGGERS[0],
+      range: `≤ ${thresh.critical}%`,
+    },
+    {
+      ...TRIGGERS[1],
+      range: `${thresh.alert}% to ${thresh.critical}%`,
+    },
+    {
+      ...TRIGGERS[2],
+      range: `${thresh.watch}% to ${thresh.alert}%`,
+    },
+    {
+      ...TRIGGERS[3],
+      range: `Above ${thresh.watch}%`,
+    },
+  ];
+
   const activeTrigger =
-    deviation <= -35
-      ? TRIGGERS[0]
-      : deviation <= -25
-      ? TRIGGERS[1]
-      : deviation <= -10
-      ? TRIGGERS[2]
-      : TRIGGERS[3];
+    deviation <= thresh.critical
+      ? dynamicTriggers[0]
+      : deviation <= thresh.alert
+      ? dynamicTriggers[1]
+      : deviation <= thresh.watch
+      ? dynamicTriggers[2]
+      : dynamicTriggers[3];
 
   const ActiveIcon = activeTrigger.icon;
 
@@ -140,102 +170,100 @@ export const ActionTriggerCard = ({
       {/* Active Trigger Card */}
       <motion.div
         key={activeTrigger.key}
-        initial={{ opacity: 0, scale: 0.98 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.3 }}
       >
         <Card
-          className={`bg-gradient-to-br ${activeTrigger.bg} border ${activeTrigger.border} ${activeTrigger.glow}`}
+          className={`bg-gradient-to-br ${activeTrigger.bg} border ${activeTrigger.border} ${activeTrigger.glow} rounded-[2rem] overflow-hidden`}
         >
-          <CardContent className="p-6 space-y-5">
-            {/* Alert Level Header */}
-            <div className="flex items-start justify-between gap-4">
+          <CardContent className="p-6 md:p-8 space-y-6">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`relative p-2.5 rounded-xl border ${activeTrigger.border} bg-slate-900/60`}>
                   <ActiveIcon className={`h-6 w-6 ${activeTrigger.color}`} />
                   {activeTrigger.pulse && (
-                    <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping" />
+                    <span className="absolute top-0 right-0 flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                    </span>
                   )}
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className={`font-black text-sm px-3 py-1 ${activeTrigger.badgeCls}`}>
-                      {activeTrigger.label}
-                    </Badge>
-                    <span className="text-xs text-slate-500 font-bold">{activeTrigger.tier}</span>
-                  </div>
-                  <p className="text-sm text-slate-400 mt-1">{activeTrigger.sublabel}</p>
+                  <Badge variant="outline" className={`font-black text-sm px-3 py-1 ${activeTrigger.badgeCls}`}>
+                    {activeTrigger.label}
+                  </Badge>
+                  <p className="text-xs text-slate-400 mt-1">{activeTrigger.sublabel}</p>
                 </div>
               </div>
-
-              {/* Deviation Badge */}
-              <div className="text-right flex-shrink-0">
-                <div className="flex items-center justify-end gap-1">
-                  {deviation < 0 ? (
-                    <TrendingDown className="h-4 w-4 text-red-400" />
-                  ) : (
-                    <TrendingUp className="h-4 w-4 text-emerald-400" />
-                  )}
-                  <span
-                    className={`text-2xl font-black ${
-                      deviation <= -25 ? "text-red-400" : deviation <= -10 ? "text-yellow-400" : "text-emerald-400"
-                    }`}
-                  >
-                    {deviation > 0 ? "+" : ""}
-                    {deviation.toFixed(1)}%
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500">vs baseline</p>
+              <div className="text-right">
+                <span className="text-xs text-slate-500 font-bold">{activeTrigger.tier}</span>
+                <p className="text-lg font-black text-slate-200 mt-0.5">
+                  {deviation > 0 ? "+" : ""}
+                  {deviation.toFixed(1)}% Dev
+                </p>
               </div>
             </div>
 
-            {/* Yield Numbers */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className={`p-3 rounded-xl border ${activeTrigger.border} bg-slate-900/40`}>
-                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">AI Forecast</p>
-                <p className="text-xl font-black text-white mt-1">
-                  {predictedYield.toFixed(2)}
-                  <span className="text-xs text-slate-400 ml-1">t/ha</span>
+            {/* Deviation Context */}
+            <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/50 flex flex-col md:flex-row justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Predicted Yield
                 </p>
-                {year > 2025 && (
-                  <Badge variant="outline" className="text-[9px] mt-1 bg-purple-900/30 text-purple-300 border-purple-700">
-                    PREDICTED
-                  </Badge>
-                )}
+                <p className="text-xl font-black text-emerald-400 mt-0.5">
+                  {predictedYield.toFixed(2)} t/ha
+                </p>
               </div>
-              <div className="p-3 rounded-xl border border-slate-800 bg-slate-900/40">
-                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Hist. Baseline</p>
-                <p className="text-xl font-black text-slate-400 mt-1">
-                  {historicalMean.toFixed(2)}
-                  <span className="text-xs text-slate-500 ml-1">t/ha</span>
+              <div className="hidden md:block border-l border-slate-800" />
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Historical Baseline
                 </p>
-                <p className="text-[9px] text-slate-600 mt-1">AFA 5-year mean</p>
+                <p className="text-xl font-bold text-slate-300 mt-0.5">
+                  {historicalMean.toFixed(2)} t/ha
+                </p>
+              </div>
+              <div className="hidden md:block border-l border-slate-800" />
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Deviation Type
+                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  {deviation >= 0 ? (
+                    <TrendingUp className="h-4 w-4 text-emerald-400" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4 text-red-400" />
+                  )}
+                  <span className={`text-xs font-black uppercase ${deviation >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                    {deviation >= 0 ? "Surplus" : "Deficit"}
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* Recommended Actions */}
-            <div className="space-y-2">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400">
-                Recommended Government Actions
+            <div className="space-y-3">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                Triggered Actions
               </p>
               {activeTrigger.actions.map((action, i) => {
                 const ActionIcon = action.icon;
                 return (
-                  <motion.div
+                  <div
                     key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
                     className={`flex items-start gap-3 p-3 rounded-xl border ${activeTrigger.border} bg-slate-900/30`}
                   >
                     <div className={`mt-0.5 p-1.5 rounded-lg border ${activeTrigger.border} flex-shrink-0`}>
                       <ActionIcon className={`h-3.5 w-3.5 ${activeTrigger.color}`} />
                     </div>
-                    <div className="flex items-start gap-2">
+                    <div>
                       <span className={`text-xs font-black ${activeTrigger.color} flex-shrink-0`}>{i + 1}.</span>
-                      <p className="text-sm text-slate-300 leading-relaxed">{action.text}</p>
+                      <p className="text-xs text-slate-300 font-medium leading-relaxed inline ml-1">
+                        {action.text}
+                      </p>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
@@ -260,7 +288,7 @@ export const ActionTriggerCard = ({
           Trigger Threshold Reference
         </p>
         <div className="space-y-1.5">
-          {TRIGGERS.map((t) => {
+          {dynamicTriggers.map((t) => {
             const TIcon = t.icon;
             const isActive = t.key === activeTrigger.key;
             return (
