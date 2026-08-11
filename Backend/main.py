@@ -519,6 +519,14 @@ def _does_county_produce_crop(county: str, crop: str) -> bool:
     return baseline.get("area_harvested_ha", 0) >= 10.0
 
 
+# Crop-specific trigger thresholds in deviation % (reflecting agronomic drought tolerance)
+CROP_TRIGGER_THRESHOLDS = {
+    "maize":      {"critical": -20, "alert": -15, "watch": -8},
+    "wheat":      {"critical": -25, "alert": -18, "watch": -10},
+    "potatoes":   {"critical": -30, "alert": -20, "watch": -12},
+    "pigeonpeas": {"critical": -40, "alert": -30, "watch": -15},
+}
+
 # ─────────────────────────────────────────────────────────────────────────────
 # NATIONAL TRIAGE ENDPOINT
 # Returns all counties with predicted yield, baseline, deviation & alert level.
@@ -606,56 +614,30 @@ def get_national_triage(year: int, crop: str = "Maize"):
         if not _does_county_produce_crop(county, crop):
             continue
 
-        # Use AFA ground truth for 2021-2025
-        if 2021 <= year <= 2025 and county in afa_data_cache and crop in afa_data_cache[county] and year in afa_data_cache[county][crop]:
-            predicted = afa_data_cache[county][crop][year]["yield"]
-            is_predicted = False
-            climate = COUNTY_CLIMATE_PROFILES.get(county, DEFAULT_CLIMATE)
-        else:
-            # Use county-specific climate profile — NOT a national average
-            climate = COUNTY_CLIMATE_PROFILES.get(county, DEFAULT_CLIMATE)
-            predicted = base_yield
-            is_predicted = False
-            if xgb_model and feature_cols:
-                try:
-                    input_data = {
-                        "rainfall": climate["rainfall"],
-                        "temp":     climate["temp"],
-                        "ndvi":     climate["ndvi"],
-                        "moisture": climate["moisture"],
-                        "base_area": baseline.get("area_harvested_ha", 0),
-                        "base_yield": base_yield,
-                        "afa_area": afa_area,
-                        "afa_yield": afa_yield
-                    }
-                    for c in feature_cols:
-                        if c.startswith("crop_"):
-                            input_data[c] = 1 if c == f"crop_{crop}" else 0
-                        elif c.startswith("county_"):
-                            input_data[c] = 1 if c == f"county_{county}" else 0
-                    df_in = pd.DataFrame([input_data])
-                    for col in feature_cols:
-                        if col not in df_in.columns:
-                            df_in[col] = 0
-                    df_in = df_in[feature_cols]
-                    predicted = max(0.0, float(xgb_model.predict(df_in)[0]))
-                    is_predicted = True
-                except Exception:
-                    pass
+        # Get aligned predicted yield and historical baseline from county trends logic
+        trends = _get_county_trends(county, "", crop, year)
+        
+        # 1. Historical mean is average of 2017-2025 trends (matching frontend calculation)
+        hist_years = [t["yield_tha"] for t in trends if 2017 <= t["year"] <= 2025]
+        historical_mean = sum(hist_years) / len(hist_years) if hist_years else (afa_yield if afa_yield > 0 else base_yield)
+        
+        # 2. Predicted yield for the selected year
+        pred_row = next((t for t in trends if t["year"] == year), None)
+        predicted = pred_row["yield_tha"] if pred_row else base_yield
+        is_predicted = pred_row["is_predicted"] if pred_row else True
 
-        # Deviation is vs THIS county's own AFA historical mean — not national average
-        historical_mean = afa_yield if afa_yield > 0 else base_yield
         if historical_mean > 0:
             deviation_pct = ((predicted - historical_mean) / historical_mean) * 100
         else:
             deviation_pct = 0.0
 
         # Alert thresholds
-        if deviation_pct <= -35:
+        thresh = CROP_TRIGGER_THRESHOLDS.get(crop.lower(), {"critical": -20, "alert": -15, "watch": -8})
+        if deviation_pct <= thresh["critical"]:
             alert = "CRITICAL"
-        elif deviation_pct <= -25:
+        elif deviation_pct <= thresh["alert"]:
             alert = "ALERT"
-        elif deviation_pct <= -10:
+        elif deviation_pct <= thresh["watch"]:
             alert = "WATCH"
         else:
             alert = "NORMAL"
@@ -698,13 +680,14 @@ def get_national_triage(year: int, crop: str = "Maize"):
 # ─────────────────────────────────────────────────────────────────────────────
 @app.get("/api/advisory/generate")
 def generate_executive_advisory(county: str, crop: str, year: int, deviation_pct: float = 0.0):
-    if deviation_pct <= -35:
+    thresh = CROP_TRIGGER_THRESHOLDS.get(crop.lower(), {"critical": -20, "alert": -15, "watch": -8})
+    if deviation_pct <= thresh["critical"]:
         severity = "CRITICAL — projected yield collapse"
         alert_level = "CRITICAL"
-    elif deviation_pct <= -25:
+    elif deviation_pct <= thresh["alert"]:
         severity = "HIGH ALERT — severe yield deficit"
         alert_level = "ALERT"
-    elif deviation_pct <= -10:
+    elif deviation_pct <= thresh["watch"]:
         severity = "MODERATE WATCH — below-average yield"
         alert_level = "WATCH"
     else:
