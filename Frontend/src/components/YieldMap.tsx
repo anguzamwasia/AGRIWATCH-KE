@@ -33,6 +33,34 @@ const CROP_THRESHOLDS: Record<string, { lo: number; hi: number }> = {
   Pigeonpeas: { lo:  629, hi:  1160 },
 };
 
+// Crop-specific color palettes for distinct visual identification
+const CROP_PALETTES: Record<string, { low: string; mid: string; high: string; glow: string }> = {
+  Maize: {
+    low: "#ef4444",   // Red
+    mid: "#f59e0b",   // Amber/Orange
+    high: "#10b981",  // Emerald Green
+    glow: "rgba(16,185,129,0.5)",
+  },
+  Wheat: {
+    low: "#f87171",   // Light Red
+    mid: "#fbbf24",   // Bright Gold/Yellow
+    high: "#d97706",  // Ripe Golden Wheat (Brown-Amber)
+    glow: "rgba(217,119,6,0.5)",
+  },
+  Potatoes: {
+    low: "#fca5a5",   // Soft Red
+    mid: "#f97316",   // Vibrant Orange
+    high: "#9a3412",  // Earthy Copper/Deep Rust (Root/Potato Soil)
+    glow: "rgba(154,52,18,0.5)",
+  },
+  Pigeonpeas: {
+    low: "#f472b6",   // Soft Pink
+    mid: "#c084fc",   // Purple/Lavender
+    high: "#6b21a8",  // Royal Purple/Violet (Pigeonpea blossom)
+    glow: "rgba(107,33,168,0.5)",
+  },
+};
+
 // --- MapController ------------------------------------------------------------
 const MapController = ({
   county, subcounty, setExactBounds, setBoundaryGeojson,
@@ -144,15 +172,17 @@ const GeoTiffLayerComponent = ({ url, opacity, crop, onStatsLoaded }: { url: str
           hi = minVal + range * 0.67;
         }
 
+        const palette = CROP_PALETTES[crop] ?? CROP_PALETTES.Maize;
+
         const gl = new GeoRasterLayer({
           georaster,
           opacity,
           pixelValuesToColorFn: (values: number[]) => {
             const v = values[0];
             if (!v || v < 10.0 || v === noData || !isFinite(v)) return null;
-            if (v < lo) return "#ef4444";   // Low - Red
-            if (v < hi) return "#f59e0b";   // Mid - Orange
-            return "#10b981";                // High - Green
+            if (v < lo) return palette.low;
+            if (v < hi) return palette.mid;
+            return palette.high;
           },
           resolution: 64,
         });
@@ -253,6 +283,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
   };
 
   const geojsonKey = `bnd-${county}-${subcounty}-${boundaryGeojson ? "ok" : "none"}`;
+  const palette = CROP_PALETTES[crop] ?? CROP_PALETTES.Maize;
   
   const { lo, hi } = useMemo(() => {
     const cropThresholds = CROP_THRESHOLDS[crop] ?? { lo: 1000, hi: 2000 };
@@ -358,15 +389,15 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: "#10b981", boxShadow: "0 0 8px rgba(16,185,129,0.5)" }} />
+              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: palette.high, boxShadow: `0 0 8px ${palette.glow}` }} />
               <span className="text-[10px] font-bold text-slate-300">High – {hiLabel}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: "#f59e0b", boxShadow: "0 0 8px rgba(245,158,11,0.5)" }} />
+              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: palette.mid }} />
               <span className="text-[10px] font-bold text-slate-300">Average – {midLabel}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: "#ef4444", boxShadow: "0 0 8px rgba(239,68,68,0.5)" }} />
+              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: palette.low }} />
               <span className="text-[10px] font-bold text-slate-300">Low – {loLabel}</span>
             </div>
             <div className="flex items-center gap-2 mt-1 pt-1 border-t border-slate-700/50">
