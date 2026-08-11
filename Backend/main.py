@@ -366,6 +366,7 @@ def get_yield_analysis(county: str, subcounty: str, year: int, crop: str = "Maiz
         "area_ha": current_area,
         "rainfall": ee_data.get("annual", {}).get("rainfall", 0) if ee_data else 0,
         "temp": ee_data.get("annual", {}).get("temp", 0) if ee_data else 0,
+        "base_yield": base_yield,
         "is_predicted": is_predicted
     }
     

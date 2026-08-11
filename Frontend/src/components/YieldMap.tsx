@@ -20,6 +20,7 @@ interface YieldMapProps {
   layer: "osm" | "satellite" | "pixel" | "lulc";
   lulcMapPath?: string;
   predictedYield?: number;
+  baseYield?: number;
 }
 
 import countyGeometryData from "@/data/county_geometry.json";
@@ -61,6 +62,14 @@ const CROP_PALETTES: Record<string, { low: string; mid: string; high: string; gl
   },
 };
 
+// Crop-specific baseline yields in t/ha for relative scaling
+const CROP_BASE_YIELDS: Record<string, number> = {
+  Maize:      1.50,
+  Wheat:      2.70,
+  Potatoes:   9.80,
+  Pigeonpeas: 0.85,
+};
+
 // --- MapController ------------------------------------------------------------
 const MapController = ({
   county, subcounty, setExactBounds, setBoundaryGeojson,
@@ -99,7 +108,7 @@ const MapController = ({
 };
 
 // --- GeoTiffLayerComponent ----------------------------------------------------
-const GeoTiffLayerComponent = ({ url, opacity, crop, onStatsLoaded }: { url: string; opacity: number; crop: string; onStatsLoaded: (stats: { min: number; max: number }) => void }) => {
+const GeoTiffLayerComponent = ({ url, opacity, crop, scale, onStatsLoaded }: { url: string; opacity: number; crop: string; scale: number; onStatsLoaded: (stats: { min: number; max: number }) => void }) => {
   const map = useMap();
   const layerRef = useRef<any>(null);
 
@@ -158,19 +167,12 @@ const GeoTiffLayerComponent = ({ url, opacity, crop, onStatsLoaded }: { url: str
         // Calculate dynamic relative thresholds based on the actual min/max of the raster
         const minVal = georaster.mins?.[0] ?? 0;
         const maxVal = georaster.maxs?.[0] ?? 0;
-        const range = maxVal - minVal;
         
         onStatsLoaded({ min: minVal, max: maxVal });
         
         const cropThresholds = CROP_THRESHOLDS[crop] ?? { lo: 1000, hi: 2000 };
-        let lo = cropThresholds.lo;
-        let hi = cropThresholds.hi;
-        
-        // If there's spatial variation, use relative styling to show yield zones
-        if (range > 10.0) {
-          lo = minVal + range * 0.33;
-          hi = minVal + range * 0.67;
-        }
+        const lo = cropThresholds.lo * scale;
+        const hi = cropThresholds.hi * scale;
 
         const palette = CROP_PALETTES[crop] ?? CROP_PALETTES.Maize;
 
@@ -228,7 +230,7 @@ const GeoTiffLayerComponent = ({ url, opacity, crop, onStatsLoaded }: { url: str
         }
       });
     };
-  }, [url, crop, map]); // re-runs on url/crop change
+  }, [url, crop, scale, map]); // re-runs on url/crop/scale change
 
   useEffect(() => {
     if (layerRef.current?.setOpacity) {
@@ -240,7 +242,7 @@ const GeoTiffLayerComponent = ({ url, opacity, crop, onStatsLoaded }: { url: str
 };
 
 // --- YieldMap -----------------------------------------------------------------
-export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, predictedYield }: YieldMapProps) => {
+export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, predictedYield, baseYield }: YieldMapProps) => {
   const [opacity, setOpacity] = useState(0.85);
   const [rasterStats, setRasterStats] = useState<{ min: number; max: number } | null>(null);
   const [exactBounds, setExactBounds] = useState<any>(null);
@@ -285,28 +287,32 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
   const geojsonKey = `bnd-${county}-${subcounty}-${boundaryGeojson ? "ok" : "none"}`;
   const palette = CROP_PALETTES[crop] ?? CROP_PALETTES.Maize;
   
+  // Calculate relative scaling factor (1.0 for national map or fallbacks)
+  const scale = useMemo(() => {
+    if (county === "Kenya") return 1.0;
+    const baseVal = baseYield || CROP_BASE_YIELDS[crop] || 1.5;
+    if (predictedYield && baseVal > 0.0) {
+      return predictedYield / baseVal;
+    }
+    return 1.0;
+  }, [crop, county, predictedYield, baseYield]);
+
   const { lo, hi } = useMemo(() => {
     const cropThresholds = CROP_THRESHOLDS[crop] ?? { lo: 1000, hi: 2000 };
-    if (rasterStats) {
-      const range = rasterStats.max - rasterStats.min;
-      if (range > 10.0) {
-        return {
-          lo: rasterStats.min + range * 0.33,
-          hi: rasterStats.min + range * 0.67,
-        };
-      }
-    }
-    return cropThresholds;
-  }, [crop, rasterStats]);
+    return {
+      lo: cropThresholds.lo * scale,
+      hi: cropThresholds.hi * scale,
+    };
+  }, [crop, scale]);
 
-  const loLabel = lo >= 1000 ? `< ${(lo/1000).toFixed(1)} t/ha` : `< ${lo} kg/ha`;
-  const hiLabel = hi >= 1000 ? `> ${(hi/1000).toFixed(1)} t/ha` : `> ${hi} kg/ha`;
-  const midLabel = `${lo >= 1000 ? (lo/1000).toFixed(1) : lo} - ${hi >= 1000 ? (hi/1000).toFixed(1) : hi} ${lo >= 1000 ? "t/ha" : "kg/ha"}`;
+  const loLabel = lo >= 1000 ? `< ${(lo/1000).toFixed(1)} t/ha` : `< ${Math.round(lo)} kg/ha`;
+  const hiLabel = hi >= 1000 ? `> ${(hi/1000).toFixed(1)} t/ha` : `> ${Math.round(hi)} kg/ha`;
+  const midLabel = `${lo >= 1000 ? (lo/1000).toFixed(1) : Math.round(lo)} - ${hi >= 1000 ? (hi/1000).toFixed(1) : Math.round(hi)} ${lo >= 1000 ? "t/ha" : "kg/ha"}`;
 
   return (
     <Card className="relative h-full w-full overflow-hidden shadow-soft min-h-[600px] border-none group">
       <MapContainer
-        key={`${county}-${subcounty}-${crop}-${year}-${layer}-${predictedYield ?? 0}`}
+        key={`${county}-${subcounty}-${layer}`}
         center={[-0.0236, 37.9062]} zoom={6}
         style={{ height: "100%", width: "100%", background: "#f8f9fa" }}
         zoomControl={false}
@@ -316,7 +322,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
 
 
         {layer === "pixel" && (
-          <GeoTiffLayerComponent url={tifUrl} opacity={opacity} crop={crop} onStatsLoaded={setRasterStats} />
+          <GeoTiffLayerComponent url={tifUrl} opacity={opacity} crop={crop} scale={scale} onStatsLoaded={setRasterStats} />
         )}
 
         {layer === "lulc" && lulcMapPath && displayBounds && (

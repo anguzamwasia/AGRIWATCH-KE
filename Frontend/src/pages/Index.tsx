@@ -272,7 +272,7 @@ const Index = () => {
 
               <TabsContent value="map">
                 <Card className="border-slate-800 shadow-2xl overflow-hidden rounded-[2.5rem] bg-slate-900 h-[650px] relative">
-                  <YieldMap crop={selectedCrop} county={selectedCounty} subcounty={selectedSubcounty} year={selectedYear} layer={mapLayer} lulcMapPath={predictorData?.lulcMapPath || ""} predictedYield={apiData?.cards?.predicted_yield} />
+                  <YieldMap crop={selectedCrop} county={selectedCounty} subcounty={selectedSubcounty} year={selectedYear} layer={mapLayer} lulcMapPath={predictorData?.lulcMapPath || ""} predictedYield={apiData?.cards?.predicted_yield} baseYield={apiData?.cards?.base_yield} />
                 </Card>
               </TabsContent>
 
