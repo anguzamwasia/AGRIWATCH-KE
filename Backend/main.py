@@ -527,6 +527,65 @@ CROP_TRIGGER_THRESHOLDS = {
     "pigeonpeas": {"critical": -40, "alert": -30, "watch": -15},
 }
 
+# Build county-specific climate normals from AFA data.
+# We derive approximate climate profiles from the AFA yield patterns:
+# High-yield counties → higher rainfall zone; low-yield → ASAL zone.
+# This avoids hardcoding 800mm for all counties.
+COUNTY_CLIMATE_PROFILES = {
+    # High-potential breadbasket counties (>700mm/yr)
+    "Trans Nzoia":   {"rainfall": 1100, "temp": 18.5, "ndvi": 0.70, "moisture": 65},
+    "Uasin Gishu":   {"rainfall": 950,  "temp": 17.5, "ndvi": 0.68, "moisture": 62},
+    "Nandi":         {"rainfall": 1200, "temp": 19.0, "ndvi": 0.72, "moisture": 68},
+    "Nakuru":        {"rainfall": 900,  "temp": 17.0, "ndvi": 0.65, "moisture": 58},
+    "Kakamega":      {"rainfall": 1800, "temp": 21.0, "ndvi": 0.75, "moisture": 72},
+    "Bungoma":       {"rainfall": 1600, "temp": 20.0, "ndvi": 0.74, "moisture": 70},
+    "Meru":          {"rainfall": 1100, "temp": 18.0, "ndvi": 0.66, "moisture": 60},
+    "Kirinyaga":     {"rainfall": 1050, "temp": 19.5, "ndvi": 0.67, "moisture": 61},
+    "Bomet":         {"rainfall": 1300, "temp": 18.0, "ndvi": 0.71, "moisture": 66},
+    "Kericho":       {"rainfall": 1500, "temp": 18.5, "ndvi": 0.73, "moisture": 69},
+    "Nyeri":         {"rainfall": 1000, "temp": 17.5, "ndvi": 0.64, "moisture": 59},
+    "Kiambu":        {"rainfall": 950,  "temp": 18.5, "ndvi": 0.63, "moisture": 57},
+    "Murang'a":      {"rainfall": 1000, "temp": 19.0, "ndvi": 0.64, "moisture": 58},
+    "Embu":          {"rainfall": 1100, "temp": 20.0, "ndvi": 0.65, "moisture": 59},
+    "Nyandarua":     {"rainfall": 900,  "temp": 15.5, "ndvi": 0.62, "moisture": 56},
+    "Tharaka-Nithi": {"rainfall": 850,  "temp": 21.0, "ndvi": 0.58, "moisture": 52},
+    "Siaya":         {"rainfall": 1200, "temp": 22.0, "ndvi": 0.66, "moisture": 60},
+    "Kisumu":        {"rainfall": 1100, "temp": 23.0, "ndvi": 0.65, "moisture": 59},
+    "Homa Bay":      {"rainfall": 1000, "temp": 23.5, "ndvi": 0.63, "moisture": 57},
+    "Migori":        {"rainfall": 1150, "temp": 22.5, "ndvi": 0.66, "moisture": 60},
+    "Kisii":         {"rainfall": 1500, "temp": 19.5, "ndvi": 0.72, "moisture": 67},
+    "Nyamira":       {"rainfall": 1600, "temp": 19.0, "ndvi": 0.73, "moisture": 68},
+    "Vihiga":        {"rainfall": 1700, "temp": 20.5, "ndvi": 0.74, "moisture": 70},
+    "Busia":         {"rainfall": 1300, "temp": 22.0, "ndvi": 0.68, "moisture": 63},
+    "Laikipia":      {"rainfall": 700,  "temp": 18.0, "ndvi": 0.55, "moisture": 48},
+    "Narok":         {"rainfall": 750,  "temp": 19.5, "ndvi": 0.57, "moisture": 50},
+    "Kajiado":       {"rainfall": 500,  "temp": 22.0, "ndvi": 0.42, "moisture": 38},
+    # Mid-potential counties (400-700mm/yr)
+    "Baringo":       {"rainfall": 620,  "temp": 26.0, "ndvi": 0.48, "moisture": 42},
+    "Elgeyo-Marakwet":{"rainfall": 900, "temp": 20.0, "ndvi": 0.60, "moisture": 52},
+    "West Pokot":    {"rainfall": 750,  "temp": 23.0, "ndvi": 0.52, "moisture": 45},
+    "Samburu":       {"rainfall": 400,  "temp": 28.0, "ndvi": 0.35, "moisture": 30},
+    "Isiolo":        {"rainfall": 350,  "temp": 29.0, "ndvi": 0.32, "moisture": 28},
+    "Machakos":      {"rainfall": 650,  "temp": 23.0, "ndvi": 0.50, "moisture": 44},
+    "Makueni":       {"rainfall": 600,  "temp": 24.0, "ndvi": 0.46, "moisture": 41},
+    "Kitui":         {"rainfall": 580,  "temp": 25.0, "ndvi": 0.44, "moisture": 39},
+    "Mombasa":       {"rainfall": 900,  "temp": 28.0, "ndvi": 0.60, "moisture": 55},
+    "Kwale":         {"rainfall": 1000, "temp": 27.5, "ndvi": 0.62, "moisture": 57},
+    "Kilifi":        {"rainfall": 850,  "temp": 27.0, "ndvi": 0.58, "moisture": 53},
+    "Taita Taveta":  {"rainfall": 700,  "temp": 24.5, "ndvi": 0.53, "moisture": 47},
+    "Tana River":    {"rainfall": 450,  "temp": 30.0, "ndvi": 0.38, "moisture": 34},
+    "Lamu":          {"rainfall": 800,  "temp": 28.5, "ndvi": 0.55, "moisture": 50},
+    "Nairobi":       {"rainfall": 850,  "temp": 19.0, "ndvi": 0.45, "moisture": 40},
+    # ASAL counties (<400mm/yr) — critical food-insecure zone
+    "Turkana":       {"rainfall": 220,  "temp": 33.0, "ndvi": 0.22, "moisture": 18},
+    "Marsabit":      {"rainfall": 250,  "temp": 31.0, "ndvi": 0.25, "moisture": 20},
+    "Mandera":       {"rainfall": 200,  "temp": 35.0, "ndvi": 0.18, "moisture": 15},
+    "Wajir":         {"rainfall": 210,  "temp": 34.0, "ndvi": 0.20, "moisture": 16},
+    "Garissa":       {"rainfall": 240,  "temp": 33.5, "ndvi": 0.22, "moisture": 18},
+}
+
+DEFAULT_CLIMATE = {"rainfall": 750, "temp": 22.0, "ndvi": 0.52, "moisture": 46}
+
 # ─────────────────────────────────────────────────────────────────────────────
 # NATIONAL TRIAGE ENDPOINT
 # Returns all counties with predicted yield, baseline, deviation & alert level.
@@ -546,65 +605,6 @@ def get_national_triage(year: int, crop: str = "Maize"):
     counties = list(stats_data.get("counties", {}).keys())
     results = []
 
-    # Build county-specific climate normals from AFA data.
-    # We derive approximate climate profiles from the AFA yield patterns:
-    # High-yield counties → higher rainfall zone; low-yield → ASAL zone.
-    # This avoids hardcoding 800mm for all counties.
-    COUNTY_CLIMATE_PROFILES = {
-        # High-potential breadbasket counties (>700mm/yr)
-        "Trans Nzoia":   {"rainfall": 1100, "temp": 18.5, "ndvi": 0.70, "moisture": 65},
-        "Uasin Gishu":   {"rainfall": 950,  "temp": 17.5, "ndvi": 0.68, "moisture": 62},
-        "Nandi":         {"rainfall": 1200, "temp": 19.0, "ndvi": 0.72, "moisture": 68},
-        "Nakuru":        {"rainfall": 900,  "temp": 17.0, "ndvi": 0.65, "moisture": 58},
-        "Kakamega":      {"rainfall": 1800, "temp": 21.0, "ndvi": 0.75, "moisture": 72},
-        "Bungoma":       {"rainfall": 1600, "temp": 20.0, "ndvi": 0.74, "moisture": 70},
-        "Meru":          {"rainfall": 1100, "temp": 18.0, "ndvi": 0.66, "moisture": 60},
-        "Kirinyaga":     {"rainfall": 1050, "temp": 19.5, "ndvi": 0.67, "moisture": 61},
-        "Bomet":         {"rainfall": 1300, "temp": 18.0, "ndvi": 0.71, "moisture": 66},
-        "Kericho":       {"rainfall": 1500, "temp": 18.5, "ndvi": 0.73, "moisture": 69},
-        "Nyeri":         {"rainfall": 1000, "temp": 17.5, "ndvi": 0.64, "moisture": 59},
-        "Kiambu":        {"rainfall": 950,  "temp": 18.5, "ndvi": 0.63, "moisture": 57},
-        "Murang'a":      {"rainfall": 1000, "temp": 19.0, "ndvi": 0.64, "moisture": 58},
-        "Embu":          {"rainfall": 1100, "temp": 20.0, "ndvi": 0.65, "moisture": 59},
-        "Nyandarua":     {"rainfall": 900,  "temp": 15.5, "ndvi": 0.62, "moisture": 56},
-        "Tharaka-Nithi": {"rainfall": 850,  "temp": 21.0, "ndvi": 0.58, "moisture": 52},
-        "Siaya":         {"rainfall": 1200, "temp": 22.0, "ndvi": 0.66, "moisture": 60},
-        "Kisumu":        {"rainfall": 1100, "temp": 23.0, "ndvi": 0.65, "moisture": 59},
-        "Homa Bay":      {"rainfall": 1000, "temp": 23.5, "ndvi": 0.63, "moisture": 57},
-        "Migori":        {"rainfall": 1150, "temp": 22.5, "ndvi": 0.66, "moisture": 60},
-        "Kisii":         {"rainfall": 1500, "temp": 19.5, "ndvi": 0.72, "moisture": 67},
-        "Nyamira":       {"rainfall": 1600, "temp": 19.0, "ndvi": 0.73, "moisture": 68},
-        "Vihiga":        {"rainfall": 1700, "temp": 20.5, "ndvi": 0.74, "moisture": 70},
-        "Busia":         {"rainfall": 1300, "temp": 22.0, "ndvi": 0.68, "moisture": 63},
-        "Laikipia":      {"rainfall": 700,  "temp": 18.0, "ndvi": 0.55, "moisture": 48},
-        "Narok":         {"rainfall": 750,  "temp": 19.5, "ndvi": 0.57, "moisture": 50},
-        "Kajiado":       {"rainfall": 500,  "temp": 22.0, "ndvi": 0.42, "moisture": 38},
-        # Mid-potential counties (400-700mm/yr)
-        "Baringo":       {"rainfall": 620,  "temp": 26.0, "ndvi": 0.48, "moisture": 42},
-        "Elgeyo-Marakwet":{"rainfall": 900, "temp": 20.0, "ndvi": 0.60, "moisture": 52},
-        "West Pokot":    {"rainfall": 750,  "temp": 23.0, "ndvi": 0.52, "moisture": 45},
-        "Samburu":       {"rainfall": 400,  "temp": 28.0, "ndvi": 0.35, "moisture": 30},
-        "Isiolo":        {"rainfall": 350,  "temp": 29.0, "ndvi": 0.32, "moisture": 28},
-        "Machakos":      {"rainfall": 650,  "temp": 23.0, "ndvi": 0.50, "moisture": 44},
-        "Makueni":       {"rainfall": 600,  "temp": 24.0, "ndvi": 0.46, "moisture": 41},
-        "Kitui":         {"rainfall": 580,  "temp": 25.0, "ndvi": 0.44, "moisture": 39},
-        "Mombasa":       {"rainfall": 900,  "temp": 28.0, "ndvi": 0.60, "moisture": 55},
-        "Kwale":         {"rainfall": 1000, "temp": 27.5, "ndvi": 0.62, "moisture": 57},
-        "Kilifi":        {"rainfall": 850,  "temp": 27.0, "ndvi": 0.58, "moisture": 53},
-        "Taita Taveta":  {"rainfall": 700,  "temp": 24.5, "ndvi": 0.53, "moisture": 47},
-        "Tana River":    {"rainfall": 450,  "temp": 30.0, "ndvi": 0.38, "moisture": 34},
-        "Lamu":          {"rainfall": 800,  "temp": 28.5, "ndvi": 0.55, "moisture": 50},
-        "Nairobi":       {"rainfall": 850,  "temp": 19.0, "ndvi": 0.45, "moisture": 40},
-        # ASAL counties (<400mm/yr) — critical food-insecure zone
-        "Turkana":       {"rainfall": 220,  "temp": 33.0, "ndvi": 0.22, "moisture": 18},
-        "Marsabit":      {"rainfall": 250,  "temp": 31.0, "ndvi": 0.25, "moisture": 20},
-        "Mandera":       {"rainfall": 200,  "temp": 35.0, "ndvi": 0.18, "moisture": 15},
-        "Wajir":         {"rainfall": 210,  "temp": 34.0, "ndvi": 0.20, "moisture": 16},
-        "Garissa":       {"rainfall": 240,  "temp": 33.5, "ndvi": 0.22, "moisture": 18},
-    }
-
-    DEFAULT_CLIMATE = {"rainfall": 750, "temp": 22.0, "ndvi": 0.52, "moisture": 46}
-
     for county in counties:
         baseline = _get_baseline(county, "", crop)
         base_yield = baseline.get("yield_tha", 0)
@@ -615,7 +615,7 @@ def get_national_triage(year: int, crop: str = "Maize"):
             continue
 
         # Get aligned predicted yield and historical baseline from county trends logic
-        trends = _get_county_trends(county, "", crop, year)
+        trends = _get_county_trends(county, "", crop, year, use_normals=True)
         
         # 1. Historical mean is average of 2017-2025 trends (matching frontend calculation)
         hist_years = [t["yield_tha"] for t in trends if 2017 <= t["year"] <= 2025]
@@ -929,7 +929,7 @@ def get_debug():
         "afa_cache_len": len(afa_data_cache)
     }
 
-def _get_county_trends(county: str, subcounty: str, crop: str, year: int = None, kenya_climate_override: dict = None):
+def _get_county_trends(county: str, subcounty: str, crop: str, year: int = None, kenya_climate_override: dict = None, use_normals: bool = False):
     baseline = _get_baseline(county, subcounty, crop)
     base_yield = baseline.get("yield_tha", 0)
     base_area = baseline.get("area_harvested_ha", 0)
@@ -954,6 +954,11 @@ def _get_county_trends(county: str, subcounty: str, crop: str, year: int = None,
                     if kenya_climate_override and y in kenya_climate_override:
                         ann = kenya_climate_override[y]
                         new_row = pd.DataFrame([{'year': y, 'rainfall': ann['rainfall'], 'temp': ann['temp'], 'ndvi': ann['ndvi'], 'moisture': ann['moisture']}])
+                        ann_df = pd.concat([ann_df, new_row], ignore_index=True) if not ann_df.empty else new_row
+                    elif use_normals:
+                        # Use static county normals for lightning-fast national triage loading
+                        climate = COUNTY_CLIMATE_PROFILES.get(county, DEFAULT_CLIMATE)
+                        new_row = pd.DataFrame([{'year': y, 'rainfall': climate['rainfall'], 'temp': climate['temp'], 'ndvi': climate['ndvi'], 'moisture': climate['moisture']}])
                         ann_df = pd.concat([ann_df, new_row], ignore_index=True) if not ann_df.empty else new_row
                     else:
                         live_ee = ee_service.get_predictors(county, subcounty, y)
