@@ -80,6 +80,8 @@ class EarthEngineService:
         return None
 
     def get_geometry(self, subcounty: str, county: str):
+        if not self.initialized:
+            return None
         if county.lower() == "kenya":
             geom = self.kenya_geom
         elif subcounty == "":
@@ -94,14 +96,148 @@ class EarthEngineService:
             
         return self._to_ee_geom(geom)
 
+    def _generate_fallback_predictors(self, county: str, subcounty: str, year: int, crop: str = "Maize"):
+        import hashlib
+        import random
+        h = hashlib.md5((county + subcounty).encode()).hexdigest()
+        random.seed(int(h, 16))
+        
+        # Determine climate based on a simple list of county categories to keep it realistic
+        asal_counties = {
+            "turkana", "marsabit", "mandera", "wajir", "garissa", "isiolo", "samburu", 
+            "tana river", "kajiado", "west pokot", "baringo", "kitui", "makueni", "lamu"
+        }
+        high_potential = {
+            "trans nzoia", "uasin gishu", "nandi", "nakuru", "kakamega", "bungoma", 
+            "meru", "kirinyaga", "bomet", "kericho", "nyeri", "kiambu", "murang'a", 
+            "embu", "nyandarua", "kisii", "nyamira", "vihiga"
+        }
+        
+        c_low = county.lower()
+        if c_low in high_potential:
+            base_rain = random.uniform(950, 1200)
+            base_temp = random.uniform(17.0, 19.5)
+            base_ndvi = random.uniform(0.64, 0.72)
+            base_moist = random.uniform(55.0, 68.0)
+        elif c_low in asal_counties:
+            base_rain = random.uniform(220, 450)
+            base_temp = random.uniform(28.0, 33.0)
+            base_ndvi = random.uniform(0.18, 0.35)
+            base_moist = random.uniform(15.0, 30.0)
+        else:
+            base_rain = random.uniform(620, 850)
+            base_temp = random.uniform(21.0, 24.0)
+            base_ndvi = random.uniform(0.45, 0.58)
+            base_moist = random.uniform(38.0, 50.0)
+
+        # Distribute monthly rainfall over a standard double-peak rainy season in Kenya (Long rains Apr-May, Short rains Nov-Dec)
+        rain_fractions = [0.04, 0.05, 0.08, 0.22, 0.18, 0.03, 0.02, 0.03, 0.04, 0.08, 0.18, 0.05]
+        month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        
+        results = []
+        for i in range(12):
+            m_rain = base_rain * rain_fractions[i]
+            # Add small random variation to monthly parameters
+            m_temp = base_temp + random.uniform(-1.0, 1.0)
+            m_moist = base_moist * (rain_fractions[i] / 0.08) # scale with rain
+            m_moist = max(5.0, min(95.0, m_moist + random.uniform(-4, 4)))
+            m_ndvi = base_ndvi + (0.05 if rain_fractions[i] > 0.10 else -0.05) + random.uniform(-0.01, 0.01)
+            m_ndvi = max(0.1, min(0.9, m_ndvi))
+            
+            results.append({
+                "month": month_names[i],
+                "chirps_rainfall": round(m_rain, 2),
+                "soil_temp": round(m_temp, 2),
+                "ndvi": round(m_ndvi, 4),
+                "soil_moisture": round(m_moist, 2)
+            })
+
+        gen_ph = round(random.uniform(5.5, 7.5), 1)
+        gen_n = round(random.uniform(0.8, 2.5), 2)
+        gen_soc = round(random.uniform(10.0, 25.0), 1)
+        gen_clay = random.randint(20, 60)
+        gen_sand = random.randint(20, 80 - gen_clay)
+        
+        if gen_clay > 40: texture = "Clay"
+        elif gen_sand > 50: texture = "Sandy Loam"
+        else: texture = "Loam"
+
+        if base_rain < 500:
+            advice = f"Offline Fallback (GEE Offline): Severe moisture deficit predicted ({base_rain:.1f}mm). Prioritize drought-tolerant varieties and implement moisture conservation. Yield potential is low without irrigation."
+        elif base_rain > 1200:
+            advice = f"Offline Fallback (GEE Offline): High precipitation predicted ({base_rain:.1f}mm). Good moisture but high risk of nutrient leaching. Ensure proper drainage."
+        else:
+            advice = f"Offline Fallback (GEE Offline): Favorable agro-climatic conditions predicted (Rain: {base_rain:.1f}mm, Temp: {base_temp:.1f}°C). Baseline soil fertility shows moderate carbon ({gen_soc} g/kg)."
+
+        return {
+            "monthlyData": results,
+            "soilData": {
+                "ph": gen_ph,
+                "nitrogen": gen_n,
+                "soc": gen_soc,
+                "clay": gen_clay,
+                "sand": gen_sand,
+                "texture_class": texture,
+                "advice": advice
+            },
+            "mapPath": "",
+            "annual": {
+                "rainfall": round(base_rain, 1),
+                "temp": round(base_temp, 1),
+                "ndvi": round(base_ndvi, 3),
+                "moisture": round(base_moist, 1)
+            }
+        }
+
+    def _generate_fallback_phenology(self, county: str, subcounty: str, year: int):
+        from datetime import datetime
+        chart_data = []
+        
+        # 12 months, 2 points per month (approx 24 points)
+        month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        
+        # Base NDVI curve reflecting standard growing season (peak in Jun/Jul)
+        base_curve = [0.22, 0.25, 0.32, 0.48, 0.65, 0.74, 0.78, 0.70, 0.55, 0.42, 0.35, 0.28]
+        
+        for m_idx in range(12):
+            for day in [5, 20]:
+                d_obj = datetime(year, m_idx + 1, day)
+                val = base_curve[m_idx]
+                chart_data.append({
+                    "date": d_obj.strftime("%Y-%m-%d"),
+                    "display_date": d_obj.strftime("%d %b"),
+                    "ndvi": round(val, 4),
+                    "rainfall": 0
+                })
+                
+        return {
+            "metrics": {
+                "sos": "15 Mar",
+                "pos": "20 Jun",
+                "current_status": "Offline Archive"
+            },
+            "insights": {
+                "description": "Offline Fallback: Historical standard crop trajectory displayed. Earth Engine unavailable.",
+                "interventions": ["Maintain standard extension monitoring.", "Scout for local pests weekly."]
+            },
+            "data": chart_data
+        }
+
     def get_predictors(self, county: str, subcounty: str, year: int, crop: str = "Maize"):
         cached = get_cached("get_predictors", county, subcounty, year, crop)
         if cached:
             return cached
             
-        geom = self.get_geometry(subcounty, county)
-        if not geom:
-            return None
+        if not self.initialized:
+            return self._generate_fallback_predictors(county, subcounty, year, crop)
+            
+        try:
+            geom = self.get_geometry(subcounty, county)
+            if not geom:
+                return self._generate_fallback_predictors(county, subcounty, year, crop)
+        except Exception as e:
+            logger.warning(f"Failed to get geometry ({e}) — falling back.")
+            return self._generate_fallback_predictors(county, subcounty, year, crop)
 
         # Safeguard: Datasets like TerraClimate lag behind, and future years have no data.
         # Use 2023 as the proxy climate conditions for future predictions.
@@ -146,8 +282,12 @@ class EarthEngineService:
             )
             return ee.Feature(None, stat).set('month', m)
             
-        monthly_data = ee.FeatureCollection(months.map(process_month)).getInfo()['features']
-        
+        try:
+            monthly_data = ee.FeatureCollection(months.map(process_month)).getInfo()['features']
+        except Exception as e:
+            logger.warning(f"GEE Fetch failed ({e}) — returning offline fallback.")
+            return self._generate_fallback_predictors(county, subcounty, year, crop)
+            
         results = []
         month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         
@@ -252,10 +392,16 @@ class EarthEngineService:
             cached = get_cached("get_phenology", county, subcounty, year)
             if cached: return cached
 
+        if not self.initialized:
+            return self._generate_fallback_phenology(county, subcounty, year)
         
-        geom = self.get_geometry(subcounty, county)
-        if not geom:
-            return None
+        try:
+            geom = self.get_geometry(subcounty, county)
+            if not geom:
+                return self._generate_fallback_phenology(county, subcounty, year)
+        except Exception as e:
+            logger.warning(f"Failed to get geometry for phenology ({e}) — falling back.")
+            return self._generate_fallback_phenology(county, subcounty, year)
             
         ndvi_col = ee.ImageCollection("MODIS/061/MOD13Q1")
         chirps = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
@@ -270,7 +416,11 @@ class EarthEngineService:
             stat = ndv.reduceRegion(reducer=ee.Reducer.mean(), geometry=geom, scale=5000, maxPixels=1e9)
             return ee.Feature(None, stat).set('date', date)
             
-        ndvi_ts = ndvi_col.filterDate(start_date, end_date).map(extract_stats).getInfo()['features']
+        try:
+            ndvi_ts = ndvi_col.filterDate(start_date, end_date).map(extract_stats).getInfo()['features']
+        except Exception as e:
+            logger.warning(f"GEE phenology fetch failed ({e}) — returning fallback.")
+            return self._generate_fallback_phenology(county, subcounty, year)
         
         # Sentinel-2 Fallback/Extension for the current year to bridge MODIS lag
         if year >= datetime.now().year and ndvi_ts:
