@@ -247,6 +247,8 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
   const [rasterStats, setRasterStats] = useState<{ min: number; max: number } | null>(null);
   const [exactBounds, setExactBounds] = useState<any>(null);
   const [boundaryGeojson, setBoundaryGeojson] = useState<any>(null);
+  const [lulcTileUrl, setLulcTileUrl] = useState<string | null>(null);
+  const [isLulcLoading, setIsLulcLoading] = useState(false);
 
   // Reset boundary state whenever selection changes
   useEffect(() => {
@@ -254,6 +256,32 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
     setBoundaryGeojson(null);
     setRasterStats(null);
   }, [county, subcounty, crop, year]);
+
+  // Fetch live Earth Engine Dynamic World tile URL when layer is 'lulc'
+  useEffect(() => {
+    if (layer !== "lulc") return;
+    let live = true;
+    const fetchLulcTile = async () => {
+      setIsLulcLoading(true);
+      try {
+        const res = await axios.post(`${API_BASE_URL}/api/ee-lulc-tile-url`, {
+          county,
+          subcounty: subcounty === "Select subcounty" ? "" : subcounty,
+          year,
+          layer: "lulc"
+        });
+        if (live && res.data?.url) {
+          setLulcTileUrl(res.data.url);
+        }
+      } catch (err) {
+        console.error("Failed to fetch Dynamic World tile URL:", err);
+      } finally {
+        if (live) setIsLulcLoading(false);
+      }
+    };
+    fetchLulcTile();
+    return () => { live = false; };
+  }, [layer, county, subcounty, year]);
 
   const fallbackGeo = COUNTY_GEOMETRY[county] || COUNTY_GEOMETRY["Kenya"];
   const displayBounds = exactBounds || fallbackGeo?.bounds;
@@ -320,12 +348,20 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
         <TileLayer attribution="&copy; OpenStreetMap" url={getTileUrl()} />
         <ZoomControl position="topright" />
 
-
         {layer === "pixel" && (
           <GeoTiffLayerComponent url={tifUrl} opacity={opacity} crop={crop} scale={scale} onStatsLoaded={setRasterStats} />
         )}
 
-        {layer === "lulc" && lulcMapPath && displayBounds && (
+        {layer === "lulc" && lulcTileUrl && (
+          <TileLayer
+            key={lulcTileUrl}
+            url={lulcTileUrl}
+            opacity={opacity}
+            zIndex={400}
+          />
+        )}
+
+        {layer === "lulc" && !lulcTileUrl && lulcMapPath && displayBounds && (
           <ImageOverlay
             key={lulcMapPath}
             url={`${API_BASE_URL}${lulcMapPath}`}
@@ -356,18 +392,18 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
       {/* TOP HUD */}
       <div className="absolute top-4 left-4 z-[1000]">
         <div className="bg-slate-900/95 backdrop-blur-md px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3">
-          <div className="bg-emerald-600 p-2 rounded-lg">
+          <div className={`${layer === "lulc" ? "bg-amber-600" : "bg-emerald-600"} p-2 rounded-lg`}>
             <Activity className="h-4 w-4 text-white" />
           </div>
           <div>
             <h3 className="text-sm font-black text-slate-100 flex items-center gap-2">
-              GeoAI Yield Surface
+              {layer === "lulc" ? "Dynamic World Land Cover" : "GeoAI Yield Surface"}
               <span className="text-[10px] bg-slate-800 text-emerald-400 px-2 py-0.5 rounded-full font-mono uppercase tracking-tighter">
-                0.1km Res
+                {layer === "lulc" ? "10m Res" : "0.1km Res"}
               </span>
             </h3>
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-              {subcounty && subcounty !== "Select subcounty" ? subcounty : county} | {crop} Yield
+              {subcounty && subcounty !== "Select subcounty" ? subcounty : county} | {layer === "lulc" ? "Sentinel-2 LULC" : `${crop} Yield`}
             </p>
           </div>
         </div>
@@ -386,7 +422,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
         />
       </div>
 
-      {/* LEGEND – pixel mode only */}
+      {/* LEGEND – pixel mode */}
       {layer === "pixel" && (
         <div className="absolute bottom-6 right-6 z-[1000] bg-slate-900/95 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-slate-700 min-w-[175px]">
           <div className="flex items-center gap-2 mb-3">
@@ -414,6 +450,54 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
           <div className="mt-3 pt-3 border-t border-slate-700 flex items-center gap-2 opacity-50">
             <Info className="h-3 w-3 text-slate-400 flex-shrink-0" />
             <span className="text-[9px] font-medium text-slate-400">SPAM 2017 yield · kg/ha · 0.1km res</span>
+          </div>
+        </div>
+      )}
+
+      {/* LEGEND – lulc mode (Dynamic World) */}
+      {layer === "lulc" && (
+        <div className="absolute bottom-6 right-6 z-[1000] bg-slate-900/95 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-slate-700 min-w-[200px] max-h-[300px] overflow-y-auto">
+          <div className="flex items-center gap-2 mb-3">
+            <Layers className="h-3 w-3 text-amber-400" />
+            <span className="text-[10px] font-black uppercase text-slate-300 tracking-tighter">Land Cover Classes</span>
+          </div>
+          <div className="grid grid-cols-1 gap-1.5 text-[10px]">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#E49635" }} />
+              <span className="font-bold text-amber-400">Cultivated Crops</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#397D49" }} />
+              <span className="font-bold text-emerald-400">Trees & Forest</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#88B053" }} />
+              <span className="font-medium text-slate-300">Grassland</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#DFC35A" }} />
+              <span className="font-medium text-slate-300">Shrub & Scrub</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#C4281B" }} />
+              <span className="font-bold text-red-400">Built-up Area</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#419BDF" }} />
+              <span className="font-medium text-blue-400">Water Body</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#7A87C6" }} />
+              <span className="font-medium text-indigo-300">Flooded Veg</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded flex-shrink-0" style={{ background: "#A59B8F" }} />
+              <span className="font-medium text-stone-400">Bare Ground</span>
+            </div>
+          </div>
+          <div className="mt-2.5 pt-2 border-t border-slate-700 flex items-center gap-2 opacity-60">
+            <Info className="h-3 w-3 text-slate-400 flex-shrink-0" />
+            <span className="text-[8px] font-medium text-slate-400">Google Dynamic World · Sentinel-2 10m</span>
           </div>
         </div>
       )}

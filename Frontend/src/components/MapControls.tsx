@@ -44,12 +44,12 @@ interface MapControlsProps {
   selectedSubcounty: string;
   selectedYear: number;
   selectedCrop: string;
-  mapLayer: "osm" | "satellite" | "pixel";
+  mapLayer: "osm" | "satellite" | "pixel" | "lulc";
   onCountyChange: (county: string) => void;
   onSubcountyChange: (subcounty: string) => void;
   onYearChange: (year: number) => void;
   onCropChange: (crop: string) => void;
-  onLayerChange: (layer: "osm" | "satellite" | "pixel") => void;
+  onLayerChange: (layer: "osm" | "satellite" | "pixel" | "lulc") => void;
   onDownloadReport: () => void;
   isCollapsed: boolean;
   setIsCollapsed: (val: boolean) => void;
@@ -345,8 +345,8 @@ export const MapControls = ({
             <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Layers className="h-4 w-4" /> Map Layer
             </label>
-            <div className="grid grid-cols-3 gap-1 bg-muted rounded-md p-1">
-              {["satellite", "pixel", "osm"].map((layer) => (
+            <div className="grid grid-cols-4 gap-1 bg-muted rounded-md p-1">
+              {["satellite", "pixel", "lulc", "osm"].map((layer) => (
                 <Button
                   key={layer}
                   variant={mapLayer === layer ? "secondary" : "ghost"}
@@ -357,7 +357,7 @@ export const MapControls = ({
                     mapLayer === layer ? "bg-background shadow-sm" : "",
                   )}
                 >
-                  {layer === "osm" ? "Map" : layer === "pixel" ? "Yield" : layer}
+                  {layer === "osm" ? "Map" : layer === "pixel" ? "Yield" : layer === "lulc" ? "LULC" : "Sat"}
                 </Button>
               ))}
             </div>

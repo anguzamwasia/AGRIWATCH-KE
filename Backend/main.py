@@ -920,6 +920,30 @@ def get_ee_soil_tile_url(req: EESoilRequest):
         print(f"ee-soil-tile-url error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+class EELulcRequest(BaseModel):
+    layer: str = "lulc"  # 'lulc' or 'crops'
+    county: str = "Kenya"
+    subcounty: str = ""
+    year: int = 2024
+
+@app.post("/api/ee-lulc-tile-url")
+def get_ee_lulc_tile_url(req: EELulcRequest):
+    """
+    Returns the Google Earth Engine tile url for Dynamic World (10m Land Use / Land Cover).
+    """
+    try:
+        from services.earth_engine_service import ee_service
+        result = ee_service.get_dynamic_world_tile_url(
+            county=req.county,
+            subcounty=req.subcounty,
+            year=req.year,
+            layer_type=req.layer
+        )
+        return result
+    except Exception as e:
+        print(f"ee-lulc-tile-url error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/debug")
 def get_debug():
     hist_file = V2_BASE_DIR / "data" / "processed" / "historical_climate_data.csv"

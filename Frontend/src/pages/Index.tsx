@@ -49,7 +49,7 @@ const Index = () => {
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [selectedCrop, setSelectedCrop] = useState("Maize");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [mapLayer, setMapLayer] = useState<'osm' | 'satellite' | 'pixel'>('osm');
+  const [mapLayer, setMapLayer] = useState<'osm' | 'satellite' | 'pixel' | 'lulc'>('pixel');
   const [isReportGenerating, setIsReportGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("map");
   const [showAlertPanel, setShowAlertPanel] = useState(false);

@@ -585,4 +585,63 @@ class EarthEngineService:
             logger.error(f"Error calculating dynamic area: {e}")
             return 0.0
 
+    def get_dynamic_world_tile_url(self, county: str = "Kenya", subcounty: str = "", year: int = 2024, layer_type: str = "lulc") -> dict:
+        """
+        Returns a Google Earth Engine tile URL for Dynamic World (10m Land Use / Land Cover).
+        layer_type: 'lulc' (9 classes) or 'crops' (crop probability)
+        """
+        if not self.initialized:
+            return {"url": None, "offline": True}
+
+        try:
+            geom = self.get_geometry(subcounty, county)
+            
+            # Dynamic World Sentinel-2 data (available up to recent date, cap query year at 2024)
+            query_year = min(year, 2024)
+            start_date = f"{query_year}-01-01"
+            end_date = f"{query_year}-12-31"
+
+            dw = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1") \
+                .filterDate(start_date, end_date)
+
+            if geom:
+                dw = dw.filterBounds(geom)
+
+            if layer_type == "crops":
+                # Crop probability band (0.0 to 1.0)
+                img = dw.select('crops').mean()
+                vis = {
+                    'min': 0.0,
+                    'max': 0.8,
+                    'palette': ['#ffffff', '#fde047', '#eab308', '#ca8a04', '#15803d']
+                }
+            else:
+                # 9-class discrete classification mode
+                # 0: water, 1: trees, 2: grass, 3: flooded_veg, 4: crops, 5: shrub, 6: built, 7: bare, 8: snow
+                img = dw.select('label').reduce(ee.Reducer.mode())
+                vis = {
+                    'min': 0,
+                    'max': 8,
+                    'palette': [
+                        '#419BDF',  # 0: water
+                        '#397D49',  # 1: trees
+                        '#88B053',  # 2: grass
+                        '#7A87C6',  # 3: flooded_vegetation
+                        '#E49635',  # 4: crops
+                        '#DFC35A',  # 5: shrub_and_scrub
+                        '#C4281B',  # 6: built
+                        '#A59B8F',  # 7: bare
+                        '#B39FE1'   # 8: snow_and_ice
+                    ]
+                }
+
+            if geom:
+                img = img.clip(geom)
+
+            mapid = img.getMapId(vis)
+            return {"url": mapid['tile_fetcher'].url_format, "offline": False}
+        except Exception as e:
+            logger.error(f"Error fetching Dynamic World tile URL: {e}")
+            return {"url": None, "offline": True, "error": str(e)}
+
 ee_service = EarthEngineService()
