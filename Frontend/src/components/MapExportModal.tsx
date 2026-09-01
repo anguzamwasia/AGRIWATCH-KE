@@ -170,26 +170,26 @@ export const MapExportModal = ({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100 rounded-3xl p-6">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100 rounded-3xl p-6 z-[99999] shadow-[0_0_80px_rgba(0,0,0,0.9)]">
         <DialogHeader className="border-b border-slate-800 pb-4">
           <DialogTitle className="text-lg font-black tracking-tight text-white flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-emerald-400" />
-              <span>Cartographic Map Publisher</span>
+              <span>AgriWatch Map Publisher</span>
             </div>
             <Badge variant="outline" className="bg-emerald-950/80 text-emerald-400 border-emerald-800 text-[10px] uppercase font-mono">
               High-Res 300 DPI Export
             </Badge>
           </DialogTitle>
           <p className="text-xs text-slate-400 mt-1">
-            Export a high-definition cartographic sheet for {county} ({crop} · {year}) with metadata, coordinate grids, and official sources.
+            Export a high-definition official map sheet for {county} ({crop} · {year}) with metadata, coordinate grids, and official sources.
           </p>
         </DialogHeader>
 
         {/* CONTROLS BAR */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 bg-slate-900/50 p-4 rounded-2xl border border-slate-800/80 text-xs">
           <div className="space-y-3">
-            <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Cartographic Elements</span>
+            <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Map Elements & Overlays</span>
             <div className="grid grid-cols-2 gap-2">
               <div className="flex items-center space-x-2">
                 <Switch id="graticule-toggle" checked={showGraticule} onCheckedChange={setShowGraticule} />
@@ -236,7 +236,7 @@ export const MapExportModal = ({
         {/* PRINT / EXPORT CANVAS (Rendered for capture) */}
         <div className="border border-slate-800 rounded-2xl overflow-hidden shadow-2xl bg-[#090d16] p-4 text-slate-200">
           <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2 flex items-center justify-between">
-            <span>Cartographic Preview (A4 Landscape Layout)</span>
+            <span>AgriWatch Map Sheet Preview (A4 Landscape Layout)</span>
             <span className="text-emerald-400 font-bold">CRS: EPSG:3857 (WGS 84)</span>
           </p>
 
