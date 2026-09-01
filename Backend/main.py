@@ -933,9 +933,10 @@ def get_ee_lulc_tile_url(req: EELulcRequest):
     """
     try:
         from services.earth_engine_service import ee_service
+        subcounty = _normalize_subcounty(req.subcounty)
         result = ee_service.get_dynamic_world_tile_url(
             county=req.county,
-            subcounty=req.subcounty,
+            subcounty=subcounty,
             year=req.year,
             layer_type=req.layer
         )

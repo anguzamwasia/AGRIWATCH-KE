@@ -12,7 +12,8 @@ import {
   Check, 
   Loader2, 
   Sparkles,
-  RefreshCw
+  RefreshCw,
+  Maximize2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +38,8 @@ interface MapExportModalProps {
   baseYield?: number;
   palette?: { low: string; mid: string; high: string; glow: string };
   legendLabels?: { low: string; mid: string; high: string };
+  mapInstance?: any;
+  displayBounds?: any;
 }
 
 export const MapExportModal = ({
@@ -49,7 +52,9 @@ export const MapExportModal = ({
   predictedYield,
   baseYield,
   palette = { low: "#ef4444", mid: "#f59e0b", high: "#10b981", glow: "rgba(16,185,129,0.5)" },
-  legendLabels = { low: "< 1.0 t/ha", mid: "1.0 - 2.0 t/ha", high: "> 2.0 t/ha" }
+  legendLabels = { low: "< 1.0 t/ha", mid: "1.0 - 2.0 t/ha", high: "> 2.0 t/ha" },
+  mapInstance,
+  displayBounds
 }: MapExportModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -57,7 +62,7 @@ export const MapExportModal = ({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [exportFormat, setExportFormat] = useState<"png" | "pdf">("png");
 
-  // Cartographic elements toggles
+  // Cartographic toggles
   const [showGraticule, setShowGraticule] = useState(true);
   const [showNorthArrow, setShowNorthArrow] = useState(true);
   const [showMetadata, setShowMetadata] = useState(true);
@@ -89,13 +94,19 @@ export const MapExportModal = ({
     timeZone: "Africa/Nairobi" 
   });
 
-  // Capture the live map automatically as soon as the modal opens
-  const captureLiveMap = async () => {
+  // Fit the whole boundary extent and capture a clean map snapshot
+  const captureFullBoundaryMap = async () => {
     setIsCapturingPreview(true);
-    // Short wait to ensure Leaflet raster/tiles are fully painted
-    await new Promise((r) => setTimeout(r, 200));
-
     try {
+      // 1. If map instance and bounds are available, programmatically fit the full county/subcounty extent
+      if (mapInstance && displayBounds) {
+        mapInstance.fitBounds(displayBounds, { padding: [15, 15], animate: false });
+        mapInstance.invalidateSize();
+      }
+
+      // 2. Allow Leaflet tiles and WebGL/Canvas to fully render
+      await new Promise((r) => setTimeout(r, 450));
+
       const leafletMapEl = document.querySelector(".leaflet-container") as HTMLElement;
       if (leafletMapEl) {
         const canvas = await html2canvas(leafletMapEl, {
@@ -105,7 +116,7 @@ export const MapExportModal = ({
           backgroundColor: "#020617",
           logging: false,
           ignoreElements: (element) => {
-            // Ignore Leaflet's default zoom controls and attribution to keep export clean
+            // Remove all default UI controls so map is clean for publication
             return (
               element.classList.contains("leaflet-control-container") ||
               element.classList.contains("leaflet-control-zoom") ||
@@ -116,7 +127,7 @@ export const MapExportModal = ({
         setPreviewImage(canvas.toDataURL("image/png"));
       }
     } catch (err) {
-      console.error("Live map preview capture failed:", err);
+      console.error("Full boundary map capture failed:", err);
     } finally {
       setIsCapturingPreview(false);
     }
@@ -124,7 +135,7 @@ export const MapExportModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      captureLiveMap();
+      captureFullBoundaryMap();
     } else {
       setPreviewImage(null);
     }
@@ -177,14 +188,14 @@ export const MapExportModal = ({
         <Button 
           variant="outline" 
           size="sm" 
-          className="bg-slate-900/95 hover:bg-slate-800 text-slate-200 border-slate-700 shadow-xl backdrop-blur-md gap-2 font-bold text-xs pointer-events-auto"
+          className="bg-slate-900/95 hover:bg-slate-800 text-slate-200 border-slate-700 shadow-xl backdrop-blur-md gap-2 font-bold text-xs"
         >
-          <Download className="h-4 w-4 text-emerald-400" />
+          <Download className="h-3.5 w-3.5 text-emerald-400" />
           Export Map
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100 rounded-3xl p-6 z-[99999] shadow-[0_0_80px_rgba(0,0,0,0.95)]">
+      <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100 rounded-3xl p-6 z-[99999] shadow-[0_0_90px_rgba(0,0,0,0.95)]">
         <DialogHeader className="border-b border-slate-800 pb-4">
           <DialogTitle className="text-lg font-black tracking-tight text-white flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -193,12 +204,12 @@ export const MapExportModal = ({
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="bg-emerald-950/80 text-emerald-400 border-emerald-800 text-[10px] uppercase font-mono">
-                High-Res 300 DPI Export
+                Full Boundary Fit
               </Badge>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={captureLiveMap}
+                onClick={captureFullBoundaryMap}
                 disabled={isCapturingPreview}
                 className="h-7 px-2 text-slate-400 hover:text-white"
                 title="Refresh Map Preview"
@@ -208,7 +219,7 @@ export const MapExportModal = ({
             </div>
           </DialogTitle>
           <p className="text-xs text-slate-400 mt-1">
-            Export a publication-grade map sheet for {county} {activeSubcounty ? `(${activeSubcounty})` : ""} ({crop} · {year}) with cartographic grids, layer transparency, and official data sources.
+            Export a high-definition official map sheet for {county} {activeSubcounty ? `(${activeSubcounty})` : ""} ({crop} · {year}) automatically fitted to the complete administrative boundary.
           </p>
         </DialogHeader>
 
@@ -303,9 +314,9 @@ export const MapExportModal = ({
             {/* MAP VIEW WITH GRATICULE & EMBEDDED CONTROLS */}
             <div className="relative w-full h-[270px] bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center">
               {isCapturingPreview && (
-                <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-2 text-slate-300">
+                <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-2 text-slate-300">
                   <Loader2 className="h-7 w-7 animate-spin text-emerald-400" />
-                  <span className="text-[11px] font-bold uppercase tracking-widest">Rendering Live Map Preview...</span>
+                  <span className="text-[11px] font-bold uppercase tracking-widest">Fitting Full Boundary & Rendering...</span>
                 </div>
               )}
 
@@ -318,7 +329,7 @@ export const MapExportModal = ({
               ) : (
                 <div className="flex flex-col items-center justify-center text-slate-500 gap-2">
                   <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
-                  <span className="text-xs font-medium">Capturing map view...</span>
+                  <span className="text-xs font-medium">Capturing full boundary view...</span>
                 </div>
               )}
 

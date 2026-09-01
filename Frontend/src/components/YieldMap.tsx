@@ -242,6 +242,15 @@ const GeoTiffLayerComponent = ({ url, opacity, crop, scale, onStatsLoaded }: { u
   return null;
 };
 
+// Tracker to pass leaflet map instance to exporter
+const MapInstanceTracker = ({ onMap }: { onMap: (map: any) => void }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (map) onMap(map);
+  }, [map, onMap]);
+  return null;
+};
+
 // --- YieldMap -----------------------------------------------------------------
 export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, predictedYield, baseYield }: YieldMapProps) => {
   const [opacity, setOpacity] = useState(0.85);
@@ -250,6 +259,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
   const [boundaryGeojson, setBoundaryGeojson] = useState<any>(null);
   const [lulcTileUrl, setLulcTileUrl] = useState<string | null>(null);
   const [isLulcLoading, setIsLulcLoading] = useState(false);
+  const [mapInstance, setMapInstance] = useState<any>(null);
 
   // Reset boundary state whenever selection changes
   useEffect(() => {
@@ -290,16 +300,8 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
   // Append timestamp parameter to bypass browser disk cache completely
   // Wrapped in useMemo to prevent race conditions on every single re-render
   const tifUrl = useMemo(() => {
-    let url = `${API_BASE_URL}/api/yield-tif` +
-      `?county=${encodeURIComponent(county)}` +
-      `&year=${year}` +
-      `&subcounty=${encodeURIComponent(subcounty)}` +
-      `&crop=${encodeURIComponent(crop)}` +
-      `&_t=${Date.now()}`;
-    if (predictedYield !== undefined) {
-      url += `&predicted_yield=${predictedYield}`;
-    }
-    return url;
+    const pYieldParam = predictedYield ? `&predicted_yield=${predictedYield}` : "";
+    return `${API_BASE_URL}/api/yield-tif?county=${encodeURIComponent(county)}&year=${year}&subcounty=${encodeURIComponent(subcounty)}&crop=${encodeURIComponent(crop)}&_t=${Date.now()}${pYieldParam}`;
   }, [county, subcounty, year, crop, predictedYield]);
 
   const getTileUrl = () => {
@@ -388,12 +390,13 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
           setExactBounds={setExactBounds}
           setBoundaryGeojson={setBoundaryGeojson}
         />
+        <MapInstanceTracker onMap={setMapInstance} />
       </MapContainer>
 
-      {/* TOP HUD & EXPORT BUTTON */}
-      <div className="absolute top-4 left-4 right-4 z-[1000] flex items-center justify-between pointer-events-none">
-        <div className="bg-slate-900/95 backdrop-blur-md px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 pointer-events-auto">
-          <div className={`${layer === "lulc" ? "bg-amber-600" : "bg-emerald-600"} p-2 rounded-lg`}>
+      {/* TOP HUD WITH EMBEDDED EXPORT BUTTON */}
+      <div className="absolute top-4 left-4 z-[1000]">
+        <div className="bg-slate-900/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3">
+          <div className={`${layer === "lulc" ? "bg-amber-600" : "bg-emerald-600"} p-2 rounded-xl shadow-md`}>
             <Activity className="h-4 w-4 text-white" />
           </div>
           <div>
@@ -407,22 +410,23 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
               {subcounty && subcounty !== "Select subcounty" ? subcounty : county} | {layer === "lulc" ? "Sentinel-2 LULC" : `${crop} Yield`}
             </p>
           </div>
-        </div>
 
-        {/* MAP EXPORT ACTION */}
-        <div className="pointer-events-auto">
-          <MapExportModal
-            county={county}
-            subcounty={subcounty}
-            year={year}
-            crop={crop}
-            layer={layer}
-            opacity={opacity}
-            predictedYield={predictedYield}
-            baseYield={baseYield}
-            palette={palette}
-            legendLabels={{ low: loLabel, mid: midLabel, high: hiLabel }}
-          />
+          <div className="pl-3 border-l border-slate-800">
+            <MapExportModal
+              county={county}
+              subcounty={subcounty}
+              year={year}
+              crop={crop}
+              layer={layer}
+              opacity={opacity}
+              predictedYield={predictedYield}
+              baseYield={baseYield}
+              palette={palette}
+              legendLabels={{ low: loLabel, mid: midLabel, high: hiLabel }}
+              mapInstance={mapInstance}
+              displayBounds={displayBounds}
+            />
+          </div>
         </div>
       </div>
 
