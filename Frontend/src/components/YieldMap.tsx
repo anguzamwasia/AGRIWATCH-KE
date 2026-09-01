@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { LatLngBoundsExpression } from "leaflet";
 import { Activity, Layers, Info } from "lucide-react";
 import axios from "axios";
+import { MapExportModal } from "./MapExportModal";
 // @ts-ignore
 import parseGeoraster from "georaster";
 // @ts-ignore
@@ -389,9 +390,9 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
         />
       </MapContainer>
 
-      {/* TOP HUD */}
-      <div className="absolute top-4 left-4 z-[1000]">
-        <div className="bg-slate-900/95 backdrop-blur-md px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3">
+      {/* TOP HUD & EXPORT BUTTON */}
+      <div className="absolute top-4 left-4 right-4 z-[1000] flex items-center justify-between pointer-events-none">
+        <div className="bg-slate-900/95 backdrop-blur-md px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-3 pointer-events-auto">
           <div className={`${layer === "lulc" ? "bg-amber-600" : "bg-emerald-600"} p-2 rounded-lg`}>
             <Activity className="h-4 w-4 text-white" />
           </div>
@@ -406,6 +407,22 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
               {subcounty && subcounty !== "Select subcounty" ? subcounty : county} | {layer === "lulc" ? "Sentinel-2 LULC" : `${crop} Yield`}
             </p>
           </div>
+        </div>
+
+        {/* MAP EXPORT ACTION */}
+        <div className="pointer-events-auto">
+          <MapExportModal
+            county={county}
+            subcounty={subcounty}
+            year={year}
+            crop={crop}
+            layer={layer}
+            opacity={opacity}
+            predictedYield={predictedYield}
+            baseYield={baseYield}
+            palette={palette}
+            legendLabels={{ low: loLabel, mid: midLabel, high: hiLabel }}
+          />
         </div>
       </div>
 
