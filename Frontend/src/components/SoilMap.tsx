@@ -96,6 +96,7 @@ export const SoilMap = ({ county, subcounty }: SoilMapProps) => {
         zoom={6} 
         style={{ height: '100%', width: '100%', background: '#020617' }}
         zoomControl={false}
+        preferCanvas={true}
       >
         <TileLayer 
             attribution='&copy; OpenStreetMap' 

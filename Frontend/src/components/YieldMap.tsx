@@ -347,6 +347,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
         center={[-0.0236, 37.9062]} zoom={6}
         style={{ height: "100%", width: "100%", background: "#f8f9fa" }}
         zoomControl={false}
+        preferCanvas={true}
       >
         <TileLayer attribution="&copy; OpenStreetMap" url={getTileUrl()} />
         <ZoomControl position="topright" />
