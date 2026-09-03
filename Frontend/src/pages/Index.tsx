@@ -41,7 +41,6 @@ import {
   MessageSquare,
   ShieldAlert
 } from "lucide-react";
-
 const Index = () => {
   const [showDashboard, setShowDashboard] = useState<boolean>(() => {
     try {
