@@ -177,8 +177,9 @@ export const MapExportModal = ({
       const targetEl = printAreaRef.current;
       if (!targetEl) throw new Error("Print area reference not found");
 
+      // High-resolution capture (scale 2.5 delivers crisp ~300 DPI publication quality)
       const exportCanvas = await html2canvas(targetEl, {
-        scale: 2,
+        scale: 2.5,
         useCORS: true,
         allowTaint: true,
         backgroundColor: "#070b14",
@@ -193,13 +194,18 @@ export const MapExportModal = ({
         link.href = exportCanvas.toDataURL("image/png", 1.0);
         link.click();
       } else {
-        // Landscape A4 PDF: 297mm x 210mm
-        const pdf = new jsPDF("l", "mm", "a4");
+        // Landscape A4 PDF: exactly 297mm x 210mm matching the 297:210 aspect ratio
+        const pdf = new jsPDF({
+          orientation: "landscape",
+          unit: "mm",
+          format: "a4",
+          compress: true,
+        });
         const pageWidth = 297;
         const pageHeight = 210;
         const imgData = exportCanvas.toDataURL("image/png", 1.0);
         
-        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
         pdf.save(`${fileName}.pdf`);
       }
 
@@ -225,8 +231,8 @@ export const MapExportModal = ({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100 rounded-3xl p-6 z-[99999] shadow-[0_0_90px_rgba(0,0,0,0.95)]">
-        <DialogHeader className="border-b border-slate-800 pb-4">
+      <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto bg-slate-950 border-slate-800 text-slate-100 rounded-3xl p-6 z-[99999] shadow-[0_0_90px_rgba(0,0,0,0.95)]">
+        <DialogHeader className="border-b border-slate-800 pb-3">
           <DialogTitle className="text-lg font-black tracking-tight text-white flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-emerald-400" />
@@ -234,7 +240,7 @@ export const MapExportModal = ({
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="bg-emerald-950/80 text-emerald-400 border-emerald-800 text-[10px] uppercase font-mono">
-                Full Boundary Fit
+                A4 Landscape Full Extent
               </Badge>
               <Button
                 variant="ghost"
@@ -248,14 +254,11 @@ export const MapExportModal = ({
               </Button>
             </div>
           </DialogTitle>
-          <p className="text-xs text-slate-400 mt-1">
-            Export a high-definition official map sheet for {county} {activeSubcounty ? `(${activeSubcounty})` : ""} ({crop} · {year}) automatically fitted to the complete administrative boundary.
-          </p>
         </DialogHeader>
 
-        {/* CONTROLS BAR */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 bg-slate-900/50 p-4 rounded-2xl border border-slate-800/80 text-xs">
-          <div className="space-y-3">
+        {/* MAP OPTIONS & CONFIGURATION BAR */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2 border-b border-slate-800/80">
+          <div className="space-y-1.5">
             <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Map Elements & Overlays</span>
             <div className="grid grid-cols-2 gap-2">
               <div className="flex items-center space-x-2">
@@ -277,7 +280,7 @@ export const MapExportModal = ({
             </div>
           </div>
 
-          <div className="space-y-2 flex flex-col justify-between">
+          <div className="space-y-1.5 flex flex-col justify-between">
             <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Format Selection</span>
             <div className="flex items-center gap-3">
               <Button
@@ -286,7 +289,7 @@ export const MapExportModal = ({
                 onClick={() => setExportFormat("png")}
                 className={`flex-1 gap-2 font-bold text-xs ${exportFormat === "png" ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/30" : "border-slate-700 text-slate-300"}`}
               >
-                <ImageIcon className="h-4 w-4" /> PNG Image
+                <ImageIcon className="h-4 w-4" /> PNG Image (300 DPI)
               </Button>
               <Button
                 variant={exportFormat === "pdf" ? "default" : "outline"}
@@ -300,60 +303,57 @@ export const MapExportModal = ({
           </div>
         </div>
 
-        {/* PRINT / EXPORT CANVAS (Rendered for capture & live preview) */}
-        <div className="border border-slate-800 rounded-2xl overflow-hidden shadow-2xl bg-[#090d16] p-4 text-slate-200">
+        {/* PRINT / EXPORT CANVAS (Rendered with exact A4 Landscape 297:210 aspect ratio) */}
+        <div className="border border-slate-800 rounded-2xl overflow-hidden shadow-2xl bg-[#090d16] p-3 text-slate-200">
           <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2">
-            <span>AgriWatch Map Sheet Preview (A4 Landscape Layout)</span>
-            <span className="text-emerald-400 font-bold">CRS: EPSG:4326 (WGS 84) · Projected EPSG:3857</span>
+            <span>A4 Landscape Map Preview (Map Fills Entire Sheet)</span>
+            <span className="text-emerald-400 font-bold">CRS: EPSG:4326 · 1:1 Aspect Ratio</span>
           </div>
 
           <div 
             ref={printAreaRef} 
-            className="w-full bg-[#070b14] border-2 border-slate-700 rounded-xl p-5 space-y-4 shadow-inner relative"
-            style={{ minHeight: "450px" }}
+            className="w-full bg-[#070b14] border-2 border-slate-700 rounded-xl p-4 flex flex-col justify-between shadow-inner relative overflow-hidden"
+            style={{ aspectRatio: "297 / 210", minHeight: "520px" }}
           >
-            {/* HEADER BLOCK */}
-            <div className="border-b-2 border-slate-700 pb-3 flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="bg-emerald-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-widest">
-                    AgriWatch-KE
-                  </span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    National Food Security Early Warning System
-                  </span>
+            {/* COMPACT SLIM HEADER */}
+            <div className="border-b border-slate-700/90 pb-2 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <span className="bg-emerald-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-widest shadow-sm">
+                  AgriWatch-KE
+                </span>
+                <div>
+                  <h2 className="text-base font-black text-white uppercase tracking-tight leading-none">
+                    {county} County {activeSubcounty ? `— ${activeSubcounty} Sub-county` : ""}
+                  </h2>
+                  <p className="text-[11px] font-bold text-emerald-400 leading-none mt-1">
+                    {mapTitle} · Harvest Year {year}
+                  </p>
                 </div>
-                <h2 className="text-lg font-black text-white uppercase tracking-tight">
-                  {county} County {activeSubcounty ? `— ${activeSubcounty} Sub-county` : ""}
-                </h2>
-                <p className="text-xs font-bold text-emerald-400">
-                  {mapTitle} · Harvest Year {year}
-                </p>
               </div>
 
-              <div className="text-right space-y-1">
-                <Badge variant="outline" className="bg-slate-900 border-slate-700 text-slate-300 text-[10px] font-mono">
-                  Target Crop: {crop}
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="bg-slate-900/90 border-slate-700 text-slate-200 text-[10px] font-mono px-2 py-0.5">
+                  Crop: <strong className="text-emerald-400 ml-1 font-bold">{crop}</strong>
                 </Badge>
-                <p className="text-[9px] font-mono text-slate-500">
-                  Generated: {nowFormatted}
-                </p>
+                <span className="text-[9px] font-mono text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800">
+                  {nowFormatted}
+                </span>
               </div>
             </div>
 
-            {/* MAP VIEW WITH GRATICULE & EMBEDDED CONTROLS */}
-            <div className="relative w-full h-[320px] bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center">
+            {/* MASSIVE HERO MAP VIEW (Fills ~85% of total sheet height) */}
+            <div className="flex-1 my-2 min-h-0 relative w-full bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
               {isCapturingPreview && (
                 <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-2 text-slate-300">
                   <Loader2 className="h-7 w-7 animate-spin text-emerald-400" />
-                  <span className="text-[11px] font-bold uppercase tracking-widest">Fitting Full Boundary & Rendering...</span>
+                  <span className="text-[11px] font-bold uppercase tracking-widest">Rendering Full A4 Boundary...</span>
                 </div>
               )}
 
               {previewImage ? (
                 <img 
                   alt="Live Map Preview" 
-                  className="w-full h-full object-contain bg-slate-950"
+                  className="w-full h-full object-cover bg-slate-950"
                   src={previewImage}
                 />
               ) : (
@@ -373,7 +373,7 @@ export const MapExportModal = ({
                     ))}
                   </div>
                   
-                  {/* Corner Coordinates - Carefully Offset to Prevent Overlap */}
+                  {/* Corner Coordinates */}
                   <span className="absolute top-2 left-2 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
                     {nwCoord}
                   </span>
@@ -389,7 +389,7 @@ export const MapExportModal = ({
                 </div>
               )}
 
-              {/* NORTH ARROW (Cleanly Anchored in Top-Right Corner) */}
+              {/* NORTH ARROW */}
               {showNorthArrow && (
                 <div className="absolute top-2 right-2 bg-slate-900/95 border border-slate-700 rounded-md px-2 py-1 shadow-2xl flex flex-col items-center justify-center pointer-events-none">
                   <Compass className="h-4 w-4 text-emerald-400" />
@@ -397,7 +397,7 @@ export const MapExportModal = ({
                 </div>
               )}
 
-              {/* SCALE BAR (Cleanly Anchored at Bottom-Left Corner) */}
+              {/* SCALE BAR */}
               <div className="absolute bottom-2 left-2 bg-slate-900/95 border border-slate-700 px-2 py-1 rounded shadow-lg text-[8px] font-mono text-slate-300 pointer-events-none flex items-center gap-1.5">
                 <span>0</span>
                 <div className="w-10 h-1 bg-gradient-to-r from-white via-slate-500 to-black border border-slate-400" />
@@ -405,86 +405,64 @@ export const MapExportModal = ({
               </div>
             </div>
 
-            {/* BOTTOM METADATA & LEGEND PANEL */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[9px] items-stretch">
+            {/* SLEEK CARTOGRAPHIC FOOTER BAR (Horizontal Ribbon) */}
+            <div className="flex-shrink-0 pt-1 border-t border-slate-800/80 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 text-[8.5px]">
               {/* 1. SYMBOLOGY / LEGEND */}
               {showLegend && (
-                <div className="bg-slate-900/80 border border-slate-800 p-3 rounded-xl flex flex-col justify-between">
-                  <div>
-                    <span className="font-black text-slate-300 uppercase tracking-wider block text-[8px] flex items-center gap-1 mb-2">
-                      <Layers className="h-3 w-3 text-emerald-400" /> Map Legend
-                    </span>
+                <div className="bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-lg flex items-center gap-3">
+                  <span className="font-black text-slate-300 uppercase tracking-wider text-[8px] flex items-center gap-1">
+                    <Layers className="h-3 w-3 text-emerald-400" /> Legend:
+                  </span>
 
-                    {layer === "pixel" && (
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: palette.high }} />
-                          <span className="text-slate-300 font-medium">High: {legendLabels.high}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: palette.mid }} />
-                          <span className="text-slate-300 font-medium">Average: {legendLabels.mid}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: palette.low }} />
-                          <span className="text-slate-300 font-medium">Low: {legendLabels.low}</span>
-                        </div>
+                  {layer === "pixel" && (
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
+                        <span className="text-slate-200 font-medium">High: {legendLabels.high}</span>
                       </div>
-                    )}
-
-                    {layer === "lulc" && (
-                      <div className="grid grid-cols-2 gap-1.5 text-[8px]">
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{background: "#E49635"}} /><span className="text-amber-300 font-bold">Crops</span></div>
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{background: "#397D49"}} /><span className="text-emerald-400 font-medium">Forest</span></div>
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{background: "#88B053"}} /><span className="text-slate-300 font-medium">Grass</span></div>
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{background: "#C4281B"}} /><span className="text-red-400 font-bold">Built-up</span></div>
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{background: "#419BDF"}} /><span className="text-blue-400 font-medium">Water</span></div>
-                        <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{background: "#DFC35A"}} /><span className="text-slate-300 font-medium">Shrub</span></div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
+                        <span className="text-slate-200 font-medium">Avg: {legendLabels.mid}</span>
                       </div>
-                    )}
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
+                        <span className="text-slate-200 font-medium">Low: {legendLabels.low}</span>
+                      </div>
+                    </div>
+                  )}
 
-                    {(layer === "osm" || layer === "satellite") && (
-                      <p className="text-slate-400 italic text-[8px]">Administrative county boundary and reference base cartography.</p>
-                    )}
-                  </div>
+                  {layer === "lulc" && (
+                    <div className="flex items-center gap-2 text-[8px]">
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#E49635"}} /><span className="text-amber-300 font-bold">Crops</span></div>
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#397D49"}} /><span className="text-emerald-400 font-medium">Forest</span></div>
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#88B053"}} /><span className="text-slate-300 font-medium">Grass</span></div>
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#C4281B"}} /><span className="text-red-400 font-bold">Built-up</span></div>
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#419BDF"}} /><span className="text-blue-400 font-medium">Water</span></div>
+                      <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#DFC35A"}} /><span className="text-slate-300 font-medium">Shrub</span></div>
+                    </div>
+                  )}
+
+                  {(layer === "osm" || layer === "satellite") && (
+                    <span className="text-slate-400 italic">Official Administrative Boundary & Reference Base</span>
+                  )}
                 </div>
               )}
 
-              {/* 2. TECHNICAL SPECIFICATIONS */}
+              {/* 2. SPATIAL SPECIFICATIONS */}
               {showMetadata && (
-                <div className="bg-slate-900/80 border border-slate-800 p-3 rounded-xl flex flex-col justify-between font-mono">
-                  <div>
-                    <span className="font-black text-slate-300 uppercase tracking-wider block text-[8px] flex items-center gap-1 mb-2">
-                      <Info className="h-3 w-3 text-blue-400" /> Spatial Specifications
-                    </span>
-                    <p className="text-slate-400 mb-1"><strong className="text-slate-200 font-sans">Layer:</strong> {layerName}</p>
-                    <p className="text-slate-400 mb-1"><strong className="text-slate-200 font-sans">Opacity:</strong> {Math.round(opacity * 100)}% overlay transparency</p>
-                    <p className="text-slate-400 mb-1"><strong className="text-slate-200 font-sans">Resolution:</strong> {spatialResolution}</p>
-                    <p className="text-slate-400"><strong className="text-slate-200 font-sans">Geographic CRS:</strong> WGS 84 (EPSG:4326) · Web Mercator (EPSG:3857)</p>
-                  </div>
+                <div className="bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-lg flex items-center gap-2 font-mono text-[8px] text-slate-400">
+                  <Info className="h-3 w-3 text-blue-400 flex-shrink-0" />
+                  <span>Res: <strong className="text-slate-200">{spatialResolution}</strong></span>
+                  <span className="text-slate-600">•</span>
+                  <span>CRS: <strong className="text-slate-200">WGS 84 (EPSG:4326)</strong></span>
                 </div>
               )}
 
               {/* 3. SOURCES & CITATIONS */}
               {showMetadata && (
-                <div className="bg-slate-900/80 border border-slate-800 p-3 rounded-xl flex flex-col justify-between text-[8px]">
-                  <div>
-                    <span className="font-black text-slate-300 uppercase tracking-wider block flex items-center gap-1 text-[8px] mb-2">
-                      <Check className="h-3 w-3 text-emerald-400" /> Data Sources & Models
-                    </span>
-                    <p className="text-slate-400 mb-1">
-                      <strong className="text-slate-300">Ground-truth:</strong> Ministry of Agriculture / AFA Kenya.
-                    </p>
-                    <p className="text-slate-400 mb-1">
-                      <strong className="text-slate-300">Remote Sensing:</strong> Google Earth Engine (CHIRPS, MODIS, Dynamic World V1).
-                    </p>
-                    <p className="text-slate-400">
-                      <strong className="text-slate-300">Predictor:</strong> XGBoost ML Regressor (County-level tuned).
-                    </p>
-                  </div>
-                  <p className="text-slate-500 italic pt-1 border-t border-slate-800/80 text-[7.5px]">
-                    AgriWatch-KE · Decision Support Bulletin
-                  </p>
+                <div className="bg-slate-900/90 border border-slate-800 px-2.5 py-1 rounded-lg flex items-center gap-2 text-[8px] text-slate-400">
+                  <Check className="h-3 w-3 text-emerald-400 flex-shrink-0" />
+                  <span>Sources: <strong className="text-slate-200">MoA / AFA · GEE · GeoAI XGBoost</strong></span>
                 </div>
               )}
             </div>
