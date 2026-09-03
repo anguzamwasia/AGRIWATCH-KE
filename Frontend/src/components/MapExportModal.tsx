@@ -95,7 +95,10 @@ export const MapExportModal = ({
   });
 
   // Dynamic corner coordinates calculated from displayBounds
-  const formatDms = (val: number, isLat: boolean) => {
+  const formatDms = (val: any, isLat: boolean) => {
+    if (typeof val !== "number" || isNaN(val)) {
+      return isLat ? "0°00'N" : "35°00'E";
+    }
     const dir = isLat ? (val >= 0 ? "N" : "S") : (val >= 0 ? "E" : "W");
     const abs = Math.abs(val);
     const deg = Math.floor(abs);
@@ -104,13 +107,14 @@ export const MapExportModal = ({
   };
 
   const activeBnds = useMemo(() => {
-    if (displayBounds && Array.isArray(displayBounds) && displayBounds.length === 2) {
-      return {
-        south: displayBounds[0][0],
-        west: displayBounds[0][1],
-        north: displayBounds[1][0],
-        east: displayBounds[1][1],
-      };
+    if (displayBounds && Array.isArray(displayBounds) && displayBounds.length >= 2) {
+      const p0 = displayBounds[0];
+      const p1 = displayBounds[1];
+      const south = typeof p0 === "object" && p0 !== null ? (Array.isArray(p0) ? p0[0] : (p0.lat ?? -0.02)) : -0.02;
+      const west = typeof p0 === "object" && p0 !== null ? (Array.isArray(p0) ? p0[1] : (p0.lng ?? 34.85)) : 34.85;
+      const north = typeof p1 === "object" && p1 !== null ? (Array.isArray(p1) ? p1[0] : (p1.lat ?? 0.95)) : 0.95;
+      const east = typeof p1 === "object" && p1 !== null ? (Array.isArray(p1) ? p1[1] : (p1.lng ?? 35.59)) : 35.59;
+      return { south, west, north, east };
     }
     return { south: -0.02, north: 0.95, west: 34.85, east: 35.59 };
   }, [displayBounds]);

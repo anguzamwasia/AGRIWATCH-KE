@@ -43,7 +43,27 @@ import {
 } from "lucide-react";
 
 const Index = () => {
-  const [showDashboard, setShowDashboard] = useState<boolean>(false);
+  const [showDashboard, setShowDashboard] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("agriwatch_auth") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const handleEnterDashboard = () => {
+    try {
+      localStorage.setItem("agriwatch_auth", "true");
+    } catch (_) {}
+    setShowDashboard(true);
+  };
+
+  const handleExitDashboard = () => {
+    try {
+      localStorage.removeItem("agriwatch_auth");
+    } catch (_) {}
+    setShowDashboard(false);
+  };
   const [selectedCounty, setSelectedCounty] = useState<string>("Uasin Gishu");
   const [selectedSubcounty, setSelectedSubcounty] = useState<string>("Select subcounty");
   const [selectedYear, setSelectedYear] = useState<number>(2026);
@@ -159,7 +179,7 @@ const Index = () => {
     fetchPhenology();
   }, [selectedCounty, selectedSubcounty, selectedYear, showDashboard]);
 
-  if (!showDashboard) return <LandingPage onEnter={() => setShowDashboard(true)} />;
+  if (!showDashboard) return <LandingPage onEnter={handleEnterDashboard} />;
 
   const activeMetrics = trendData.find((d: any) => d.year === selectedYear) || 
                        (trendData.length > 0 ? trendData[trendData.length - 1] : null);
@@ -228,7 +248,7 @@ const Index = () => {
               <Badge variant="outline" className="text-[10px] uppercase font-bold text-emerald-400 border-emerald-800/50 bg-emerald-900/20">Executive Decision Support System</Badge>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setShowDashboard(false)} className="text-slate-400 hover:text-red-400 hover:bg-slate-800 font-bold">
+          <Button variant="ghost" size="sm" onClick={handleExitDashboard} className="text-slate-400 hover:text-red-400 hover:bg-slate-800 font-bold">
             <LogOut className="h-4 w-4 mr-2" /> Exit System
           </Button>
         </div>

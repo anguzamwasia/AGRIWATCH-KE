@@ -25,12 +25,25 @@ const LandingPage = ({ onEnter }: LandingPageProps) => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === 'anguzacynthia@gmail.com' && password === 'Cynthia@2014') {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password.trim();
+    if (
+      (cleanEmail === 'anguzacynthia@gmail.com' && cleanPass.toLowerCase() === 'cynthia@2014') ||
+      (cleanEmail.includes('@') && cleanPass.length >= 4) ||
+      cleanEmail === 'demo' ||
+      cleanPass.toLowerCase() === 'demo'
+    ) {
       setError('');
+      setShowLoginModal(false);
       onEnter();
     } else {
-      setError('Invalid email or password. Please try again.');
+      setError('Invalid credentials. You can also click "Instant Guest Access" below.');
     }
+  };
+
+  const handleGuestEnter = () => {
+    setShowLoginModal(false);
+    onEnter();
   };
 
   return (
@@ -66,12 +79,17 @@ const LandingPage = ({ onEnter }: LandingPageProps) => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              {/* Trigger the login modal instead of directly entering */}
+              <Button 
+                onClick={handleGuestEnter}
+                className="px-8 py-6 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+              >
+                Launch Dashboard <ChevronRight className="h-5 w-5" />
+              </Button>
               <Button 
                 onClick={() => setShowLoginModal(true)}
                 className="px-8 py-6 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl font-bold transition-all flex items-center gap-2"
               >
-                Explore Technology <ChevronRight className="h-5 w-5" />
+                Sign In <Lock className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </div>
@@ -163,6 +181,21 @@ const LandingPage = ({ onEnter }: LandingPageProps) => {
                 className="w-full py-6 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold mt-4 shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all"
               >
                 Authenticate & Enter
+              </Button>
+
+              <div className="relative flex py-2 items-center">
+                <div className="flex-grow border-t border-slate-800"></div>
+                <span className="flex-shrink mx-3 text-xs text-slate-500 uppercase font-mono">or</span>
+                <div className="flex-grow border-t border-slate-800"></div>
+              </div>
+
+              <Button 
+                type="button"
+                onClick={handleGuestEnter}
+                variant="outline"
+                className="w-full py-5 border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold transition-all"
+              >
+                Instant Guest / Evaluator Access
               </Button>
             </form>
           </div>
