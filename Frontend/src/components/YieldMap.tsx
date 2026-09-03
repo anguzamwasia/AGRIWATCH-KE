@@ -309,7 +309,7 @@ export const YieldMap = ({ crop, county, subcounty, year, layer, lulcMapPath, pr
       case "satellite": case "lulc":
         return "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
       case "pixel":
-        return "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+        return "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}";
       default:
         return "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     }

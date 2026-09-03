@@ -94,18 +94,44 @@ export const MapExportModal = ({
     timeZone: "Africa/Nairobi" 
   });
 
+  // Dynamic corner coordinates calculated from displayBounds
+  const formatDms = (val: number, isLat: boolean) => {
+    const dir = isLat ? (val >= 0 ? "N" : "S") : (val >= 0 ? "E" : "W");
+    const abs = Math.abs(val);
+    const deg = Math.floor(abs);
+    const min = Math.round((abs - deg) * 60);
+    return `${deg}°${min.toString().padStart(2, "0")}'${dir}`;
+  };
+
+  const activeBnds = useMemo(() => {
+    if (displayBounds && Array.isArray(displayBounds) && displayBounds.length === 2) {
+      return {
+        south: displayBounds[0][0],
+        west: displayBounds[0][1],
+        north: displayBounds[1][0],
+        east: displayBounds[1][1],
+      };
+    }
+    return { south: -0.02, north: 0.95, west: 34.85, east: 35.59 };
+  }, [displayBounds]);
+
+  const nwCoord = `${formatDms(activeBnds.north, true)}, ${formatDms(activeBnds.west, false)}`;
+  const neCoord = `${formatDms(activeBnds.north, true)}, ${formatDms(activeBnds.east, false)}`;
+  const swCoord = `${formatDms(activeBnds.south, true)}, ${formatDms(activeBnds.west, false)}`;
+  const seCoord = `${formatDms(activeBnds.south, true)}, ${formatDms(activeBnds.east, false)}`;
+
   // Fit the whole boundary extent and capture a clean map snapshot
   const captureFullBoundaryMap = async () => {
     setIsCapturingPreview(true);
     try {
       // 1. If map instance and bounds are available, programmatically fit the full county/subcounty extent
       if (mapInstance && displayBounds) {
-        mapInstance.fitBounds(displayBounds, { padding: [15, 15], animate: false });
+        mapInstance.fitBounds(displayBounds, { padding: [25, 25], animate: false });
         mapInstance.invalidateSize();
       }
 
       // 2. Allow Leaflet tiles and WebGL/Canvas to fully render
-      await new Promise((r) => setTimeout(r, 450));
+      await new Promise((r) => setTimeout(r, 850));
 
       const leafletMapEl = document.querySelector(".leaflet-container") as HTMLElement;
       if (leafletMapEl) {
@@ -274,7 +300,7 @@ export const MapExportModal = ({
         <div className="border border-slate-800 rounded-2xl overflow-hidden shadow-2xl bg-[#090d16] p-4 text-slate-200">
           <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2">
             <span>AgriWatch Map Sheet Preview (A4 Landscape Layout)</span>
-            <span className="text-emerald-400 font-bold">CRS: EPSG:3857 (WGS 84)</span>
+            <span className="text-emerald-400 font-bold">CRS: EPSG:4326 (WGS 84) · Projected EPSG:3857</span>
           </div>
 
           <div 
@@ -312,7 +338,7 @@ export const MapExportModal = ({
             </div>
 
             {/* MAP VIEW WITH GRATICULE & EMBEDDED CONTROLS */}
-            <div className="relative w-full h-[270px] bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center">
+            <div className="relative w-full h-[320px] bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center">
               {isCapturingPreview && (
                 <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-2 text-slate-300">
                   <Loader2 className="h-7 w-7 animate-spin text-emerald-400" />
@@ -323,7 +349,7 @@ export const MapExportModal = ({
               {previewImage ? (
                 <img 
                   alt="Live Map Preview" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain bg-slate-950"
                   src={previewImage}
                 />
               ) : (
@@ -345,16 +371,16 @@ export const MapExportModal = ({
                   
                   {/* Corner Coordinates - Carefully Offset to Prevent Overlap */}
                   <span className="absolute top-2 left-2 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    0°30'N, 35°15'E
+                    {nwCoord}
                   </span>
                   <span className="absolute top-2 right-14 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    0°30'N, 35°45'E
+                    {neCoord}
                   </span>
                   <span className="absolute bottom-9 left-2 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    0°00'N, 35°15'E
+                    {swCoord}
                   </span>
                   <span className="absolute bottom-2 right-2 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    0°00'N, 35°45'E
+                    {seCoord}
                   </span>
                 </div>
               )}
@@ -430,7 +456,7 @@ export const MapExportModal = ({
                     <p className="text-slate-400 mb-1"><strong className="text-slate-200 font-sans">Layer:</strong> {layerName}</p>
                     <p className="text-slate-400 mb-1"><strong className="text-slate-200 font-sans">Opacity:</strong> {Math.round(opacity * 100)}% overlay transparency</p>
                     <p className="text-slate-400 mb-1"><strong className="text-slate-200 font-sans">Resolution:</strong> {spatialResolution}</p>
-                    <p className="text-slate-400"><strong className="text-slate-200 font-sans">Projection:</strong> WGS 84 / Pseudo-Mercator (EPSG:3857)</p>
+                    <p className="text-slate-400"><strong className="text-slate-200 font-sans">Geographic CRS:</strong> WGS 84 (EPSG:4326) · Web Mercator (EPSG:3857)</p>
                   </div>
                 </div>
               )}

@@ -60,7 +60,7 @@ class EarthEngineService:
         import geopandas as gpd
         base_dir = Path(__file__).parent.parent
         shp_path = base_dir / "data" / "boundaries" / "ken_admbnda_adm2_iebc_20191031.shp"
-        self.gdf = gpd.read_file(str(shp_path))
+        self.gdf = gpd.read_file(str(shp_path)).to_crs(epsg=4326)
         self.gdf['subcounty'] = self.gdf['ADM2_EN'].str.lower()
         self.gdf['county'] = self.gdf['ADM1_EN'].str.lower()
         
@@ -71,12 +71,25 @@ class EarthEngineService:
 
 
     def _to_ee_geom(self, geom):
-        if geom.geom_type == 'Polygon':
-            coords = [list(geom.exterior.coords)]
-            return ee.Geometry.Polygon(coords)
-        elif geom.geom_type == 'MultiPolygon':
-            coords = [[list(poly.exterior.coords)] for poly in geom.geoms]
-            return ee.Geometry.MultiPolygon(coords)
+        if geom is None:
+            return None
+        try:
+            from shapely.geometry import mapping
+            from shapely.ops import unary_union
+            if geom.geom_type in ['Polygon', 'MultiPolygon']:
+                return ee.Geometry(mapping(geom))
+            elif geom.geom_type == 'GeometryCollection':
+                polys = [g for g in geom.geoms if g.geom_type in ['Polygon', 'MultiPolygon']]
+                if polys:
+                    return ee.Geometry(mapping(unary_union(polys)))
+        except Exception as e:
+            logger.warning(f"Error converting to ee.Geometry with mapping: {e}")
+            if geom.geom_type == 'Polygon':
+                coords = [list(geom.exterior.coords)]
+                return ee.Geometry.Polygon(coords)
+            elif geom.geom_type == 'MultiPolygon':
+                coords = [[list(poly.exterior.coords)] for poly in geom.geoms]
+                return ee.Geometry.MultiPolygon(coords)
         return None
 
     def get_geometry(self, subcounty: str, county: str):
