@@ -180,7 +180,8 @@ export const MapExportModal = ({
 
     // Available space inside the A4 landscape sheet (beside the right metadata sidebar)
     const maxH = 550;
-    const maxW = showMetadata ? 560 : 840;
+    const hasSidebar = showLegend || showMetadata;
+    const maxW = hasSidebar ? 560 : 840;
 
     let targetH = maxH;
     let targetW = Math.round(targetH * aspect);
@@ -200,7 +201,7 @@ export const MapExportModal = ({
       hKm: Math.round(hKm),
       kmPerCm: Math.max(1, kmPerCm)
     };
-  }, [activeBnds, showMetadata]);
+  }, [activeBnds, showLegend, showMetadata]);
 
   // Fit the whole boundary extent and capture ONLY the Area of Interest (AOI)
   const captureFullBoundaryMap = async () => {
@@ -252,9 +253,9 @@ export const MapExportModal = ({
             const rawH = maxY - minY;
 
             if (rawW > 25 && rawH > 25) {
-              // 2.5% aesthetic cartographic neatline padding
-              const padX = rawW * 0.025;
-              const padY = rawH * 0.025;
+              // 4% aesthetic cartographic neatline padding around the boundary
+              const padX = rawW * 0.04;
+              const padY = rawH * 0.04;
 
               const cropX = Math.max(0, minX - padX);
               const cropY = Math.max(0, minY - padY);
@@ -559,70 +560,6 @@ export const MapExportModal = ({
                         </div>
                         <span className="text-[6.5px] text-slate-400 font-bold tracking-widest text-center uppercase">Kilometers</span>
                       </div>
-
-                      {/* IN-MAP FLOATING LEGEND (Bottom-Right, directly inside map frame) */}
-                      {showLegend && (
-                        <div className="absolute bottom-3 right-3 z-20 bg-slate-950/90 backdrop-blur-md border border-slate-700/90 rounded-lg p-2.5 shadow-2xl max-w-[210px] text-[8px]">
-                          <div className="flex items-center gap-1.5 pb-1 mb-1.5 border-b border-slate-800">
-                            <Layers className="h-3 w-3 text-emerald-400" />
-                            <span className="font-bold text-slate-200 text-[8px] uppercase tracking-wider">
-                              Map Legend
-                            </span>
-                          </div>
-
-                          {layer === "soil" && (
-                            <div className="space-y-1">
-                              <div className="text-[7.5px] font-mono text-slate-400 mb-1">
-                                Diagnostic: <strong className="text-emerald-400">{currentSoilMeta.label}</strong>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
-                                <span className="text-slate-200 font-medium">{currentSoilMeta.highLabel}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
-                                <span className="text-slate-200 font-medium">{currentSoilMeta.midLabel}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
-                                <span className="text-slate-200 font-medium">{currentSoilMeta.lowLabel}</span>
-                              </div>
-                            </div>
-                          )}
-
-                          {layer === "pixel" && (
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
-                                <span className="text-slate-200 font-medium">High: {legendLabels.high}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
-                                <span className="text-slate-200 font-medium">Average: {legendLabels.mid}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
-                                <span className="text-slate-200 font-medium">Low: {legendLabels.low}</span>
-                              </div>
-                            </div>
-                          )}
-
-                          {layer === "lulc" && (
-                            <div className="grid grid-cols-2 gap-1 text-[7.5px]">
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#E49635"}} /><span className="text-amber-300 font-bold">Crops</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#397D49"}} /><span className="text-emerald-400 font-medium">Forest</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#88B053"}} /><span className="text-slate-300 font-medium">Grass</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#C4281B"}} /><span className="text-red-400 font-bold">Built-up</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#419BDF"}} /><span className="text-blue-400 font-medium">Water</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#DFC35A"}} /><span className="text-slate-300 font-medium">Shrub</span></div>
-                            </div>
-                          )}
-
-                          {(layer === "osm" || layer === "satellite") && (
-                            <p className="text-slate-400 italic text-[7.5px]">Administrative county boundary and reference base cartography.</p>
-                          )}
-                        </div>
-                      )}
                     </div>
 
                     {/* OUTSIDE LATITUDE & LONGITUDE TICKS (Strictly outside the neatline frame) */}
@@ -689,105 +626,176 @@ export const MapExportModal = ({
                 </div>
               </div>
 
-              {/* RIGHT COLUMN: SOURCES & METADATA SIDEBAR */}
-              {showMetadata && (
+              {/* RIGHT COLUMN: LEGEND, SOURCES & METADATA SIDEBAR (Outside AOI Boundary) */}
+              {(showLegend || showMetadata) && (
                 <div className="w-[290px] lg:w-[320px] flex-shrink-0 flex flex-col justify-between gap-2.5 text-[8.5px]">
-                  {/* Card 1: Spatial Specifications */}
-                  <div className="bg-slate-900/95 border border-slate-800 p-3 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-1.5 pb-1.5 mb-2 border-b border-slate-800">
-                        <Info className="h-3.5 w-3.5 text-blue-400" />
-                        <span className="font-black text-slate-200 uppercase tracking-wider text-[9px]">
-                          Spatial Specifications
+                  {/* Card 1: MAP LEGEND (Placed outside the boundary of area of interest) */}
+                  {showLegend && (
+                    <div className="bg-slate-900/95 border border-slate-800 p-2.5 rounded-xl shadow-lg flex flex-col">
+                      <div className="flex items-center gap-1.5 pb-1 mb-1.5 border-b border-slate-800">
+                        <Layers className="h-3.5 w-3.5 text-emerald-400" />
+                        <span className="font-black text-slate-200 uppercase tracking-wider text-[8.5px]">
+                          Map Legend
                         </span>
-                      </div>
-                      <div className="space-y-1.5 font-mono text-[8px]">
-                        <div>
-                          <span className="text-slate-400 block font-sans">Active Layer:</span>
-                          <span className="text-slate-200 font-semibold">{layerName}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Resolution:</span>
-                          <span className="text-slate-200">{spatialResolution}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Transparency:</span>
-                          <span className="text-slate-200">{Math.round(opacity * 100)}% overlay</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Geographic CRS:</span>
-                          <span className="text-slate-200">EPSG:4326 (WGS 84)</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Coverage Area:</span>
-                          <span className="text-emerald-400 font-bold">{mapFrameDims.wKm} × {mapFrameDims.hKm} km</span>
-                        </div>
                       </div>
 
-                      {/* Bounding Box Coordinates */}
-                      <div className="mt-2.5 pt-2 border-t border-slate-800/80">
-                        <span className="text-[7.5px] uppercase font-bold tracking-wider text-slate-400 block mb-1">
-                          Bounding Coordinates
-                        </span>
-                        <div className="grid grid-cols-2 gap-1 text-[7.5px] font-mono bg-slate-950/60 p-1.5 rounded border border-slate-800/60">
-                          <div><span className="text-slate-500">N:</span> <span className="text-cyan-300">{formatDms(activeBnds.north, true)}</span></div>
-                          <div><span className="text-slate-500">S:</span> <span className="text-cyan-300">{formatDms(activeBnds.south, true)}</span></div>
-                          <div><span className="text-slate-500">W:</span> <span className="text-cyan-300">{formatDms(activeBnds.west, false)}</span></div>
-                          <div><span className="text-slate-500">E:</span> <span className="text-cyan-300">{formatDms(activeBnds.east, false)}</span></div>
+                      {layer === "soil" && (
+                        <div className="space-y-1">
+                          <div className="text-[7.5px] font-mono text-slate-400 mb-0.5">
+                            Diagnostic: <strong className="text-emerald-400 font-bold">{currentSoilMeta.label}</strong>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.high }} />
+                            <span className="text-slate-200 font-medium text-[7.5px]">{currentSoilMeta.highLabel}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.mid }} />
+                            <span className="text-slate-200 font-medium text-[7.5px]">{currentSoilMeta.midLabel}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.low }} />
+                            <span className="text-slate-200 font-medium text-[7.5px]">{currentSoilMeta.lowLabel}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {layer === "pixel" && (
+                        <div className="space-y-1">
+                          <div className="text-[7.5px] font-mono text-slate-400 mb-0.5">
+                            Metric: <strong className="text-emerald-400 font-bold">{crop} Yield (t/ha)</strong>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.high }} />
+                            <span className="text-slate-200 font-medium text-[7.5px]">High: {legendLabels.high}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.mid }} />
+                            <span className="text-slate-200 font-medium text-[7.5px]">Average: {legendLabels.mid}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.low }} />
+                            <span className="text-slate-200 font-medium text-[7.5px]">Low: {legendLabels.low}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {layer === "lulc" && (
+                        <div className="grid grid-cols-2 gap-1 text-[7.5px]">
+                          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#E49635"}} /><span className="text-amber-300 font-bold">Crops</span></div>
+                          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#397D49"}} /><span className="text-emerald-400 font-medium">Forest</span></div>
+                          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#88B053"}} /><span className="text-slate-300 font-medium">Grass</span></div>
+                          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#C4281B"}} /><span className="text-red-400 font-bold">Built-up</span></div>
+                          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#419BDF"}} /><span className="text-blue-400 font-medium">Water</span></div>
+                          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#DFC35A"}} /><span className="text-slate-300 font-medium">Shrub</span></div>
+                        </div>
+                      )}
+
+                      {(layer === "osm" || layer === "satellite") && (
+                        <p className="text-slate-400 italic text-[7.5px]">Administrative county boundary and reference base cartography.</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Card 2: Spatial Specifications */}
+                  {showMetadata && (
+                    <div className="bg-slate-900/95 border border-slate-800 p-2.5 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-1.5 pb-1 mb-1.5 border-b border-slate-800">
+                          <Info className="h-3.5 w-3.5 text-blue-400" />
+                          <span className="font-black text-slate-200 uppercase tracking-wider text-[8.5px]">
+                            Spatial Specifications
+                          </span>
+                        </div>
+                        <div className="space-y-1 font-mono text-[7.5px]">
+                          <div>
+                            <span className="text-slate-400 block font-sans">Active Layer:</span>
+                            <span className="text-slate-200 font-semibold">{layerName}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-sans">Resolution:</span>
+                            <span className="text-slate-200">{spatialResolution}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-sans">Transparency:</span>
+                            <span className="text-slate-200">{Math.round(opacity * 100)}% overlay</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-sans">Geographic CRS:</span>
+                            <span className="text-slate-200">EPSG:4326 (WGS 84)</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-sans">Coverage Area:</span>
+                            <span className="text-emerald-400 font-bold">{mapFrameDims.wKm} × {mapFrameDims.hKm} km</span>
+                          </div>
+                        </div>
+
+                        {/* Bounding Box Coordinates */}
+                        <div className="mt-2 pt-1.5 border-t border-slate-800/80">
+                          <span className="text-[7px] uppercase font-bold tracking-wider text-slate-400 block mb-0.5">
+                            Bounding Coordinates
+                          </span>
+                          <div className="grid grid-cols-2 gap-1 text-[7px] font-mono bg-slate-950/60 p-1.5 rounded border border-slate-800/60">
+                            <div><span className="text-slate-500">N:</span> <span className="text-cyan-300">{formatDms(activeBnds.north, true)}</span></div>
+                            <div><span className="text-slate-500">S:</span> <span className="text-cyan-300">{formatDms(activeBnds.south, true)}</span></div>
+                            <div><span className="text-slate-500">W:</span> <span className="text-cyan-300">{formatDms(activeBnds.west, false)}</span></div>
+                            <div><span className="text-slate-500">E:</span> <span className="text-cyan-300">{formatDms(activeBnds.east, false)}</span></div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Card 2: Data Sources & Models */}
-                  <div className="bg-slate-900/95 border border-slate-800 p-3 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-1.5 pb-1.5 mb-2 border-b border-slate-800">
-                        <Check className="h-3.5 w-3.5 text-emerald-400" />
-                        <span className="font-black text-slate-200 uppercase tracking-wider text-[9px]">
-                          Data Sources & Models
-                        </span>
+                  {/* Card 3: Data Sources & Models */}
+                  {showMetadata && (
+                    <div className="bg-slate-900/95 border border-slate-800 p-2.5 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-1.5 pb-1 mb-1.5 border-b border-slate-800">
+                          <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          <span className="font-black text-slate-200 uppercase tracking-wider text-[8.5px]">
+                            Data Sources & Models
+                          </span>
+                        </div>
+                        <div className="space-y-1.5 text-[7.5px]">
+                          {layer === "soil" ? (
+                            <>
+                              <div>
+                                <span className="text-slate-400 font-bold block">Ground Truth:</span>
+                                <span className="text-slate-300">KALRO Kenya Soil Survey & ISRIC World Soil Information.</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 font-bold block">Remote Sensing:</span>
+                                <span className="text-slate-300">Sentinel-2 MSI & OpenLandMap 250m Global Grids.</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 font-bold block">Predictive Model:</span>
+                                <span className="text-slate-300">Random Forest Spatial Soil Ensemble (30m).</span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div>
+                                <span className="text-slate-400 font-bold block">Ground Truth:</span>
+                                <span className="text-slate-300">Ministry of Agriculture / Agriculture and Food Authority (AFA).</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 font-bold block">Remote Sensing:</span>
+                                <span className="text-slate-300">Google Earth Engine (CHIRPS, MODIS, Dynamic World).</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 font-bold block">Predictive Model:</span>
+                                <span className="text-slate-300">XGBoost ML Regressor (Tuned for Kenyan agro-ecological zones).</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
-                      <div className="space-y-2 text-[8px]">
-                        {layer === "soil" ? (
-                          <>
-                            <div>
-                              <span className="text-slate-400 font-bold block">Ground Truth:</span>
-                              <span className="text-slate-300">KALRO Kenya Soil Survey & ISRIC World Soil Information.</span>
-                            </div>
-                            <div>
-                              <span className="text-slate-400 font-bold block">Remote Sensing:</span>
-                              <span className="text-slate-300">Sentinel-2 MSI & OpenLandMap 250m Global Grids.</span>
-                            </div>
-                            <div>
-                              <span className="text-slate-400 font-bold block">Predictive Model:</span>
-                              <span className="text-slate-300">Random Forest Spatial Soil Ensemble (30m).</span>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div>
-                              <span className="text-slate-400 font-bold block">Ground Truth:</span>
-                              <span className="text-slate-300">Ministry of Agriculture / Agriculture and Food Authority (AFA).</span>
-                            </div>
-                            <div>
-                              <span className="text-slate-400 font-bold block">Remote Sensing:</span>
-                              <span className="text-slate-300">Google Earth Engine (CHIRPS, MODIS, Dynamic World).</span>
-                            </div>
-                            <div>
-                              <span className="text-slate-400 font-bold block">Predictive Model:</span>
-                              <span className="text-slate-300">XGBoost ML Regressor (Tuned for Kenyan agro-ecological zones).</span>
-                            </div>
-                          </>
-                        )}
+
+                      <div className="pt-1.5 mt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[7px] text-slate-500">
+                        <span className="font-bold text-emerald-500 uppercase tracking-widest">AgriWatch-KE</span>
+                        <span className="italic">Decision Support Bulletin</span>
                       </div>
                     </div>
-
-                    <div className="pt-2 mt-2 border-t border-slate-800/80 flex items-center justify-between text-[7px] text-slate-500">
-                      <span className="font-bold text-emerald-500 uppercase tracking-widest">AgriWatch-KE</span>
-                      <span className="italic">Decision Support Bulletin</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
