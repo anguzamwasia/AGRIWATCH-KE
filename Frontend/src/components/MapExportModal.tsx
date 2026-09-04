@@ -169,6 +169,39 @@ export const MapExportModal = ({
     }));
   }, [activeBnds]);
 
+  // Dynamically compute exact undistorted map frame dimensions based on true geographic AOI aspect ratio
+  const mapFrameDims = useMemo(() => {
+    const latSpan = Math.abs(activeBnds.north - activeBnds.south);
+    const lonSpan = Math.abs(activeBnds.east - activeBnds.west);
+    const midLat = (activeBnds.north + activeBnds.south) / 2;
+    const wKm = lonSpan * 111.32 * Math.cos((midLat * Math.PI) / 180);
+    const hKm = latSpan * 110.57;
+    const aspect = hKm > 0 ? wKm / hKm : 0.79;
+
+    // Available space inside the A4 sheet viewport
+    const maxH = 505;
+    const maxW = 940;
+
+    let targetH = maxH;
+    let targetW = Math.round(targetH * aspect);
+
+    if (targetW > maxW) {
+      targetW = maxW;
+      targetH = Math.round(targetW / aspect);
+    }
+
+    const kmPerCm = targetW > 0 ? Math.round((37.8 * wKm) / targetW) : 7;
+
+    return {
+      width: Math.max(260, targetW),
+      height: Math.max(260, targetH),
+      aspect,
+      wKm: Math.round(wKm),
+      hKm: Math.round(hKm),
+      kmPerCm: Math.max(1, kmPerCm)
+    };
+  }, [activeBnds]);
+
   // Fit the whole boundary extent and capture ONLY the Area of Interest (AOI)
   const captureFullBoundaryMap = async () => {
     setIsCapturingPreview(true);
@@ -228,11 +261,12 @@ export const MapExportModal = ({
               const cropW = Math.min(leafletMapEl.clientWidth - cropX, rawW + padX * 2);
               const cropH = Math.min(leafletMapEl.clientHeight - cropY, rawH + padY * 2);
 
-              const pixelRatio = canvas.width / leafletMapEl.clientWidth;
-              const sx = Math.floor(cropX * pixelRatio);
-              const sy = Math.floor(cropY * pixelRatio);
-              const sw = Math.floor(cropW * pixelRatio);
-              const sh = Math.floor(cropH * pixelRatio);
+              const scaleX = canvas.width / leafletMapEl.clientWidth;
+              const scaleY = canvas.height / leafletMapEl.clientHeight;
+              const sx = Math.floor(cropX * scaleX);
+              const sy = Math.floor(cropY * scaleY);
+              const sw = Math.floor(cropW * scaleX);
+              const sh = Math.floor(cropH * scaleY);
 
               const aoiCanvas = document.createElement("canvas");
               aoiCanvas.width = sw;
@@ -437,100 +471,114 @@ export const MapExportModal = ({
               </div>
             </div>
 
-            {/* MASSIVE HERO MAP VIEW (Only Area of Interest, Fills Total Sheet Height) */}
-            <div className="flex-1 my-2 min-h-[480px] relative w-full bg-slate-950 rounded-lg overflow-hidden border-2 border-slate-700 shadow-inner flex items-center justify-center">
-              {isCapturingPreview && (
-                <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2 text-slate-300">
-                  <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
-                  <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Extracting Area of Interest (AOI)...</span>
+            {/* MASSIVE HERO MAP VIEW (Only Area of Interest, Zero Distortion) */}
+            <div className="flex-1 my-2 min-h-[500px] relative w-full flex items-center justify-center overflow-hidden">
+              <div 
+                className="relative bg-slate-950 rounded-xl overflow-hidden border-2 border-slate-700 shadow-2xl flex items-center justify-center"
+                style={{
+                  width: `${mapFrameDims.width}px`,
+                  height: `${mapFrameDims.height}px`,
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                }}
+              >
+                {isCapturingPreview && (
+                  <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2 text-slate-300">
+                    <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
+                    <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Extracting Area of Interest (AOI)...</span>
+                  </div>
+                )}
+
+                {previewImage ? (
+                  <img 
+                    alt="Area of Interest Map" 
+                    src={previewImage}
+                    style={{
+                      width: `${mapFrameDims.width}px`,
+                      height: `${mapFrameDims.height}px`,
+                      display: "block",
+                    }}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-slate-500 gap-2">
+                    <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
+                    <span className="text-xs font-medium">Capturing Area of Interest...</span>
+                  </div>
+                )}
+
+                {/* IN-MAP TITLE (Top-Left matching official atlas presentation) */}
+                <div className="absolute top-2.5 left-2.5 z-10 bg-slate-950/85 backdrop-blur-sm border border-slate-700/80 px-2.5 py-1 rounded shadow-xl pointer-events-none">
+                  <h3 className="text-xs font-black text-emerald-400 uppercase tracking-tight leading-none">
+                    {county} County {activeSubcounty ? `— ${activeSubcounty}` : ""}
+                  </h3>
+                  <p className="text-[8px] font-mono text-slate-300 mt-0.5">
+                    AOI Extent · {year}
+                  </p>
                 </div>
-              )}
 
-              {previewImage ? (
-                <img 
-                  alt="Area of Interest Map" 
-                  className="w-full h-full object-contain bg-slate-950"
-                  src={previewImage}
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center text-slate-500 gap-2">
-                  <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
-                  <span className="text-xs font-medium">Capturing Area of Interest...</span>
+                {/* NEATLINE GRATICULE & TICK LABELS */}
+                {showGraticule && (
+                  <div className="absolute inset-0 pointer-events-none border border-slate-600/50">
+                    {/* Subtle Grid Lines */}
+                    <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 opacity-15">
+                      {Array.from({ length: 16 }).map((_, i) => (
+                        <div key={i} className="border-r border-b border-dashed border-cyan-400" />
+                      ))}
+                    </div>
+                    
+                    {/* Top Longitude Ticks */}
+                    <div className="absolute top-0 inset-x-0 flex justify-between px-3 pt-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-b border-slate-700/60">
+                      {lonTicks.map((t, idx) => (
+                        <span key={idx} className="tracking-tighter">{t.label}</span>
+                      ))}
+                    </div>
+
+                    {/* Bottom Longitude Ticks */}
+                    <div className="absolute bottom-0 inset-x-0 flex justify-between px-3 pb-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-t border-slate-700/60">
+                      {lonTicks.map((t, idx) => (
+                        <span key={idx} className="tracking-tighter">{t.label}</span>
+                      ))}
+                    </div>
+
+                    {/* Left Latitude Ticks */}
+                    <div className="absolute left-0 inset-y-0 flex flex-col justify-between py-4 pl-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-r border-slate-700/60">
+                      {latTicks.map((t, idx) => (
+                        <span key={idx} className="tracking-tighter">{t.label}</span>
+                      ))}
+                    </div>
+
+                    {/* Right Latitude Ticks */}
+                    <div className="absolute right-0 inset-y-0 flex flex-col justify-between py-4 pr-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-l border-slate-700/60">
+                      {latTicks.map((t, idx) => (
+                        <span key={idx} className="tracking-tighter">{t.label}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* NORTH ARROW (Anchored in Top-Right) */}
+                {showNorthArrow && (
+                  <div className="absolute top-2.5 right-2.5 bg-slate-900/95 border border-slate-700 rounded-md px-1.5 py-1 shadow-2xl flex flex-col items-center justify-center pointer-events-none z-10">
+                    <Compass className="h-4 w-4 text-emerald-400" />
+                    <span className="text-[8px] font-black text-white leading-none mt-0.5">N</span>
+                  </div>
+                )}
+
+                {/* CARTOGRAPHIC SCALE BAR (Anchored in Bottom-Left matching user reference) */}
+                <div className="absolute bottom-3 left-3 bg-slate-950/90 border border-slate-700 px-2.5 py-1 rounded shadow-2xl text-[7.5px] font-mono text-slate-200 pointer-events-none z-10 flex flex-col gap-0.5">
+                  <span className="font-bold text-slate-300 text-[7px]">1 cm ≈ {mapFrameDims.kmPerCm} km</span>
+                  <div className="flex items-center gap-1">
+                    <span>0</span>
+                    <div className="w-14 h-1.5 bg-gradient-to-r from-white via-slate-800 to-white border border-slate-400 flex">
+                      <div className="w-1/4 h-full bg-black border-r border-slate-400" />
+                      <div className="w-1/4 h-full bg-white border-r border-slate-400" />
+                      <div className="w-1/4 h-full bg-black border-r border-slate-400" />
+                      <div className="w-1/4 h-full bg-white" />
+                    </div>
+                    <span>20 km</span>
+                  </div>
+                  <span className="text-[6.5px] text-slate-400 font-bold tracking-widest text-center uppercase">Kilometers</span>
                 </div>
-              )}
-
-              {/* IN-MAP TITLE (Top-Left matching official atlas presentation) */}
-              <div className="absolute top-3 left-3 z-10 bg-slate-950/80 backdrop-blur-sm border border-slate-700/80 px-3 py-1.5 rounded-lg shadow-xl pointer-events-none">
-                <h3 className="text-sm font-black text-emerald-400 uppercase tracking-tight leading-none">
-                  {county} County {activeSubcounty ? `— ${activeSubcounty}` : ""}
-                </h3>
-                <p className="text-[9px] font-mono text-slate-300 mt-0.5">
-                  Area of Interest Extent · {year}
-                </p>
-              </div>
-
-              {/* NEATLINE GRATICULE & TICK LABELS */}
-              {showGraticule && (
-                <div className="absolute inset-0 pointer-events-none border border-slate-600/40">
-                  {/* Subtle Grid Lines */}
-                  <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 opacity-15">
-                    {Array.from({ length: 16 }).map((_, i) => (
-                      <div key={i} className="border-r border-b border-dashed border-cyan-400" />
-                    ))}
-                  </div>
-                  
-                  {/* Top Longitude Ticks */}
-                  <div className="absolute top-0 inset-x-0 flex justify-between px-6 pt-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-b border-slate-700/60">
-                    {lonTicks.map((t, idx) => (
-                      <span key={idx} className="tracking-tighter">{t.label}</span>
-                    ))}
-                  </div>
-
-                  {/* Bottom Longitude Ticks */}
-                  <div className="absolute bottom-0 inset-x-0 flex justify-between px-6 pb-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-t border-slate-700/60">
-                    {lonTicks.map((t, idx) => (
-                      <span key={idx} className="tracking-tighter">{t.label}</span>
-                    ))}
-                  </div>
-
-                  {/* Left Latitude Ticks */}
-                  <div className="absolute left-0 inset-y-0 flex flex-col justify-between py-6 pl-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-r border-slate-700/60">
-                    {latTicks.map((t, idx) => (
-                      <span key={idx} className="tracking-tighter">{t.label}</span>
-                    ))}
-                  </div>
-
-                  {/* Right Latitude Ticks */}
-                  <div className="absolute right-0 inset-y-0 flex flex-col justify-between py-6 pr-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-l border-slate-700/60">
-                    {latTicks.map((t, idx) => (
-                      <span key={idx} className="tracking-tighter">{t.label}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* NORTH ARROW (Anchored in Top-Right) */}
-              {showNorthArrow && (
-                <div className="absolute top-3 right-3 bg-slate-900/95 border border-slate-700 rounded-md px-2 py-1.5 shadow-2xl flex flex-col items-center justify-center pointer-events-none z-10">
-                  <Compass className="h-5 w-5 text-emerald-400" />
-                  <span className="text-[9px] font-black text-white leading-none mt-0.5">N</span>
-                </div>
-              )}
-
-              {/* CARTOGRAPHIC SCALE BAR (Anchored in Bottom-Left matching user reference) */}
-              <div className="absolute bottom-4 left-4 bg-slate-950/90 border border-slate-700 px-3 py-1.5 rounded-lg shadow-2xl text-[8px] font-mono text-slate-200 pointer-events-none z-10 flex flex-col gap-1">
-                <span className="font-bold text-slate-300 text-[7.5px]">1 cm ≈ 5 km</span>
-                <div className="flex items-center gap-1">
-                  <span>0</span>
-                  <div className="w-16 h-2 bg-gradient-to-r from-white via-slate-800 to-white border border-slate-400 flex">
-                    <div className="w-1/4 h-full bg-black border-r border-slate-400" />
-                    <div className="w-1/4 h-full bg-white border-r border-slate-400" />
-                    <div className="w-1/4 h-full bg-black border-r border-slate-400" />
-                    <div className="w-1/4 h-full bg-white" />
-                  </div>
-                  <span>20 km</span>
-                </div>
-                <span className="text-[7px] text-slate-400 font-bold tracking-widest text-center uppercase">Kilometers</span>
               </div>
             </div>
 
