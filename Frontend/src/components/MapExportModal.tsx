@@ -27,7 +27,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export const SOIL_LAYER_META: Record<string, { label: string; desc: string; unit: string; lowLabel: string; midLabel: string; highLabel: string }> = {
+const SOIL_LAYER_META: Record<string, { label: string; desc: string; unit: string; lowLabel: string; midLabel: string; highLabel: string }> = {
   composite: { label: "RGB Composite (Clay/Sand/SOC)", desc: "Red: Clay · Green: Organic Carbon · Blue: Sand", unit: "Spectral Composite", lowLabel: "High Sand", midLabel: "Balanced", highLabel: "High Clay/SOC" },
   texture: { label: "Soil Texture (USDA 12-Class)", desc: "USDA 12-class textural taxonomy", unit: "Textural Class", lowLabel: "Coarse / Sand", midLabel: "Loam / Silt", highLabel: "Fine / Clay" },
   ph: { label: "Soil pH (Topsoil 0-20cm)", desc: "Acidity and alkalinity index (H2O)", unit: "pH units", lowLabel: "Acidic (< 5.5)", midLabel: "Optimal (5.5 - 7.0)", highLabel: "Alkaline (> 7.0)" },
