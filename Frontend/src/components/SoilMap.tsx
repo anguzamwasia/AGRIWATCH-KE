@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { LatLngBoundsExpression } from 'leaflet';
 import { Layers, Info, Filter, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import axios from 'axios';
+import { MapExportModal } from './MapExportModal';
 
 interface SoilMapProps {
   county: string;
@@ -16,8 +17,26 @@ interface SoilMapProps {
 import countyGeometryData from '@/data/county_geometry.json';
 const COUNTY_GEOMETRY: Record<string, { coords: [number, number]; bounds: LatLngBoundsExpression }> = countyGeometryData as any;
 
-const MapController = ({ county, subcounty, isExpanded }: { county: string; subcounty: string, isExpanded: boolean }) => {
+const MapController = ({ 
+  county, 
+  subcounty, 
+  isExpanded,
+  onMapReady,
+  onBoundsReady,
+  onGeojsonReady
+}: { 
+  county: string; 
+  subcounty: string; 
+  isExpanded: boolean;
+  onMapReady: (map: any) => void;
+  onBoundsReady: (bounds: any) => void;
+  onGeojsonReady: (geojson: any) => void;
+}) => {
   const map = useMap();
+
+  useEffect(() => {
+    onMapReady(map);
+  }, [map, onMapReady]);
 
   useEffect(() => {
     // Whenever expanded state changes, we must notify Leaflet so it recalculates its size
@@ -27,27 +46,33 @@ const MapController = ({ county, subcounty, isExpanded }: { county: string; subc
   }, [isExpanded, map]);
 
   useEffect(() => {
+    let live = true;
     const fetchBounds = async () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/api/bounds`, {
           params: { county, subcounty }
         });
+        if (!live) return;
         
         if (res.data && res.data.bounds) {
-          map.fitBounds(res.data.bounds, { padding: [4, 4], animate: true, duration: 1.5 });
+          onBoundsReady(res.data.bounds);
+          if (res.data.geojson) onGeojsonReady(res.data.geojson);
+          map.fitBounds(res.data.bounds, { padding: [10, 10], animate: true, duration: 1.2 });
           return;
         }
       } catch (err) {
         console.error("Failed to fetch exact bounds from API", err);
       }
+      if (!live) return;
       
       // Fallback
       try {
         const defaultTarget = COUNTY_GEOMETRY[county] || COUNTY_GEOMETRY['Kenya'];
         if (defaultTarget?.bounds) {
-            map.fitBounds(defaultTarget.bounds, { padding: [4, 4], animate: true, duration: 1.5 });
+            onBoundsReady(defaultTarget.bounds);
+            map.fitBounds(defaultTarget.bounds, { padding: [10, 10], animate: true, duration: 1.2 });
         } else {
-            map.flyTo([-0.0236, 37.9062], 6, { animate: true, duration: 1.5 });
+            map.flyTo([-0.0236, 37.9062], 6, { animate: true, duration: 1.2 });
         }
       } catch (err) {
         console.error("Failed to fit fallback bounds", err);
@@ -55,7 +80,8 @@ const MapController = ({ county, subcounty, isExpanded }: { county: string; subc
     };
     
     fetchBounds();
-  }, [county, subcounty, map]);
+    return () => { live = false; };
+  }, [county, subcounty, map, onBoundsReady, onGeojsonReady]);
 
   return null;
 };
@@ -63,6 +89,9 @@ const MapController = ({ county, subcounty, isExpanded }: { county: string; subc
 export const SoilMap = ({ county, subcounty }: SoilMapProps) => {
   const [opacity, setOpacity] = useState(0.85);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [mapInstance, setMapInstance] = useState<any>(null);
+  const [currentBounds, setCurrentBounds] = useState<any>(null);
+  const [boundaryGeojson, setBoundaryGeojson] = useState<any>(null);
   
   const [eeLayer, setEeLayer] = useState<string>('composite');
   const [eeTileUrl, setEeTileUrl] = useState<string | null>(null);
@@ -104,6 +133,20 @@ export const SoilMap = ({ county, subcounty }: SoilMapProps) => {
         />
         <ZoomControl position="topright" />
 
+        {/* Boundary Vector Outline */}
+        {boundaryGeojson && (
+          <GeoJSON
+            key={JSON.stringify(boundaryGeojson)}
+            data={boundaryGeojson}
+            style={{
+              color: "#10b981",
+              weight: 2.5,
+              dashArray: "6, 6",
+              fillColor: "#059669",
+              fillOpacity: 0.05,
+            }}
+          />
+        )}
         
         {eeTileUrl && county && county !== "Kenya" && (
            <TileLayer 
@@ -114,36 +157,56 @@ export const SoilMap = ({ county, subcounty }: SoilMapProps) => {
            />
         )}
 
-        <MapController county={county} subcounty={subcounty} isExpanded={isExpanded} />
+        <MapController 
+          county={county} 
+          subcounty={subcounty} 
+          isExpanded={isExpanded} 
+          onMapReady={setMapInstance}
+          onBoundsReady={setCurrentBounds}
+          onGeojsonReady={setBoundaryGeojson}
+        />
       </MapContainer>
       
-      {/* TOP HUD: Location Context & Layer Selector */}
+      {/* TOP HUD: Location Context, Layer Selector & Export Action */}
       <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-2 min-w-[280px]">
         <div className="bg-slate-900/95 backdrop-blur-md p-3 rounded-xl shadow-2xl border border-slate-700 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="bg-emerald-600 p-2 rounded-lg shadow-inner">
                 <Layers className="h-4 w-4 text-white" />
               </div>
               <div>
-              <h3 className="text-sm font-black text-slate-100 flex items-center gap-2">
-                GeoAI Soil Surface
-                <span className="text-[10px] bg-slate-800 text-emerald-400 px-2 py-0.5 rounded-full font-mono uppercase tracking-tighter">
-                  30m Res
-                </span>
-              </h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                {subcounty ? subcounty : county} | High Precision
-              </p>
+                <h3 className="text-sm font-black text-slate-100 flex items-center gap-2">
+                  GeoAI Soil Surface
+                  <span className="text-[10px] bg-slate-800 text-emerald-400 px-2 py-0.5 rounded-full font-mono uppercase tracking-tighter">
+                    30m Res
+                  </span>
+                </h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                  {subcounty ? subcounty : county} | High Precision
+                </p>
+              </div>
             </div>
+            <div className="flex items-center gap-1.5">
+              <MapExportModal 
+                county={county}
+                subcounty={subcounty}
+                year={2026}
+                crop="Soil Diagnostics"
+                layer="soil"
+                opacity={opacity}
+                mapInstance={mapInstance}
+                displayBounds={currentBounds}
+                soilLayer={eeLayer}
+              />
+              <button 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-emerald-400 transition-colors"
+                title={isExpanded ? "Minimize Map" : "Expand Map"}
+              >
+                {isExpanded ? <ArrowDownRight className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
+              </button>
             </div>
-            <button 
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-emerald-400 transition-colors"
-              title={isExpanded ? "Minimize Map" : "Expand Map"}
-            >
-              {isExpanded ? <ArrowDownRight className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
-            </button>
           </div>
           
           <div className="flex items-center gap-2 pt-2 border-t border-slate-700/50">
@@ -151,7 +214,7 @@ export const SoilMap = ({ county, subcounty }: SoilMapProps) => {
             <select 
               value={eeLayer} 
               onChange={(e) => setEeLayer(e.target.value)}
-              className="bg-slate-800/80 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1 outline-none focus:border-emerald-500 cursor-pointer"
+              className="bg-slate-800/80 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1 outline-none focus:border-emerald-500 cursor-pointer flex-1"
             >
               <option value="composite">RGB Composite (Clay/Sand/SOC)</option>
               <option value="texture">Soil Texture (USDA)</option>

@@ -27,12 +27,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+export const SOIL_LAYER_META: Record<string, { label: string; desc: string; unit: string; lowLabel: string; midLabel: string; highLabel: string }> = {
+  composite: { label: "RGB Composite (Clay/Sand/SOC)", desc: "Red: Clay · Green: Organic Carbon · Blue: Sand", unit: "Spectral Composite", lowLabel: "High Sand", midLabel: "Balanced", highLabel: "High Clay/SOC" },
+  texture: { label: "Soil Texture (USDA 12-Class)", desc: "USDA 12-class textural taxonomy", unit: "Textural Class", lowLabel: "Coarse / Sand", midLabel: "Loam / Silt", highLabel: "Fine / Clay" },
+  ph: { label: "Soil pH (Topsoil 0-20cm)", desc: "Acidity and alkalinity index (H2O)", unit: "pH units", lowLabel: "Acidic (< 5.5)", midLabel: "Optimal (5.5 - 7.0)", highLabel: "Alkaline (> 7.0)" },
+  soc: { label: "Soil Organic Carbon (SOC)", desc: "Organic matter stock in topsoil", unit: "g/kg", lowLabel: "Low (< 1.5%)", midLabel: "Moderate (1.5 - 2.5%)", highLabel: "Rich (> 2.5%)" },
+  nitrogen: { label: "Total Nitrogen (N)", desc: "Total soil nitrogen concentration", unit: "cg/kg", lowLabel: "Low (< 0.15%)", midLabel: "Medium (0.15 - 0.25%)", highLabel: "High (> 0.25%)" },
+  clay: { label: "Clay Content (%)", desc: "Mineral soil particles < 0.002 mm", unit: "%", lowLabel: "Sandy (< 20%)", midLabel: "Loam (20 - 35%)", highLabel: "Heavy Clay (> 35%)" },
+  sand: { label: "Sand Content (%)", desc: "Mineral soil particles 0.05 - 2.0 mm", unit: "%", lowLabel: "Low Sand (< 30%)", midLabel: "Medium (30 - 55%)", highLabel: "Sandy (> 55%)" },
+  cec: { label: "Cation Exchange Capacity (CEC)", desc: "Soil nutrient holding capability", unit: "cmol(+)/kg", lowLabel: "Low (< 15 cmol)", midLabel: "Medium (15 - 25 cmol)", highLabel: "High (> 25 cmol)" },
+};
+
 interface MapExportModalProps {
   county: string;
   subcounty: string;
-  year: number;
-  crop: string;
-  layer: "osm" | "satellite" | "pixel" | "lulc";
+  year?: number;
+  crop?: string;
+  layer: "osm" | "satellite" | "pixel" | "lulc" | "soil";
   opacity: number;
   predictedYield?: number;
   baseYield?: number;
@@ -40,13 +51,14 @@ interface MapExportModalProps {
   legendLabels?: { low: string; mid: string; high: string };
   mapInstance?: any;
   displayBounds?: any;
+  soilLayer?: string;
 }
 
 export const MapExportModal = ({
   county,
   subcounty,
-  year,
-  crop,
+  year = 2026,
+  crop = "Diagnostics",
   layer,
   opacity,
   predictedYield,
@@ -54,7 +66,8 @@ export const MapExportModal = ({
   palette = { low: "#ef4444", mid: "#f59e0b", high: "#10b981", glow: "rgba(16,185,129,0.5)" },
   legendLabels = { low: "< 1.0 t/ha", mid: "1.0 - 2.0 t/ha", high: "> 2.0 t/ha" },
   mapInstance,
-  displayBounds
+  displayBounds,
+  soilLayer = "composite"
 }: MapExportModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -71,7 +84,11 @@ export const MapExportModal = ({
   const printAreaRef = useRef<HTMLDivElement>(null);
 
   const activeSubcounty = subcounty && subcounty !== "Select subcounty" ? subcounty : "";
-  const mapTitle = layer === "lulc" 
+  const currentSoilMeta = SOIL_LAYER_META[soilLayer] || SOIL_LAYER_META.composite;
+
+  const mapTitle = layer === "soil"
+    ? `GeoAI Soil Surface Diagnostics — ${currentSoilMeta.label}`
+    : layer === "lulc" 
     ? "Sentinel-2 Dynamic World 10m Land Use & Land Cover"
     : layer === "pixel" 
     ? `${crop} GeoAI Yield Surface Forecast`
@@ -79,7 +96,9 @@ export const MapExportModal = ({
     ? "High-Resolution Satellite Imagery" 
     : "Base Cartographic Reference Map";
 
-  const layerName = layer === "lulc" 
+  const layerName = layer === "soil"
+    ? `OpenLandMap & ISRIC SoilGrids 30m (${currentSoilMeta.label})`
+    : layer === "lulc" 
     ? "Dynamic World 10m Near-Real-Time LULC (Sentinel-2)"
     : layer === "pixel" 
     ? `SPAM 2017 Calibrated GeoAI Yield Raster (${crop})`
@@ -87,7 +106,12 @@ export const MapExportModal = ({
     ? "ArcGIS World Imagery Satellite Base" 
     : "OpenStreetMap Cartographic Vector Base";
 
-  const spatialResolution = layer === "lulc" ? "10 meters (Sentinel-2 NRT)" : "0.1 km (100 meters Spatial Grid)";
+  const spatialResolution = layer === "soil"
+    ? "30 meters (Ensemble Soil Machine Learning Model)"
+    : layer === "lulc" 
+    ? "10 meters (Sentinel-2 NRT)" 
+    : "0.1 km (100 meters Spatial Grid)";
+
   const nowFormatted = new Date().toLocaleString("en-KE", { 
     dateStyle: "medium", 
     timeStyle: "short",
@@ -124,20 +148,41 @@ export const MapExportModal = ({
   const swCoord = `${formatDms(activeBnds.south, true)}, ${formatDms(activeBnds.west, false)}`;
   const seCoord = `${formatDms(activeBnds.south, true)}, ${formatDms(activeBnds.east, false)}`;
 
-  // Fit the whole boundary extent and capture a clean map snapshot
+  // Intermediate graticule neatline ticks (matching official GIS atlas maps)
+  const lonTicks = useMemo(() => {
+    const { west, east } = activeBnds;
+    const step = (east - west) / 4;
+    return [0, 1, 2, 3, 4].map((i) => ({
+      val: west + step * i,
+      pct: (i / 4) * 100,
+      label: formatDms(west + step * i, false)
+    }));
+  }, [activeBnds]);
+
+  const latTicks = useMemo(() => {
+    const { south, north } = activeBnds;
+    const step = (north - south) / 4;
+    return [0, 1, 2, 3, 4].map((i) => ({
+      val: north - step * i,
+      pct: (i / 4) * 100,
+      label: formatDms(north - step * i, true)
+    }));
+  }, [activeBnds]);
+
+  // Fit the whole boundary extent and capture ONLY the Area of Interest (AOI)
   const captureFullBoundaryMap = async () => {
     setIsCapturingPreview(true);
     try {
-      // 1. If map instance and bounds are available, programmatically fit the full county/subcounty extent
+      // 1. Programmatically fit the full county/subcounty extent in Leaflet
       if (mapInstance && displayBounds) {
-        mapInstance.fitBounds(displayBounds, { padding: [8, 8], animate: false });
+        mapInstance.fitBounds(displayBounds, { padding: [10, 10], animate: false });
         mapInstance.invalidateSize();
       }
 
-      // 2. Allow Leaflet tiles and WebGL/Canvas to fully render
+      // 2. Allow Leaflet tiles and WebGL/Canvas to fully settle
       await new Promise((r) => setTimeout(r, 750));
 
-      const leafletMapEl = document.querySelector(".leaflet-container") as HTMLElement;
+      const leafletMapEl = mapInstance ? mapInstance.getContainer() : (document.querySelector(".leaflet-container") as HTMLElement);
       if (leafletMapEl) {
         const canvas = await html2canvas(leafletMapEl, {
           useCORS: true,
@@ -146,7 +191,6 @@ export const MapExportModal = ({
           backgroundColor: "#020617",
           logging: false,
           ignoreElements: (element) => {
-            // Remove all default UI controls so map is clean for publication
             return (
               element.classList.contains("leaflet-control-container") ||
               element.classList.contains("leaflet-control-zoom") ||
@@ -154,6 +198,58 @@ export const MapExportModal = ({
             );
           },
         });
+
+        // 3. Extract EXCLUSIVELY the Area of Interest (AOI) bounding box so the county fills the entire frame
+        if (mapInstance && displayBounds) {
+          try {
+            const south = activeBnds.south;
+            const west = activeBnds.west;
+            const north = activeBnds.north;
+            const east = activeBnds.east;
+
+            const nwPt = mapInstance.latLngToContainerPoint([north, west]);
+            const sePt = mapInstance.latLngToContainerPoint([south, east]);
+
+            const minX = Math.min(nwPt.x, sePt.x);
+            const maxX = Math.max(nwPt.x, sePt.x);
+            const minY = Math.min(nwPt.y, sePt.y);
+            const maxY = Math.max(nwPt.y, sePt.y);
+
+            const rawW = maxX - minX;
+            const rawH = maxY - minY;
+
+            if (rawW > 25 && rawH > 25) {
+              // 2.5% aesthetic cartographic neatline padding
+              const padX = rawW * 0.025;
+              const padY = rawH * 0.025;
+
+              const cropX = Math.max(0, minX - padX);
+              const cropY = Math.max(0, minY - padY);
+              const cropW = Math.min(leafletMapEl.clientWidth - cropX, rawW + padX * 2);
+              const cropH = Math.min(leafletMapEl.clientHeight - cropY, rawH + padY * 2);
+
+              const pixelRatio = canvas.width / leafletMapEl.clientWidth;
+              const sx = Math.floor(cropX * pixelRatio);
+              const sy = Math.floor(cropY * pixelRatio);
+              const sw = Math.floor(cropW * pixelRatio);
+              const sh = Math.floor(cropH * pixelRatio);
+
+              const aoiCanvas = document.createElement("canvas");
+              aoiCanvas.width = sw;
+              aoiCanvas.height = sh;
+              const ctx = aoiCanvas.getContext("2d");
+              if (ctx) {
+                ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+                setPreviewImage(aoiCanvas.toDataURL("image/png"));
+                return;
+              }
+            }
+          } catch (cropErr) {
+            console.warn("AOI Crop fallback:", cropErr);
+          }
+        }
+
+        // Fallback to full canvas
         setPreviewImage(canvas.toDataURL("image/png"));
       }
     } catch (err) {
@@ -341,67 +437,100 @@ export const MapExportModal = ({
               </div>
             </div>
 
-            {/* MASSIVE HERO MAP VIEW (Fills ~85% of total sheet height) */}
-            <div className="flex-1 my-2 min-h-0 relative w-full bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
+            {/* MASSIVE HERO MAP VIEW (Only Area of Interest, Fills Total Sheet Height) */}
+            <div className="flex-1 my-2 min-h-[480px] relative w-full bg-slate-950 rounded-lg overflow-hidden border-2 border-slate-700 shadow-inner flex items-center justify-center">
               {isCapturingPreview && (
-                <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-2 text-slate-300">
-                  <Loader2 className="h-7 w-7 animate-spin text-emerald-400" />
-                  <span className="text-[11px] font-bold uppercase tracking-widest">Rendering Full A4 Boundary...</span>
+                <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2 text-slate-300">
+                  <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Extracting Area of Interest (AOI)...</span>
                 </div>
               )}
 
               {previewImage ? (
                 <img 
-                  alt="Live Map Preview" 
-                  className="w-full h-full object-cover bg-slate-950"
+                  alt="Area of Interest Map" 
+                  className="w-full h-full object-contain bg-slate-950"
                   src={previewImage}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center text-slate-500 gap-2">
                   <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
-                  <span className="text-xs font-medium">Capturing full boundary view...</span>
+                  <span className="text-xs font-medium">Capturing Area of Interest...</span>
                 </div>
               )}
 
-              {/* GRATICULE / COORDINATE GRID OVERLAY */}
+              {/* IN-MAP TITLE (Top-Left matching official atlas presentation) */}
+              <div className="absolute top-3 left-3 z-10 bg-slate-950/80 backdrop-blur-sm border border-slate-700/80 px-3 py-1.5 rounded-lg shadow-xl pointer-events-none">
+                <h3 className="text-sm font-black text-emerald-400 uppercase tracking-tight leading-none">
+                  {county} County {activeSubcounty ? `— ${activeSubcounty}` : ""}
+                </h3>
+                <p className="text-[9px] font-mono text-slate-300 mt-0.5">
+                  Area of Interest Extent · {year}
+                </p>
+              </div>
+
+              {/* NEATLINE GRATICULE & TICK LABELS */}
               {showGraticule && (
-                <div className="absolute inset-0 pointer-events-none border border-slate-600/30">
+                <div className="absolute inset-0 pointer-events-none border border-slate-600/40">
                   {/* Subtle Grid Lines */}
-                  <div className="absolute inset-0 grid grid-cols-4 grid-rows-3 opacity-20">
-                    {Array.from({ length: 12 }).map((_, i) => (
+                  <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 opacity-15">
+                    {Array.from({ length: 16 }).map((_, i) => (
                       <div key={i} className="border-r border-b border-dashed border-cyan-400" />
                     ))}
                   </div>
                   
-                  {/* Corner Coordinates */}
-                  <span className="absolute top-2 left-2 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    {nwCoord}
-                  </span>
-                  <span className="absolute top-2 right-14 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    {neCoord}
-                  </span>
-                  <span className="absolute bottom-9 left-2 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    {swCoord}
-                  </span>
-                  <span className="absolute bottom-2 right-2 text-[8px] font-mono bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded text-cyan-300 shadow-md">
-                    {seCoord}
-                  </span>
+                  {/* Top Longitude Ticks */}
+                  <div className="absolute top-0 inset-x-0 flex justify-between px-6 pt-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-b border-slate-700/60">
+                    {lonTicks.map((t, idx) => (
+                      <span key={idx} className="tracking-tighter">{t.label}</span>
+                    ))}
+                  </div>
+
+                  {/* Bottom Longitude Ticks */}
+                  <div className="absolute bottom-0 inset-x-0 flex justify-between px-6 pb-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-t border-slate-700/60">
+                    {lonTicks.map((t, idx) => (
+                      <span key={idx} className="tracking-tighter">{t.label}</span>
+                    ))}
+                  </div>
+
+                  {/* Left Latitude Ticks */}
+                  <div className="absolute left-0 inset-y-0 flex flex-col justify-between py-6 pl-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-r border-slate-700/60">
+                    {latTicks.map((t, idx) => (
+                      <span key={idx} className="tracking-tighter">{t.label}</span>
+                    ))}
+                  </div>
+
+                  {/* Right Latitude Ticks */}
+                  <div className="absolute right-0 inset-y-0 flex flex-col justify-between py-6 pr-0.5 text-[7.5px] font-mono text-cyan-300 bg-slate-950/70 border-l border-slate-700/60">
+                    {latTicks.map((t, idx) => (
+                      <span key={idx} className="tracking-tighter">{t.label}</span>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {/* NORTH ARROW */}
+              {/* NORTH ARROW (Anchored in Top-Right) */}
               {showNorthArrow && (
-                <div className="absolute top-2 right-2 bg-slate-900/95 border border-slate-700 rounded-md px-2 py-1 shadow-2xl flex flex-col items-center justify-center pointer-events-none">
-                  <Compass className="h-4 w-4 text-emerald-400" />
-                  <span className="text-[8px] font-black text-white leading-none mt-0.5">N</span>
+                <div className="absolute top-3 right-3 bg-slate-900/95 border border-slate-700 rounded-md px-2 py-1.5 shadow-2xl flex flex-col items-center justify-center pointer-events-none z-10">
+                  <Compass className="h-5 w-5 text-emerald-400" />
+                  <span className="text-[9px] font-black text-white leading-none mt-0.5">N</span>
                 </div>
               )}
 
-              {/* SCALE BAR */}
-              <div className="absolute bottom-2 left-2 bg-slate-900/95 border border-slate-700 px-2 py-1 rounded shadow-lg text-[8px] font-mono text-slate-300 pointer-events-none flex items-center gap-1.5">
-                <span>0</span>
-                <div className="w-10 h-1 bg-gradient-to-r from-white via-slate-500 to-black border border-slate-400" />
-                <span>10 km</span>
+              {/* CARTOGRAPHIC SCALE BAR (Anchored in Bottom-Left matching user reference) */}
+              <div className="absolute bottom-4 left-4 bg-slate-950/90 border border-slate-700 px-3 py-1.5 rounded-lg shadow-2xl text-[8px] font-mono text-slate-200 pointer-events-none z-10 flex flex-col gap-1">
+                <span className="font-bold text-slate-300 text-[7.5px]">1 cm ≈ 5 km</span>
+                <div className="flex items-center gap-1">
+                  <span>0</span>
+                  <div className="w-16 h-2 bg-gradient-to-r from-white via-slate-800 to-white border border-slate-400 flex">
+                    <div className="w-1/4 h-full bg-black border-r border-slate-400" />
+                    <div className="w-1/4 h-full bg-white border-r border-slate-400" />
+                    <div className="w-1/4 h-full bg-black border-r border-slate-400" />
+                    <div className="w-1/4 h-full bg-white" />
+                  </div>
+                  <span>20 km</span>
+                </div>
+                <span className="text-[7px] text-slate-400 font-bold tracking-widest text-center uppercase">Kilometers</span>
               </div>
             </div>
 
@@ -414,6 +543,26 @@ export const MapExportModal = ({
                     <span className="font-black text-slate-300 uppercase tracking-wider block text-[8px] flex items-center gap-1 mb-1.5">
                       <Layers className="h-3 w-3 text-emerald-400" /> Map Legend
                     </span>
+
+                    {layer === "soil" && (
+                      <div className="space-y-1">
+                        <div className="text-[7.5px] font-mono text-slate-400 mb-1">
+                          Diagnostic: <strong className="text-emerald-400">{currentSoilMeta.label}</strong>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
+                          <span className="text-slate-200 font-medium">{currentSoilMeta.highLabel}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
+                          <span className="text-slate-200 font-medium">{currentSoilMeta.midLabel}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
+                          <span className="text-slate-200 font-medium">{currentSoilMeta.lowLabel}</span>
+                        </div>
+                      </div>
+                    )}
 
                     {layer === "pixel" && (
                       <div className="space-y-1">
@@ -472,15 +621,31 @@ export const MapExportModal = ({
                     <span className="font-black text-slate-300 uppercase tracking-wider block flex items-center gap-1 text-[8px] mb-1.5">
                       <Check className="h-3 w-3 text-emerald-400" /> Data Sources & Models
                     </span>
-                    <p className="text-slate-400 mb-0.5">
-                      <strong className="text-slate-300">Ground-truth:</strong> Ministry of Agriculture / AFA Kenya.
-                    </p>
-                    <p className="text-slate-400 mb-0.5">
-                      <strong className="text-slate-300">Remote Sensing:</strong> Google Earth Engine (CHIRPS, MODIS, Dynamic World).
-                    </p>
-                    <p className="text-slate-400">
-                      <strong className="text-slate-300">Predictor:</strong> XGBoost ML Regressor (County-level tuned).
-                    </p>
+                    {layer === "soil" ? (
+                      <>
+                        <p className="text-slate-400 mb-0.5">
+                          <strong className="text-slate-300">Ground-truth:</strong> KALRO Kenya Soil Survey & ISRIC.
+                        </p>
+                        <p className="text-slate-400 mb-0.5">
+                          <strong className="text-slate-300">Remote Sensing:</strong> Sentinel-2 Multispectral & OpenLandMap 250m.
+                        </p>
+                        <p className="text-slate-400">
+                          <strong className="text-slate-300">Predictor:</strong> Random Forest Soil Ensemble (30m).
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-slate-400 mb-0.5">
+                          <strong className="text-slate-300">Ground-truth:</strong> Ministry of Agriculture / AFA Kenya.
+                        </p>
+                        <p className="text-slate-400 mb-0.5">
+                          <strong className="text-slate-300">Remote Sensing:</strong> Google Earth Engine (CHIRPS, MODIS, Dynamic World).
+                        </p>
+                        <p className="text-slate-400">
+                          <strong className="text-slate-300">Predictor:</strong> XGBoost ML Regressor (County-level tuned).
+                        </p>
+                      </>
+                    )}
                   </div>
                   <p className="text-slate-500 italic pt-1 border-t border-slate-800/80 text-[7.5px]">
                     AgriWatch-KE · Decision Support Bulletin
