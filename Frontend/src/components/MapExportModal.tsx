@@ -178,9 +178,9 @@ export const MapExportModal = ({
     const hKm = latSpan * 110.57;
     const aspect = hKm > 0 ? wKm / hKm : 0.79;
 
-    // Available space inside the A4 sheet viewport
-    const maxH = 505;
-    const maxW = 940;
+    // Available space inside the A4 landscape sheet (beside the right metadata sidebar)
+    const maxH = 550;
+    const maxW = showMetadata ? 560 : 840;
 
     let targetH = maxH;
     let targetW = Math.round(targetH * aspect);
@@ -200,7 +200,7 @@ export const MapExportModal = ({
       hKm: Math.round(hKm),
       kmPerCm: Math.max(1, kmPerCm)
     };
-  }, [activeBnds]);
+  }, [activeBnds, showMetadata]);
 
   // Fit the whole boundary extent and capture ONLY the Area of Interest (AOI)
   const captureFullBoundaryMap = async () => {
@@ -443,7 +443,7 @@ export const MapExportModal = ({
           <div 
             ref={printAreaRef} 
             className="w-full bg-[#070b14] border-2 border-slate-700 rounded-xl p-4 flex flex-col justify-between shadow-inner relative overflow-hidden"
-            style={{ aspectRatio: "297 / 210", minHeight: "520px" }}
+            style={{ aspectRatio: "297 / 210", minHeight: "580px" }}
           >
             {/* COMPACT SLIM HEADER */}
             <div className="border-b border-slate-700/90 pb-2 flex items-center justify-between flex-shrink-0">
@@ -471,233 +471,323 @@ export const MapExportModal = ({
               </div>
             </div>
 
-            {/* MASSIVE HERO MAP VIEW (Only Area of Interest, Zero Distortion) */}
-            <div className="flex-1 my-2 min-h-[500px] relative w-full flex items-center justify-center overflow-hidden">
-              <div 
-                className="relative bg-slate-950 rounded-xl overflow-hidden border-2 border-slate-700 shadow-2xl flex items-center justify-center"
-                style={{
-                  width: `${mapFrameDims.width}px`,
-                  height: `${mapFrameDims.height}px`,
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                }}
-              >
-                {isCapturingPreview && (
-                  <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2 text-slate-300">
-                    <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Extracting Area of Interest (AOI)...</span>
-                  </div>
-                )}
-
-                {previewImage ? (
-                  <img 
-                    alt="Area of Interest Map" 
-                    src={previewImage}
+            {/* MAIN CONTENT BODY: SIDE-BY-SIDE MAP & METADATA SIDEBAR */}
+            <div className="flex-1 my-2 flex flex-row items-stretch justify-between gap-4 min-h-0 overflow-hidden">
+              {/* LEFT / CENTER: HERO MAP VIEW WITH OUTSIDE TICK COLLAR */}
+              <div className="flex-1 flex items-center justify-center min-w-0 overflow-hidden p-2">
+                <div 
+                  className="relative flex items-center justify-center"
+                  style={{
+                    padding: showGraticule ? "24px 46px" : "0px",
+                  }}
+                >
+                  {/* MAP NEATLINE FRAME */}
+                  <div 
+                    className="relative bg-slate-950 rounded-xl overflow-visible border-2 border-slate-600 shadow-2xl flex items-center justify-center"
                     style={{
                       width: `${mapFrameDims.width}px`,
                       height: `${mapFrameDims.height}px`,
-                      display: "block",
+                      maxWidth: "100%",
+                      maxHeight: "100%",
                     }}
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-slate-500 gap-2">
-                    <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
-                    <span className="text-xs font-medium">Capturing Area of Interest...</span>
+                  >
+                    {/* INNER MAP CANVAS & IN-FRAME OVERLAYS */}
+                    <div className="relative w-full h-full overflow-hidden rounded-[10px]">
+                      {isCapturingPreview && (
+                        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2 text-slate-300">
+                          <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
+                          <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Extracting Area of Interest (AOI)...</span>
+                        </div>
+                      )}
+
+                      {previewImage ? (
+                        <img 
+                          alt="Area of Interest Map" 
+                          src={previewImage}
+                          style={{
+                            width: `${mapFrameDims.width}px`,
+                            height: `${mapFrameDims.height}px`,
+                            display: "block",
+                          }}
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-slate-500 gap-2 h-full">
+                          <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
+                          <span className="text-xs font-medium">Capturing Area of Interest...</span>
+                        </div>
+                      )}
+
+                      {/* IN-MAP TITLE (Top-Left) */}
+                      <div className="absolute top-2.5 left-2.5 z-20 bg-slate-950/85 backdrop-blur-sm border border-slate-700/80 px-2.5 py-1 rounded shadow-xl pointer-events-none">
+                        <h3 className="text-xs font-black text-emerald-400 uppercase tracking-tight leading-none">
+                          {county} County {activeSubcounty ? `— ${activeSubcounty}` : ""}
+                        </h3>
+                        <p className="text-[8px] font-mono text-slate-300 mt-0.5">
+                          AOI Extent · {year}
+                        </p>
+                      </div>
+
+                      {/* SUBTLE INTERIOR GRATICULE LINES */}
+                      {showGraticule && (
+                        <div className="absolute inset-0 pointer-events-none grid grid-cols-4 grid-rows-4 opacity-15">
+                          {Array.from({ length: 16 }).map((_, i) => (
+                            <div key={i} className="border-r border-b border-dashed border-cyan-400" />
+                          ))}
+                        </div>
+                      )}
+
+                      {/* NORTH ARROW (Top-Right) */}
+                      {showNorthArrow && (
+                        <div className="absolute top-2.5 right-2.5 bg-slate-900/95 border border-slate-700 rounded-md px-1.5 py-1 shadow-2xl flex flex-col items-center justify-center pointer-events-none z-20">
+                          <Compass className="h-4 w-4 text-emerald-400" />
+                          <span className="text-[8px] font-black text-white leading-none mt-0.5">N</span>
+                        </div>
+                      )}
+
+                      {/* CARTOGRAPHIC SCALE BAR (Bottom-Left) */}
+                      <div className="absolute bottom-3 left-3 bg-slate-950/90 border border-slate-700 px-2.5 py-1 rounded shadow-2xl text-[7.5px] font-mono text-slate-200 pointer-events-none z-20 flex flex-col gap-0.5">
+                        <span className="font-bold text-slate-300 text-[7px]">1 cm ≈ {mapFrameDims.kmPerCm} km</span>
+                        <div className="flex items-center gap-1">
+                          <span>0</span>
+                          <div className="w-14 h-1.5 bg-gradient-to-r from-white via-slate-800 to-white border border-slate-400 flex">
+                            <div className="w-1/4 h-full bg-black border-r border-slate-400" />
+                            <div className="w-1/4 h-full bg-white border-r border-slate-400" />
+                            <div className="w-1/4 h-full bg-black border-r border-slate-400" />
+                            <div className="w-1/4 h-full bg-white" />
+                          </div>
+                          <span>20 km</span>
+                        </div>
+                        <span className="text-[6.5px] text-slate-400 font-bold tracking-widest text-center uppercase">Kilometers</span>
+                      </div>
+
+                      {/* IN-MAP FLOATING LEGEND (Bottom-Right, directly inside map frame) */}
+                      {showLegend && (
+                        <div className="absolute bottom-3 right-3 z-20 bg-slate-950/90 backdrop-blur-md border border-slate-700/90 rounded-lg p-2.5 shadow-2xl max-w-[210px] text-[8px]">
+                          <div className="flex items-center gap-1.5 pb-1 mb-1.5 border-b border-slate-800">
+                            <Layers className="h-3 w-3 text-emerald-400" />
+                            <span className="font-bold text-slate-200 text-[8px] uppercase tracking-wider">
+                              Map Legend
+                            </span>
+                          </div>
+
+                          {layer === "soil" && (
+                            <div className="space-y-1">
+                              <div className="text-[7.5px] font-mono text-slate-400 mb-1">
+                                Diagnostic: <strong className="text-emerald-400">{currentSoilMeta.label}</strong>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
+                                <span className="text-slate-200 font-medium">{currentSoilMeta.highLabel}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
+                                <span className="text-slate-200 font-medium">{currentSoilMeta.midLabel}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
+                                <span className="text-slate-200 font-medium">{currentSoilMeta.lowLabel}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {layer === "pixel" && (
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
+                                <span className="text-slate-200 font-medium">High: {legendLabels.high}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
+                                <span className="text-slate-200 font-medium">Average: {legendLabels.mid}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
+                                <span className="text-slate-200 font-medium">Low: {legendLabels.low}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {layer === "lulc" && (
+                            <div className="grid grid-cols-2 gap-1 text-[7.5px]">
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#E49635"}} /><span className="text-amber-300 font-bold">Crops</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#397D49"}} /><span className="text-emerald-400 font-medium">Forest</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#88B053"}} /><span className="text-slate-300 font-medium">Grass</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#C4281B"}} /><span className="text-red-400 font-bold">Built-up</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#419BDF"}} /><span className="text-blue-400 font-medium">Water</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#DFC35A"}} /><span className="text-slate-300 font-medium">Shrub</span></div>
+                            </div>
+                          )}
+
+                          {(layer === "osm" || layer === "satellite") && (
+                            <p className="text-slate-400 italic text-[7.5px]">Administrative county boundary and reference base cartography.</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* OUTSIDE LATITUDE & LONGITUDE TICKS (Strictly outside the neatline frame) */}
+                    {showGraticule && (
+                      <>
+                        {/* Top Longitude Labels */}
+                        <div className="absolute -top-5 left-0 right-0 h-5 pointer-events-none select-none">
+                          {lonTicks.map((t, idx) => (
+                            <div 
+                              key={idx} 
+                              className="absolute flex flex-col items-center"
+                              style={{ left: `${t.pct}%`, transform: "translateX(-50%)", bottom: 0 }}
+                            >
+                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none">{t.label}</span>
+                              <div className="w-[1px] h-1.5 bg-cyan-400/80 mt-0.5" />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Bottom Longitude Labels */}
+                        <div className="absolute -bottom-5 left-0 right-0 h-5 pointer-events-none select-none">
+                          {lonTicks.map((t, idx) => (
+                            <div 
+                              key={idx} 
+                              className="absolute flex flex-col items-center"
+                              style={{ left: `${t.pct}%`, transform: "translateX(-50%)", top: 0 }}
+                            >
+                              <div className="w-[1px] h-1.5 bg-cyan-400/80 mb-0.5" />
+                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none">{t.label}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Left Latitude Labels */}
+                        <div className="absolute -left-12 top-0 bottom-0 w-12 pointer-events-none select-none">
+                          {latTicks.map((t, idx) => (
+                            <div 
+                              key={idx} 
+                              className="absolute flex items-center gap-1 justify-end"
+                              style={{ top: `${t.pct}%`, transform: "translateY(-50%)", right: 0 }}
+                            >
+                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none whitespace-nowrap">{t.label}</span>
+                              <div className="w-1.5 h-[1px] bg-cyan-400/80" />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Right Latitude Labels */}
+                        <div className="absolute -right-12 top-0 bottom-0 w-12 pointer-events-none select-none">
+                          {latTicks.map((t, idx) => (
+                            <div 
+                              key={idx} 
+                              className="absolute flex items-center gap-1 justify-start"
+                              style={{ top: `${t.pct}%`, transform: "translateY(-50%)", left: 0 }}
+                            >
+                              <div className="w-1.5 h-[1px] bg-cyan-400/80" />
+                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none whitespace-nowrap">{t.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
-                )}
-
-                {/* IN-MAP TITLE (Top-Left matching official atlas presentation) */}
-                <div className="absolute top-2.5 left-2.5 z-10 bg-slate-950/85 backdrop-blur-sm border border-slate-700/80 px-2.5 py-1 rounded shadow-xl pointer-events-none">
-                  <h3 className="text-xs font-black text-emerald-400 uppercase tracking-tight leading-none">
-                    {county} County {activeSubcounty ? `— ${activeSubcounty}` : ""}
-                  </h3>
-                  <p className="text-[8px] font-mono text-slate-300 mt-0.5">
-                    AOI Extent · {year}
-                  </p>
-                </div>
-
-                {/* NEATLINE GRATICULE & TICK LABELS */}
-                {showGraticule && (
-                  <div className="absolute inset-0 pointer-events-none border border-slate-600/50">
-                    {/* Subtle Grid Lines */}
-                    <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 opacity-15">
-                      {Array.from({ length: 16 }).map((_, i) => (
-                        <div key={i} className="border-r border-b border-dashed border-cyan-400" />
-                      ))}
-                    </div>
-                    
-                    {/* Top Longitude Ticks */}
-                    <div className="absolute top-0 inset-x-0 flex justify-between px-3 pt-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-b border-slate-700/60">
-                      {lonTicks.map((t, idx) => (
-                        <span key={idx} className="tracking-tighter">{t.label}</span>
-                      ))}
-                    </div>
-
-                    {/* Bottom Longitude Ticks */}
-                    <div className="absolute bottom-0 inset-x-0 flex justify-between px-3 pb-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-t border-slate-700/60">
-                      {lonTicks.map((t, idx) => (
-                        <span key={idx} className="tracking-tighter">{t.label}</span>
-                      ))}
-                    </div>
-
-                    {/* Left Latitude Ticks */}
-                    <div className="absolute left-0 inset-y-0 flex flex-col justify-between py-4 pl-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-r border-slate-700/60">
-                      {latTicks.map((t, idx) => (
-                        <span key={idx} className="tracking-tighter">{t.label}</span>
-                      ))}
-                    </div>
-
-                    {/* Right Latitude Ticks */}
-                    <div className="absolute right-0 inset-y-0 flex flex-col justify-between py-4 pr-0.5 text-[7px] font-mono text-cyan-300 bg-slate-950/70 border-l border-slate-700/60">
-                      {latTicks.map((t, idx) => (
-                        <span key={idx} className="tracking-tighter">{t.label}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* NORTH ARROW (Anchored in Top-Right) */}
-                {showNorthArrow && (
-                  <div className="absolute top-2.5 right-2.5 bg-slate-900/95 border border-slate-700 rounded-md px-1.5 py-1 shadow-2xl flex flex-col items-center justify-center pointer-events-none z-10">
-                    <Compass className="h-4 w-4 text-emerald-400" />
-                    <span className="text-[8px] font-black text-white leading-none mt-0.5">N</span>
-                  </div>
-                )}
-
-                {/* CARTOGRAPHIC SCALE BAR (Anchored in Bottom-Left matching user reference) */}
-                <div className="absolute bottom-3 left-3 bg-slate-950/90 border border-slate-700 px-2.5 py-1 rounded shadow-2xl text-[7.5px] font-mono text-slate-200 pointer-events-none z-10 flex flex-col gap-0.5">
-                  <span className="font-bold text-slate-300 text-[7px]">1 cm ≈ {mapFrameDims.kmPerCm} km</span>
-                  <div className="flex items-center gap-1">
-                    <span>0</span>
-                    <div className="w-14 h-1.5 bg-gradient-to-r from-white via-slate-800 to-white border border-slate-400 flex">
-                      <div className="w-1/4 h-full bg-black border-r border-slate-400" />
-                      <div className="w-1/4 h-full bg-white border-r border-slate-400" />
-                      <div className="w-1/4 h-full bg-black border-r border-slate-400" />
-                      <div className="w-1/4 h-full bg-white" />
-                    </div>
-                    <span>20 km</span>
-                  </div>
-                  <span className="text-[6.5px] text-slate-400 font-bold tracking-widest text-center uppercase">Kilometers</span>
                 </div>
               </div>
-            </div>
 
-            {/* BOTTOM METADATA & LEGEND PANEL (Restored 3-card layout) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[8.5px] items-stretch flex-shrink-0 pt-1.5 border-t border-slate-800">
-              {/* 1. SYMBOLOGY / LEGEND */}
-              {showLegend && (
-                <div className="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex flex-col justify-between">
-                  <div>
-                    <span className="font-black text-slate-300 uppercase tracking-wider block text-[8px] flex items-center gap-1 mb-1.5">
-                      <Layers className="h-3 w-3 text-emerald-400" /> Map Legend
-                    </span>
-
-                    {layer === "soil" && (
-                      <div className="space-y-1">
-                        <div className="text-[7.5px] font-mono text-slate-400 mb-1">
-                          Diagnostic: <strong className="text-emerald-400">{currentSoilMeta.label}</strong>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
-                          <span className="text-slate-200 font-medium">{currentSoilMeta.highLabel}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
-                          <span className="text-slate-200 font-medium">{currentSoilMeta.midLabel}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
-                          <span className="text-slate-200 font-medium">{currentSoilMeta.lowLabel}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {layer === "pixel" && (
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.high }} />
-                          <span className="text-slate-200 font-medium">High: {legendLabels.high}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.mid }} />
-                          <span className="text-slate-200 font-medium">Average: {legendLabels.mid}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ background: palette.low }} />
-                          <span className="text-slate-200 font-medium">Low: {legendLabels.low}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {layer === "lulc" && (
-                      <div className="grid grid-cols-2 gap-1 text-[7.5px]">
-                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#E49635"}} /><span className="text-amber-300 font-bold">Crops</span></div>
-                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#397D49"}} /><span className="text-emerald-400 font-medium">Forest</span></div>
-                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#88B053"}} /><span className="text-slate-300 font-medium">Grass</span></div>
-                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#C4281B"}} /><span className="text-red-400 font-bold">Built-up</span></div>
-                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#419BDF"}} /><span className="text-blue-400 font-medium">Water</span></div>
-                        <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm" style={{background: "#DFC35A"}} /><span className="text-slate-300 font-medium">Shrub</span></div>
-                      </div>
-                    )}
-
-                    {(layer === "osm" || layer === "satellite") && (
-                      <p className="text-slate-400 italic text-[8px]">Administrative county boundary and reference base cartography.</p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* 2. TECHNICAL SPECIFICATIONS */}
+              {/* RIGHT COLUMN: SOURCES & METADATA SIDEBAR */}
               {showMetadata && (
-                <div className="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex flex-col justify-between font-mono">
-                  <div>
-                    <span className="font-black text-slate-300 uppercase tracking-wider block text-[8px] flex items-center gap-1 mb-1.5">
-                      <Info className="h-3 w-3 text-blue-400" /> Spatial Specifications
-                    </span>
-                    <p className="text-slate-400 mb-0.5"><strong className="text-slate-200 font-sans">Layer:</strong> {layerName}</p>
-                    <p className="text-slate-400 mb-0.5"><strong className="text-slate-200 font-sans">Opacity:</strong> {Math.round(opacity * 100)}% overlay transparency</p>
-                    <p className="text-slate-400 mb-0.5"><strong className="text-slate-200 font-sans">Resolution:</strong> {spatialResolution}</p>
-                    <p className="text-slate-400"><strong className="text-slate-200 font-sans">Geographic CRS:</strong> WGS 84 (EPSG:4326)</p>
-                  </div>
-                </div>
-              )}
+                <div className="w-[290px] lg:w-[320px] flex-shrink-0 flex flex-col justify-between gap-2.5 text-[8.5px]">
+                  {/* Card 1: Spatial Specifications */}
+                  <div className="bg-slate-900/95 border border-slate-800 p-3 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-1.5 pb-1.5 mb-2 border-b border-slate-800">
+                        <Info className="h-3.5 w-3.5 text-blue-400" />
+                        <span className="font-black text-slate-200 uppercase tracking-wider text-[9px]">
+                          Spatial Specifications
+                        </span>
+                      </div>
+                      <div className="space-y-1.5 font-mono text-[8px]">
+                        <div>
+                          <span className="text-slate-400 block font-sans">Active Layer:</span>
+                          <span className="text-slate-200 font-semibold">{layerName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-sans">Resolution:</span>
+                          <span className="text-slate-200">{spatialResolution}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-sans">Transparency:</span>
+                          <span className="text-slate-200">{Math.round(opacity * 100)}% overlay</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-sans">Geographic CRS:</span>
+                          <span className="text-slate-200">EPSG:4326 (WGS 84)</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-sans">Coverage Area:</span>
+                          <span className="text-emerald-400 font-bold">{mapFrameDims.wKm} × {mapFrameDims.hKm} km</span>
+                        </div>
+                      </div>
 
-              {/* 3. SOURCES & CITATIONS */}
-              {showMetadata && (
-                <div className="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex flex-col justify-between text-[8px]">
-                  <div>
-                    <span className="font-black text-slate-300 uppercase tracking-wider block flex items-center gap-1 text-[8px] mb-1.5">
-                      <Check className="h-3 w-3 text-emerald-400" /> Data Sources & Models
-                    </span>
-                    {layer === "soil" ? (
-                      <>
-                        <p className="text-slate-400 mb-0.5">
-                          <strong className="text-slate-300">Ground-truth:</strong> KALRO Kenya Soil Survey & ISRIC.
-                        </p>
-                        <p className="text-slate-400 mb-0.5">
-                          <strong className="text-slate-300">Remote Sensing:</strong> Sentinel-2 Multispectral & OpenLandMap 250m.
-                        </p>
-                        <p className="text-slate-400">
-                          <strong className="text-slate-300">Predictor:</strong> Random Forest Soil Ensemble (30m).
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-slate-400 mb-0.5">
-                          <strong className="text-slate-300">Ground-truth:</strong> Ministry of Agriculture / AFA Kenya.
-                        </p>
-                        <p className="text-slate-400 mb-0.5">
-                          <strong className="text-slate-300">Remote Sensing:</strong> Google Earth Engine (CHIRPS, MODIS, Dynamic World).
-                        </p>
-                        <p className="text-slate-400">
-                          <strong className="text-slate-300">Predictor:</strong> XGBoost ML Regressor (County-level tuned).
-                        </p>
-                      </>
-                    )}
+                      {/* Bounding Box Coordinates */}
+                      <div className="mt-2.5 pt-2 border-t border-slate-800/80">
+                        <span className="text-[7.5px] uppercase font-bold tracking-wider text-slate-400 block mb-1">
+                          Bounding Coordinates
+                        </span>
+                        <div className="grid grid-cols-2 gap-1 text-[7.5px] font-mono bg-slate-950/60 p-1.5 rounded border border-slate-800/60">
+                          <div><span className="text-slate-500">N:</span> <span className="text-cyan-300">{formatDms(activeBnds.north, true)}</span></div>
+                          <div><span className="text-slate-500">S:</span> <span className="text-cyan-300">{formatDms(activeBnds.south, true)}</span></div>
+                          <div><span className="text-slate-500">W:</span> <span className="text-cyan-300">{formatDms(activeBnds.west, false)}</span></div>
+                          <div><span className="text-slate-500">E:</span> <span className="text-cyan-300">{formatDms(activeBnds.east, false)}</span></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-slate-500 italic pt-1 border-t border-slate-800/80 text-[7.5px]">
-                    AgriWatch-KE · Decision Support Bulletin
-                  </p>
+
+                  {/* Card 2: Data Sources & Models */}
+                  <div className="bg-slate-900/95 border border-slate-800 p-3 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-1.5 pb-1.5 mb-2 border-b border-slate-800">
+                        <Check className="h-3.5 w-3.5 text-emerald-400" />
+                        <span className="font-black text-slate-200 uppercase tracking-wider text-[9px]">
+                          Data Sources & Models
+                        </span>
+                      </div>
+                      <div className="space-y-2 text-[8px]">
+                        {layer === "soil" ? (
+                          <>
+                            <div>
+                              <span className="text-slate-400 font-bold block">Ground Truth:</span>
+                              <span className="text-slate-300">KALRO Kenya Soil Survey & ISRIC World Soil Information.</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 font-bold block">Remote Sensing:</span>
+                              <span className="text-slate-300">Sentinel-2 MSI & OpenLandMap 250m Global Grids.</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 font-bold block">Predictive Model:</span>
+                              <span className="text-slate-300">Random Forest Spatial Soil Ensemble (30m).</span>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div>
+                              <span className="text-slate-400 font-bold block">Ground Truth:</span>
+                              <span className="text-slate-300">Ministry of Agriculture / Agriculture and Food Authority (AFA).</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 font-bold block">Remote Sensing:</span>
+                              <span className="text-slate-300">Google Earth Engine (CHIRPS, MODIS, Dynamic World).</span>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 font-bold block">Predictive Model:</span>
+                              <span className="text-slate-300">XGBoost ML Regressor (Tuned for Kenyan agro-ecological zones).</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="pt-2 mt-2 border-t border-slate-800/80 flex items-center justify-between text-[7px] text-slate-500">
+                      <span className="font-bold text-emerald-500 uppercase tracking-widest">AgriWatch-KE</span>
+                      <span className="italic">Decision Support Bulletin</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
