@@ -225,7 +225,7 @@ const Index = () => {
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: "#020617",
+        backgroundColor: "#ffffff",
       });
       
       const imgData = canvas.toDataURL("image/png");

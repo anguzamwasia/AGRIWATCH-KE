@@ -125,6 +125,8 @@ export const MapExportModal = ({
   const [isCapturingPreview, setIsCapturingPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [exportFormat, setExportFormat] = useState<"png" | "pdf">("png");
+  const [exportTheme, setExportTheme] = useState<"paper" | "dark">("paper");
+  const isPaper = exportTheme === "paper";
 
   // Cartographic toggles
   const [showGraticule, setShowGraticule] = useState(true);
@@ -430,7 +432,7 @@ export const MapExportModal = ({
         scale: 2.5,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: "#070b14",
+        backgroundColor: isPaper ? "#ffffff" : "#070b14",
         logging: false,
       });
 
@@ -505,7 +507,7 @@ export const MapExportModal = ({
         </DialogHeader>
 
         {/* MAP OPTIONS & CONFIGURATION BAR */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2 border-b border-slate-800/80">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-2 border-b border-slate-800/80 items-center">
           <div className="space-y-1.5">
             <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Map Elements & Overlays</span>
             <div className="grid grid-cols-2 gap-2">
@@ -542,24 +544,44 @@ export const MapExportModal = ({
             </div>
           </div>
 
+          <div className="space-y-1.5">
+            <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Document Theme</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setExportTheme("paper")}
+                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${isPaper ? "bg-white text-slate-900 shadow-md border border-slate-200" : "bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800"}`}
+              >
+                <span>📄 Publication Paper (White)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setExportTheme("dark")}
+                className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${!isPaper ? "bg-emerald-600 text-white shadow-md" : "bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800"}`}
+              >
+                <span>🌙 Dark Screen</span>
+              </button>
+            </div>
+          </div>
+
           <div className="space-y-1.5 flex flex-col justify-between">
             <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Format Selection</span>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Button
                 variant={exportFormat === "png" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setExportFormat("png")}
-                className={`flex-1 gap-2 font-bold text-xs ${exportFormat === "png" ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/30" : "border-slate-700 text-slate-300"}`}
+                className={`flex-1 gap-1.5 font-bold text-xs ${exportFormat === "png" ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/30" : "border-slate-700 text-slate-300"}`}
               >
-                <ImageIcon className="h-4 w-4" /> PNG Image (300 DPI)
+                <ImageIcon className="h-4 w-4" /> PNG (300 DPI)
               </Button>
               <Button
                 variant={exportFormat === "pdf" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setExportFormat("pdf")}
-                className={`flex-1 gap-2 font-bold text-xs ${exportFormat === "pdf" ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/30" : "border-slate-700 text-slate-300"}`}
+                className={`flex-1 gap-1.5 font-bold text-xs ${exportFormat === "pdf" ? "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/30" : "border-slate-700 text-slate-300"}`}
               >
-                <FileText className="h-4 w-4" /> A4 PDF Document
+                <FileText className="h-4 w-4" /> A4 PDF
               </Button>
             </div>
           </div>
@@ -568,36 +590,40 @@ export const MapExportModal = ({
         {/* PRINT / EXPORT CANVAS (Rendered with exact A4 Landscape 297:210 aspect ratio) */}
         <div className="border border-slate-800 rounded-2xl overflow-hidden shadow-2xl bg-[#090d16] p-3 text-slate-200">
           <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2">
-            <span>A4 Landscape Map Preview (Map Fills Entire Sheet)</span>
+            <span>A4 Landscape Map Preview ({isPaper ? "Publication White Document" : "Dark Display Sheet"})</span>
             <span className="text-emerald-400 font-bold">CRS: EPSG:4326 · 1:1 Aspect Ratio</span>
           </div>
 
           <div 
             ref={printAreaRef} 
-            className="w-full bg-[#070b14] border-2 border-slate-700 rounded-xl p-4 flex flex-col justify-between shadow-inner relative overflow-hidden"
-            style={{ aspectRatio: "297 / 210", minHeight: "580px" }}
+            className={`w-full rounded-xl p-4 flex flex-col justify-between relative overflow-hidden transition-colors ${
+              isPaper 
+                ? "bg-white text-slate-900 border-2 border-slate-800 shadow-md" 
+                : "bg-[#070b14] text-slate-200 border-2 border-slate-700 shadow-inner"
+            }`}
+            style={{ aspectRatio: "297 / 210", minHeight: "580px", backgroundColor: isPaper ? "#ffffff" : "#070b14" }}
           >
             {/* COMPACT SLIM HEADER */}
-            <div className="border-b border-slate-700/90 pb-2 flex items-center justify-between flex-shrink-0">
+            <div className={`border-b ${isPaper ? "border-slate-300" : "border-slate-700/90"} pb-2 flex items-center justify-between flex-shrink-0`}>
               <div className="flex items-center gap-3">
-                <span className="bg-emerald-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-widest shadow-sm">
+                <span className={`${isPaper ? "bg-emerald-800" : "bg-emerald-600"} text-white text-[9px] font-black uppercase px-2 py-0.5 rounded tracking-widest shadow-sm`}>
                   AgriWatch-KE
                 </span>
                 <div>
-                  <h2 className="text-base font-black text-white uppercase tracking-tight leading-none">
+                  <h2 className={`text-base font-black ${isPaper ? "text-slate-950" : "text-white"} uppercase tracking-tight leading-none`}>
                     {county} County {activeSubcounty ? `— ${activeSubcounty} Sub-county` : ""}
                   </h2>
-                  <p className="text-[11px] font-bold text-emerald-400 leading-none mt-1">
+                  <p className={`text-[11px] font-bold ${isPaper ? "text-emerald-800" : "text-emerald-400"} leading-none mt-1`}>
                     {mapTitle} · Harvest Year {year}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-slate-900/90 border-slate-700 text-slate-200 text-[10px] font-mono px-2 py-0.5">
-                  Crop: <strong className="text-emerald-400 ml-1 font-bold">{crop}</strong>
+                <Badge variant="outline" className={`${isPaper ? "bg-slate-100 border-slate-300 text-slate-800 font-bold" : "bg-slate-900/90 border-slate-700 text-slate-200"} text-[10px] font-mono px-2 py-0.5`}>
+                  Crop: <strong className={`${isPaper ? "text-emerald-800" : "text-emerald-400"} ml-1 font-bold`}>{crop}</strong>
                 </Badge>
-                <span className="text-[9px] font-mono text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800">
+                <span className={`text-[9px] font-mono ${isPaper ? "text-slate-600 bg-slate-100 border-slate-300" : "text-slate-400 bg-slate-900/80 border-slate-800"} px-2 py-0.5 rounded border`}>
                   {nowFormatted}
                 </span>
               </div>
@@ -615,7 +641,11 @@ export const MapExportModal = ({
                 >
                   {/* MAP NEATLINE FRAME */}
                   <div 
-                    className="relative bg-slate-950 rounded-xl overflow-visible border-2 border-slate-600 shadow-2xl flex items-center justify-center"
+                    className={`relative ${
+                      isPaper 
+                        ? "bg-white border-2 border-slate-900 shadow-md" 
+                        : "bg-slate-950 border-2 border-slate-600 shadow-2xl"
+                    } rounded-xl overflow-visible flex items-center justify-center`}
                     style={{
                       width: `${mapFrameDims.width}px`,
                       height: `${mapFrameDims.height}px`,
@@ -626,9 +656,9 @@ export const MapExportModal = ({
                     {/* INNER MAP CANVAS & IN-FRAME OVERLAYS */}
                     <div className="relative w-full h-full overflow-hidden rounded-[10px]">
                       {isCapturingPreview && (
-                        <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2 text-slate-300">
-                          <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
-                          <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">Extracting Area of Interest (AOI)...</span>
+                        <div className={`absolute inset-0 ${isPaper ? "bg-white/90 text-slate-800" : "bg-slate-950/90 text-slate-300"} backdrop-blur-sm z-30 flex flex-col items-center justify-center gap-2`}>
+                          <Loader2 className={`h-8 w-8 animate-spin ${isPaper ? "text-emerald-700" : "text-emerald-400"}`} />
+                          <span className={`text-xs font-bold uppercase tracking-widest ${isPaper ? "text-emerald-800" : "text-emerald-300"}`}>Extracting Area of Interest (AOI)...</span>
                         </div>
                       )}
 
@@ -644,17 +674,21 @@ export const MapExportModal = ({
                         />
                       ) : (
                         <div className="flex flex-col items-center justify-center text-slate-500 gap-2 h-full">
-                          <Loader2 className="h-6 w-6 animate-spin text-emerald-400" />
+                          <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
                           <span className="text-xs font-medium">Capturing Area of Interest...</span>
                         </div>
                       )}
 
                       {/* IN-MAP TITLE */}
-                      <div className={`absolute ${inMapLayout.titlePos} z-20 bg-slate-950/85 backdrop-blur-sm border border-slate-700/80 px-2.5 py-1 rounded shadow-xl pointer-events-none`}>
-                        <h3 className="text-xs font-black text-emerald-400 uppercase tracking-tight leading-none">
+                      <div className={`absolute ${inMapLayout.titlePos} z-20 ${
+                        isPaper 
+                          ? "bg-white/95 border-slate-400 text-slate-900 shadow-md" 
+                          : "bg-slate-950/85 border-slate-700/80 text-white shadow-xl"
+                      } backdrop-blur-sm border px-2.5 py-1 rounded pointer-events-none`}>
+                        <h3 className={`text-xs font-black ${isPaper ? "text-slate-950" : "text-emerald-400"} uppercase tracking-tight leading-none`}>
                           {county} County {activeSubcounty ? `— ${activeSubcounty}` : ""}
                         </h3>
-                        <p className="text-[8px] font-mono text-slate-300 mt-0.5">
+                        <p className={`text-[8px] font-mono ${isPaper ? "text-slate-600" : "text-slate-300"} mt-0.5`}>
                           AOI Extent · {year}
                         </p>
                       </div>
@@ -663,22 +697,30 @@ export const MapExportModal = ({
                       {showGraticule && (
                         <div className="absolute inset-0 pointer-events-none grid grid-cols-4 grid-rows-4 opacity-15">
                           {Array.from({ length: 16 }).map((_, i) => (
-                            <div key={i} className="border-r border-b border-dashed border-cyan-400" />
+                            <div key={i} className={`border-r border-b border-dashed ${isPaper ? "border-slate-600" : "border-cyan-400"}`} />
                           ))}
                         </div>
                       )}
 
                       {/* NORTH ARROW */}
                       {showNorthArrow && (
-                        <div className={`absolute ${inMapLayout.northArrowPos} bg-slate-900/95 border border-slate-700 rounded-md px-1.5 py-1 shadow-2xl flex flex-col items-center justify-center pointer-events-none z-20`}>
-                          <Compass className="h-4 w-4 text-emerald-400" />
-                          <span className="text-[8px] font-black text-white leading-none mt-0.5">N</span>
+                        <div className={`absolute ${inMapLayout.northArrowPos} ${
+                          isPaper 
+                            ? "bg-white/95 border-slate-400 text-slate-900 shadow-md" 
+                            : "bg-slate-900/95 border-slate-700 text-white shadow-2xl"
+                        } border rounded-md px-1.5 py-1 flex flex-col items-center justify-center pointer-events-none z-20`}>
+                          <Compass className={`h-4 w-4 ${isPaper ? "text-emerald-700" : "text-emerald-400"}`} />
+                          <span className={`text-[8px] font-black ${isPaper ? "text-slate-900" : "text-white"} leading-none mt-0.5`}>N</span>
                         </div>
                       )}
 
                       {/* CARTOGRAPHIC SCALE BAR */}
-                      <div className={`absolute ${inMapLayout.scalePos} bg-slate-950/90 border border-slate-700 px-2.5 py-1 rounded shadow-2xl text-[7.5px] font-mono text-slate-200 pointer-events-none z-20 flex flex-col gap-0.5`}>
-                        <span className="font-bold text-slate-300 text-[7px]">1 cm ≈ {mapFrameDims.kmPerCm} km</span>
+                      <div className={`absolute ${inMapLayout.scalePos} ${
+                        isPaper 
+                          ? "bg-white/95 border-slate-400 text-slate-800 shadow-md" 
+                          : "bg-slate-950/90 border-slate-700 text-slate-200 shadow-2xl"
+                      } border px-2.5 py-1 rounded text-[7.5px] font-mono pointer-events-none z-20 flex flex-col gap-0.5`}>
+                        <span className={`font-bold ${isPaper ? "text-slate-800" : "text-slate-300"} text-[7px]`}>1 cm ≈ {mapFrameDims.kmPerCm} km</span>
                         <div className="flex items-center gap-1">
                           <span>0</span>
                           <div className="w-14 h-1.5 bg-gradient-to-r from-white via-slate-800 to-white border border-slate-400 flex">
@@ -689,74 +731,78 @@ export const MapExportModal = ({
                           </div>
                           <span>20 km</span>
                         </div>
-                        <span className="text-[6.5px] text-slate-400 font-bold tracking-widest text-center uppercase">Kilometers</span>
+                        <span className={`text-[6.5px] ${isPaper ? "text-slate-600 font-semibold" : "text-slate-400 font-bold"} tracking-widest text-center uppercase`}>Kilometers</span>
                       </div>
 
-                      {/* ADAPTIVE IN-MAP VOID LEGEND (Positioned in the study area void, never overlaying the AOI) */}
+                      {/* ADAPTIVE IN-MAP VOID LEGEND */}
                       {showLegend && (
                         <div 
-                          className={`absolute ${inMapLayout.legendPos} z-20 bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-lg p-2 shadow-2xl max-w-[200px] text-[7.5px]`}
+                          className={`absolute ${inMapLayout.legendPos} z-20 ${
+                            isPaper 
+                              ? "bg-white/95 border-slate-300 text-slate-900 shadow-md" 
+                              : "bg-slate-950/90 border-slate-700/80 text-slate-200 shadow-2xl"
+                          } backdrop-blur-md border rounded-lg p-2 max-w-[200px] text-[7.5px]`}
                         >
-                          <div className="flex items-center gap-1.5 pb-1 mb-1 border-b border-slate-800">
-                            <Layers className="h-3 w-3 text-emerald-400" />
-                            <span className="font-bold text-slate-200 text-[8px] uppercase tracking-wider">
+                          <div className={`flex items-center gap-1.5 pb-1 mb-1 border-b ${isPaper ? "border-slate-200" : "border-slate-800"}`}>
+                            <Layers className={`h-3 w-3 ${isPaper ? "text-emerald-700" : "text-emerald-400"}`} />
+                            <span className={`font-bold ${isPaper ? "text-slate-900" : "text-slate-200"} text-[8px] uppercase tracking-wider`}>
                               {layer === "soil" ? "Soil Diagnostic" : layer === "pixel" ? "Crop Yield" : "Map Legend"}
                             </span>
                           </div>
 
                           {layer === "soil" && (
                             <div className="space-y-1">
-                              <div className="text-[7px] font-mono text-slate-400 mb-0.5">
-                                Diagnostic: <strong className="text-emerald-400 font-bold">{currentSoilMeta.label}</strong>
+                              <div className={`text-[7px] font-mono ${isPaper ? "text-slate-600" : "text-slate-400"} mb-0.5`}>
+                                Diagnostic: <strong className={`${isPaper ? "text-emerald-800" : "text-emerald-400"} font-bold`}>{currentSoilMeta.label}</strong>
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.high }} />
-                                <span className="text-slate-200 font-medium text-[7px]">{currentSoilMeta.highLabel}</span>
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-slate-300" style={{ background: palette.high }} />
+                                <span className={`${isPaper ? "text-slate-800 font-semibold" : "text-slate-200 font-medium"} text-[7px]`}>{currentSoilMeta.highLabel}</span>
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.mid }} />
-                                <span className="text-slate-200 font-medium text-[7px]">{currentSoilMeta.midLabel}</span>
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-slate-300" style={{ background: palette.mid }} />
+                                <span className={`${isPaper ? "text-slate-800 font-semibold" : "text-slate-200 font-medium"} text-[7px]`}>{currentSoilMeta.midLabel}</span>
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.low }} />
-                                <span className="text-slate-200 font-medium text-[7px]">{currentSoilMeta.lowLabel}</span>
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-slate-300" style={{ background: palette.low }} />
+                                <span className={`${isPaper ? "text-slate-800 font-semibold" : "text-slate-200 font-medium"} text-[7px]`}>{currentSoilMeta.lowLabel}</span>
                               </div>
                             </div>
                           )}
 
                           {layer === "pixel" && (
                             <div className="space-y-1">
-                              <div className="text-[7px] font-mono text-slate-400 mb-0.5">
-                                Metric: <strong className="text-emerald-400 font-bold">{crop} Yield (t/ha)</strong>
+                              <div className={`text-[7px] font-mono ${isPaper ? "text-slate-600" : "text-slate-400"} mb-0.5`}>
+                                Metric: <strong className={`${isPaper ? "text-emerald-800" : "text-emerald-400"} font-bold`}>{crop} Yield (t/ha)</strong>
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.high }} />
-                                <span className="text-slate-200 font-medium text-[7px]">High: {legendLabels.high}</span>
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-slate-300" style={{ background: palette.high }} />
+                                <span className={`${isPaper ? "text-slate-800 font-semibold" : "text-slate-200 font-medium"} text-[7px]`}>High: {legendLabels.high}</span>
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.mid }} />
-                                <span className="text-slate-200 font-medium text-[7px]">Average: {legendLabels.mid}</span>
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-slate-300" style={{ background: palette.mid }} />
+                                <span className={`${isPaper ? "text-slate-800 font-semibold" : "text-slate-200 font-medium"} text-[7px]`}>Average: {legendLabels.mid}</span>
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-white/20" style={{ background: palette.low }} />
-                                <span className="text-slate-200 font-medium text-[7px]">Low: {legendLabels.low}</span>
+                                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm border border-slate-300" style={{ background: palette.low }} />
+                                <span className={`${isPaper ? "text-slate-800 font-semibold" : "text-slate-200 font-medium"} text-[7px]`}>Low: {legendLabels.low}</span>
                               </div>
                             </div>
                           )}
 
                           {layer === "lulc" && (
                             <div className="grid grid-cols-2 gap-1 text-[7px]">
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#E49635"}} /><span className="text-amber-300 font-bold">Crops</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#397D49"}} /><span className="text-emerald-400 font-medium">Forest</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#88B053"}} /><span className="text-slate-300 font-medium">Grass</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#C4281B"}} /><span className="text-red-400 font-bold">Built-up</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#419BDF"}} /><span className="text-blue-400 font-medium">Water</span></div>
-                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-white/20" style={{background: "#DFC35A"}} /><span className="text-slate-300 font-medium">Shrub</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-slate-300" style={{background: "#E49635"}} /><span className={`${isPaper ? "text-amber-800" : "text-amber-300"} font-bold`}>Crops</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-slate-300" style={{background: "#397D49"}} /><span className={`${isPaper ? "text-emerald-800" : "text-emerald-400"} font-medium`}>Forest</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-slate-300" style={{background: "#88B053"}} /><span className={`${isPaper ? "text-slate-800" : "text-slate-300"} font-medium`}>Grass</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-slate-300" style={{background: "#C4281B"}} /><span className={`${isPaper ? "text-red-700" : "text-red-400"} font-bold`}>Built-up</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-slate-300" style={{background: "#419BDF"}} /><span className={`${isPaper ? "text-blue-800" : "text-blue-400"} font-medium`}>Water</span></div>
+                              <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-sm border border-slate-300" style={{background: "#DFC35A"}} /><span className={`${isPaper ? "text-slate-800" : "text-slate-300"} font-medium`}>Shrub</span></div>
                             </div>
                           )}
 
                           {(layer === "osm" || layer === "satellite") && (
-                            <p className="text-slate-400 italic text-[7px]">Administrative county boundary and reference base cartography.</p>
+                            <p className={`${isPaper ? "text-slate-600" : "text-slate-400"} italic text-[7px]`}>Administrative county boundary and reference base cartography.</p>
                           )}
                         </div>
                       )}
@@ -773,8 +819,8 @@ export const MapExportModal = ({
                               className="absolute flex flex-col items-center"
                               style={{ left: `${t.pct}%`, transform: "translateX(-50%)", bottom: 0 }}
                             >
-                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none">{t.label}</span>
-                              <div className="w-[1px] h-1.5 bg-cyan-400/80 mt-0.5" />
+                              <span className={`text-[7.5px] font-mono ${isPaper ? "text-slate-800 font-bold" : "text-cyan-300 font-semibold"} leading-none`}>{t.label}</span>
+                              <div className={`w-[1px] h-1.5 ${isPaper ? "bg-slate-700" : "bg-cyan-400/80"} mt-0.5`} />
                             </div>
                           ))}
                         </div>
@@ -787,8 +833,8 @@ export const MapExportModal = ({
                               className="absolute flex flex-col items-center"
                               style={{ left: `${t.pct}%`, transform: "translateX(-50%)", top: 0 }}
                             >
-                              <div className="w-[1px] h-1.5 bg-cyan-400/80 mb-0.5" />
-                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none">{t.label}</span>
+                              <div className={`w-[1px] h-1.5 ${isPaper ? "bg-slate-700" : "bg-cyan-400/80"} mb-0.5`} />
+                              <span className={`text-[7.5px] font-mono ${isPaper ? "text-slate-800 font-bold" : "text-cyan-300 font-semibold"} leading-none`}>{t.label}</span>
                             </div>
                           ))}
                         </div>
@@ -801,8 +847,8 @@ export const MapExportModal = ({
                               className="absolute flex items-center gap-1 justify-end"
                               style={{ top: `${t.pct}%`, transform: "translateY(-50%)", right: 0 }}
                             >
-                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none whitespace-nowrap">{t.label}</span>
-                              <div className="w-1.5 h-[1px] bg-cyan-400/80" />
+                              <span className={`text-[7.5px] font-mono ${isPaper ? "text-slate-800 font-bold" : "text-cyan-300 font-semibold"} leading-none whitespace-nowrap`}>{t.label}</span>
+                              <div className={`w-1.5 h-[1px] ${isPaper ? "bg-slate-700" : "bg-cyan-400/80"}`} />
                             </div>
                           ))}
                         </div>
@@ -815,8 +861,8 @@ export const MapExportModal = ({
                               className="absolute flex items-center gap-1 justify-start"
                               style={{ top: `${t.pct}%`, transform: "translateY(-50%)", left: 0 }}
                             >
-                              <div className="w-1.5 h-[1px] bg-cyan-400/80" />
-                              <span className="text-[7.5px] font-mono text-cyan-300 font-semibold leading-none whitespace-nowrap">{t.label}</span>
+                              <div className={`w-1.5 h-[1px] ${isPaper ? "bg-slate-700" : "bg-cyan-400/80"}`} />
+                              <span className={`text-[7.5px] font-mono ${isPaper ? "text-slate-800 font-bold" : "text-cyan-300 font-semibold"} leading-none whitespace-nowrap`}>{t.label}</span>
                             </div>
                           ))}
                         </div>
@@ -830,58 +876,58 @@ export const MapExportModal = ({
               {showMetadata && (
                 <div className="w-[290px] lg:w-[320px] flex-shrink-0 flex flex-col justify-between gap-2.5 text-[8.5px]">
                   {/* Card 1: Spatial Specifications */}
-                  <div className="bg-slate-900/95 border border-slate-800 p-2.5 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
+                  <div className={`${isPaper ? "bg-white border-slate-300 text-slate-800 shadow-sm" : "bg-slate-900/95 border-slate-800 text-slate-200 shadow-lg"} border p-2.5 rounded-xl flex-1 flex flex-col justify-between`}>
                     <div>
-                      <div className="flex items-center gap-1.5 pb-1 mb-1.5 border-b border-slate-800">
-                        <Info className="h-3.5 w-3.5 text-blue-400" />
-                        <span className="font-black text-slate-200 uppercase tracking-wider text-[8.5px]">
+                      <div className={`flex items-center gap-1.5 pb-1 mb-1.5 border-b ${isPaper ? "border-slate-200" : "border-slate-800"}`}>
+                        <Info className={`h-3.5 w-3.5 ${isPaper ? "text-blue-600" : "text-blue-400"}`} />
+                        <span className={`font-black ${isPaper ? "text-slate-900" : "text-slate-200"} uppercase tracking-wider text-[8.5px]`}>
                           Spatial Specifications
                         </span>
                       </div>
                       <div className="space-y-1 font-mono text-[7.5px]">
                         <div>
-                          <span className="text-slate-400 block font-sans">Active Layer:</span>
-                          <span className="text-slate-200 font-semibold">{layerName}</span>
+                          <span className={`${isPaper ? "text-slate-500" : "text-slate-400"} block font-sans`}>Active Layer:</span>
+                          <span className={`${isPaper ? "text-slate-900" : "text-slate-200"} font-semibold`}>{layerName}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Resolution:</span>
-                          <span className="text-slate-200">{spatialResolution}</span>
+                          <span className={`${isPaper ? "text-slate-500" : "text-slate-400"} font-sans`}>Resolution:</span>
+                          <span className={isPaper ? "text-slate-900 font-medium" : "text-slate-200"}>{spatialResolution}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Transparency:</span>
-                          <span className="text-slate-200">{Math.round(opacity * 100)}% overlay</span>
+                          <span className={`${isPaper ? "text-slate-500" : "text-slate-400"} font-sans`}>Transparency:</span>
+                          <span className={isPaper ? "text-slate-900 font-medium" : "text-slate-200"}>{Math.round(opacity * 100)}% overlay</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Geographic CRS:</span>
-                          <span className="text-slate-200">EPSG:4326 (WGS 84)</span>
+                          <span className={`${isPaper ? "text-slate-500" : "text-slate-400"} font-sans`}>Geographic CRS:</span>
+                          <span className={isPaper ? "text-slate-900 font-medium" : "text-slate-200"}>EPSG:4326 (WGS 84)</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-sans">Coverage Area:</span>
-                          <span className="text-emerald-400 font-bold">{mapFrameDims.wKm} × {mapFrameDims.hKm} km</span>
+                          <span className={`${isPaper ? "text-slate-500" : "text-slate-400"} font-sans`}>Coverage Area:</span>
+                          <span className={`${isPaper ? "text-emerald-800" : "text-emerald-400"} font-bold`}>{mapFrameDims.wKm} × {mapFrameDims.hKm} km</span>
                         </div>
                       </div>
 
                       {/* Bounding Box Coordinates */}
-                      <div className="mt-2 pt-1.5 border-t border-slate-800/80">
-                        <span className="text-[7px] uppercase font-bold tracking-wider text-slate-400 block mb-0.5">
+                      <div className={`mt-2 pt-1.5 border-t ${isPaper ? "border-slate-200" : "border-slate-800/80"}`}>
+                        <span className={`text-[7px] uppercase font-bold tracking-wider ${isPaper ? "text-slate-600" : "text-slate-400"} block mb-0.5`}>
                           Bounding Coordinates
                         </span>
-                        <div className="grid grid-cols-2 gap-1 text-[7px] font-mono bg-slate-950/60 p-1.5 rounded border border-slate-800/60">
-                          <div><span className="text-slate-500">N:</span> <span className="text-cyan-300">{formatDms(activeBnds.north, true)}</span></div>
-                          <div><span className="text-slate-500">S:</span> <span className="text-cyan-300">{formatDms(activeBnds.south, true)}</span></div>
-                          <div><span className="text-slate-500">W:</span> <span className="text-cyan-300">{formatDms(activeBnds.west, false)}</span></div>
-                          <div><span className="text-slate-500">E:</span> <span className="text-cyan-300">{formatDms(activeBnds.east, false)}</span></div>
+                        <div className={`grid grid-cols-2 gap-1 text-[7px] font-mono ${isPaper ? "bg-slate-50 border-slate-200 text-slate-800" : "bg-slate-950/60 border-slate-800/60 text-slate-300"} p-1.5 rounded border`}>
+                          <div><span className={isPaper ? "text-slate-400" : "text-slate-500"}>N:</span> <span className={isPaper ? "text-slate-900 font-bold" : "text-cyan-300"}>{formatDms(activeBnds.north, true)}</span></div>
+                          <div><span className={isPaper ? "text-slate-400" : "text-slate-500"}>S:</span> <span className={isPaper ? "text-slate-900 font-bold" : "text-cyan-300"}>{formatDms(activeBnds.south, true)}</span></div>
+                          <div><span className={isPaper ? "text-slate-400" : "text-slate-500"}>W:</span> <span className={isPaper ? "text-slate-900 font-bold" : "text-cyan-300"}>{formatDms(activeBnds.west, false)}</span></div>
+                          <div><span className={isPaper ? "text-slate-400" : "text-slate-500"}>E:</span> <span className={isPaper ? "text-slate-900 font-bold" : "text-cyan-300"}>{formatDms(activeBnds.east, false)}</span></div>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Card 2: Data Sources & Models */}
-                  <div className="bg-slate-900/95 border border-slate-800 p-2.5 rounded-xl shadow-lg flex-1 flex flex-col justify-between">
+                  <div className={`${isPaper ? "bg-white border-slate-300 text-slate-800 shadow-sm" : "bg-slate-900/95 border-slate-800 text-slate-200 shadow-lg"} border p-2.5 rounded-xl flex-1 flex flex-col justify-between`}>
                     <div>
-                      <div className="flex items-center gap-1.5 pb-1 mb-1.5 border-b border-slate-800">
-                        <Check className="h-3.5 w-3.5 text-emerald-400" />
-                        <span className="font-black text-slate-200 uppercase tracking-wider text-[8.5px]">
+                      <div className={`flex items-center gap-1.5 pb-1 mb-1.5 border-b ${isPaper ? "border-slate-200" : "border-slate-800"}`}>
+                        <Check className={`h-3.5 w-3.5 ${isPaper ? "text-emerald-700" : "text-emerald-400"}`} />
+                        <span className={`font-black ${isPaper ? "text-slate-900" : "text-slate-200"} uppercase tracking-wider text-[8.5px]`}>
                           Data Sources & Models
                         </span>
                       </div>
@@ -889,39 +935,39 @@ export const MapExportModal = ({
                         {layer === "soil" ? (
                           <>
                             <div>
-                              <span className="text-slate-400 font-bold block">Ground Truth:</span>
-                              <span className="text-slate-300">KALRO Kenya Soil Survey & ISRIC World Soil Information.</span>
+                              <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Ground Truth:</span>
+                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>KALRO Kenya Soil Survey & ISRIC World Soil Information.</span>
                             </div>
                             <div>
-                              <span className="text-slate-400 font-bold block">Remote Sensing:</span>
-                              <span className="text-slate-300">Sentinel-2 MSI & OpenLandMap 250m Global Grids.</span>
+                              <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Remote Sensing:</span>
+                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>Sentinel-2 MSI & OpenLandMap 250m Global Grids.</span>
                             </div>
                             <div>
-                              <span className="text-slate-400 font-bold block">Predictive Model:</span>
-                              <span className="text-slate-300">Random Forest Spatial Soil Ensemble (30m).</span>
+                              <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Predictive Model:</span>
+                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>Random Forest Spatial Soil Ensemble (30m).</span>
                             </div>
                           </>
                         ) : (
                           <>
                             <div>
-                              <span className="text-slate-400 font-bold block">Ground Truth:</span>
-                              <span className="text-slate-300">Ministry of Agriculture / Agriculture and Food Authority (AFA).</span>
+                              <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Ground Truth:</span>
+                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>Ministry of Agriculture / Agriculture and Food Authority (AFA).</span>
                             </div>
                             <div>
-                              <span className="text-slate-400 font-bold block">Remote Sensing:</span>
-                              <span className="text-slate-300">Google Earth Engine (CHIRPS, MODIS, Dynamic World).</span>
+                              <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Remote Sensing:</span>
+                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>Google Earth Engine (CHIRPS, MODIS, Dynamic World).</span>
                             </div>
                             <div>
-                              <span className="text-slate-400 font-bold block">Predictive Model:</span>
-                              <span className="text-slate-300">XGBoost ML Regressor (Tuned for Kenyan agro-ecological zones).</span>
+                              <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Predictive Model:</span>
+                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>XGBoost ML Regressor (Tuned for Kenyan agro-ecological zones).</span>
                             </div>
                           </>
                         )}
                       </div>
                     </div>
 
-                    <div className="pt-1.5 mt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[7px] text-slate-500">
-                      <span className="font-bold text-emerald-500 uppercase tracking-widest">AgriWatch-KE</span>
+                    <div className={`pt-1.5 mt-1.5 border-t ${isPaper ? "border-slate-200 text-slate-600" : "border-slate-800/80 text-slate-500"} flex items-center justify-between text-[7px]`}>
+                      <span className={`font-bold ${isPaper ? "text-emerald-800" : "text-emerald-500"} uppercase tracking-widest`}>AgriWatch-KE</span>
                       <span className="italic">Decision Support Bulletin</span>
                     </div>
                   </div>
