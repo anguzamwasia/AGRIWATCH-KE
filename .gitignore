@@ -46,6 +46,8 @@ logs/
 Backend/images/*.png
 Backend/images/*.jpg
 Backend/images/*.tif
+*.pptx
+*.mp4
 
 # === OS ===
 .DS_Store

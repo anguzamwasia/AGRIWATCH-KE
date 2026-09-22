@@ -108,7 +108,7 @@ export const MapControls = ({
   return (
     <div
       className={cn(
-        "bg-slate-900 shadow-2xl border border-slate-800 rounded-[2rem] text-slate-200 relative z-50 transition-all duration-300 flex flex-col h-full",
+        "bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 rounded-[2rem] text-slate-900 dark:text-slate-200 relative z-50 transition-all duration-300 flex flex-col h-full",
         isCollapsed ? "p-4 items-center" : "p-6 space-y-6",
       )}
     >
@@ -121,7 +121,7 @@ export const MapControls = ({
         {!isCollapsed && (
           <div className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-emerald-500" />
-            <h3 className="text-lg font-bold text-white">Location & Time</h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Location & Time</h3>
           </div>
         )}
         <div className="flex items-center gap-3">
@@ -134,7 +134,7 @@ export const MapControls = ({
             className={cn(
               "p-0",
               isCollapsed
-                ? "h-12 w-12 rounded-xl bg-slate-800/50 hover:bg-slate-700"
+                ? "h-12 w-12 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-700"
                 : "h-8 w-8",
             )}
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -366,28 +366,28 @@ export const MapControls = ({
 
 
           {/* Active Context */}
-          <div className="pt-4 border-t border-slate-800">
-            <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+            <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
               Selected Analysis
             </h4>
             <div className="flex flex-wrap gap-1.5">
               <Badge
                 variant="secondary"
-                className="bg-emerald-900/40 text-emerald-400 border border-emerald-800/50"
+                className="bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-400 dark:border-emerald-800/50"
               >
                 {isNationalView ? "Kenya (National)" : selectedCounty}
               </Badge>
               {!isNationalView && selectedSubcounty && (
                 <Badge
                   variant="outline"
-                  className="text-[10px] border-slate-700 text-slate-300 bg-slate-800/50"
+                  className="text-[10px] border-slate-300 text-slate-700 bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:bg-slate-800/50"
                 >
                   {selectedSubcounty}
                 </Badge>
               )}
               <Badge
                 variant="outline"
-                className="text-[10px] border-slate-700 text-slate-300 bg-slate-800/50"
+                className="text-[10px] border-slate-300 text-slate-700 bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:bg-slate-800/50"
               >
                 {selectedYear}
               </Badge>

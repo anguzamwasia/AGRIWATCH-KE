@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import axios from "axios";
 import 'mapbox-gl/dist/mapbox-gl.css'; 
@@ -39,16 +40,36 @@ import {
   Maximize,
   Layers,
   MessageSquare,
-  ShieldAlert
+  ShieldAlert,
+  Sun,
+  Moon
 } from "lucide-react";
 const Index = () => {
-  const [showDashboard, setShowDashboard] = useState<boolean>(() => {
+  const navigate = useNavigate();
+  const [showDashboard, setShowDashboard] = useState<boolean>(true);
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
     try {
-      return localStorage.getItem("agriwatch_auth") === "true";
+      return (localStorage.getItem("agriwatch_theme") as "dark" | "light") || "dark";
     } catch {
-      return false;
+      return "dark";
     }
   });
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    try {
+      localStorage.setItem("agriwatch_theme", next);
+    } catch (_) {}
+  };
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
 
   const handleEnterDashboard = () => {
     try {
@@ -62,13 +83,14 @@ const Index = () => {
       localStorage.removeItem("agriwatch_auth");
     } catch (_) {}
     setShowDashboard(false);
+    navigate("/");
   };
   const [selectedCounty, setSelectedCounty] = useState<string>("Uasin Gishu");
   const [selectedSubcounty, setSelectedSubcounty] = useState<string>("Select subcounty");
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [selectedCrop, setSelectedCrop] = useState("Maize");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [mapLayer, setMapLayer] = useState<'osm' | 'satellite' | 'pixel' | 'lulc'>('pixel');
+  const [mapLayer, setMapLayer] = useState<'osm' | 'satellite' | 'pixel' | 'lulc'>('osm');
   const [isReportGenerating, setIsReportGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("map");
   const [showAlertPanel, setShowAlertPanel] = useState(false);
@@ -235,28 +257,57 @@ const Index = () => {
 
 
   return (
-    <div className="dark min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans">
+    <div className={cn("min-h-screen p-4 md:p-8 font-sans transition-colors duration-300", theme === "dark" ? "dark bg-slate-950 text-slate-100" : "bg-slate-100 text-slate-900")}>
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* TOP NAVBAR / HEADER */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/50 p-6 rounded-[2rem] shadow-2xl backdrop-blur-xl border border-slate-800">
+        <div className={cn("flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-[2rem] shadow-2xl backdrop-blur-xl border transition-colors duration-300",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800 text-slate-100" : "bg-white/90 border-slate-200 text-slate-900 shadow-slate-200/50"
+        )}>
           <div className="flex items-center gap-4">
             <div className="bg-emerald-600 p-2 rounded-xl shadow-[0_0_15px_rgba(5,150,105,0.5)]"><Brain className="h-6 w-6 text-white" /></div>
             <div>
-              <h1 className="text-xl font-black text-slate-100 tracking-tight">National Food Security Dashboard</h1>
-              <Badge variant="outline" className="text-[10px] uppercase font-bold text-emerald-400 border-emerald-800/50 bg-emerald-900/20">Executive Decision Support System</Badge>
+              <h1 className={cn("text-xl font-black tracking-tight", theme === "dark" ? "text-slate-100" : "text-slate-900")}>National Food Security Dashboard</h1>
+              <Badge variant="outline" className={cn("text-[10px] uppercase font-bold", theme === "dark" ? "text-emerald-400 border-emerald-800/50 bg-emerald-900/20" : "text-emerald-700 border-emerald-300 bg-emerald-50")}>Executive Decision Support System</Badge>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleExitDashboard} className="text-slate-400 hover:text-red-400 hover:bg-slate-800 font-bold">
-            <LogOut className="h-4 w-4 mr-2" /> Exit System
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleTheme}
+              className={cn("font-bold flex items-center gap-2 rounded-xl border transition-colors px-3 py-1.5",
+                theme === "dark" 
+                  ? "bg-slate-800/80 border-slate-700 text-amber-400 hover:bg-slate-700 hover:text-amber-300" 
+                  : "bg-white border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 shadow-sm"
+              )}
+              title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {theme === "dark" ? (
+                <>
+                  <Sun className="h-4 w-4 text-amber-400" />
+                  <span className="text-xs">Light</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="h-4 w-4 text-slate-700" />
+                  <span className="text-xs">Dark</span>
+                </>
+              )}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleExitDashboard} className={cn("font-bold", theme === "dark" ? "text-slate-400 hover:text-red-400 hover:bg-slate-800" : "text-slate-600 hover:text-red-600 hover:bg-slate-100")}>
+              <LogOut className="h-4 w-4 mr-2" /> Exit System
+            </Button>
+          </div>
         </div>
 
         {/* MAIN CONTENT AREA */}
         <div id="dashboard-content" className="flex flex-col lg:flex-row gap-6">
           
           <div className={cn("transition-all duration-500 flex flex-col space-y-6", isSidebarCollapsed ? "lg:w-[5rem]" : "lg:w-1/4")}>
-            <Card className="border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900/50 backdrop-blur-xl p-2 relative overflow-hidden h-fit">
+            <Card className={cn("border shadow-2xl rounded-[2.5rem] backdrop-blur-xl p-2 relative overflow-hidden h-fit transition-colors duration-300",
+              theme === "dark" ? "border-slate-800 bg-slate-900/50" : "border-slate-200 bg-white/90 shadow-slate-200/50"
+            )}>
               <MapControls 
                 selectedCounty={selectedCounty} onCountyChange={setSelectedCounty}
                 selectedSubcounty={selectedSubcounty} onSubcountyChange={setSelectedSubcounty}
@@ -279,18 +330,22 @@ const Index = () => {
             {error && <div className="p-4 bg-red-900/20 border border-red-800 rounded-xl flex items-center gap-3 text-red-400 mb-6"><AlertCircle className="h-5 w-5" /><p className="text-sm font-bold uppercase">{error}</p></div>}
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-7 mb-6 bg-slate-900/50 p-1 shadow-2xl border border-slate-800 rounded-2xl backdrop-blur-xl">
-                <TabsTrigger value="map" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><MapIcon className="w-4 h-4 mr-1" /> Map</TabsTrigger>
-                <TabsTrigger value="predictors" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><Activity className="w-4 h-4 mr-1" /> Predictors</TabsTrigger>
-                <TabsTrigger value="phenology" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><Sprout className="w-4 h-4 mr-1" /> Growth</TabsTrigger>
-                <TabsTrigger value="charts" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ChartIcon className="w-4 h-4 mr-1" /> Trends</TabsTrigger>
-                <TabsTrigger value="report" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ClipboardCheck className="w-4 h-4 mr-1" /> Report</TabsTrigger>
-                <TabsTrigger value="triage" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-red-700 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ShieldAlert className="w-4 h-4 mr-1" /> Risk Alerts</TabsTrigger>
-                <TabsTrigger value="chatbot" className="rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><MessageSquare className="w-4 h-4 mr-1" /> Advisor</TabsTrigger>
+              <TabsList className={cn("grid w-full grid-cols-7 mb-6 p-1 shadow-2xl rounded-2xl backdrop-blur-xl border transition-colors duration-300",
+                theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-white/90 border-slate-200 shadow-slate-200/50"
+              )}>
+                <TabsTrigger value="map" className={cn("rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white", theme === "dark" ? "text-slate-400 hover:text-slate-200" : "text-slate-600 hover:text-slate-900")}><MapIcon className="w-4 h-4 mr-1" /> Map</TabsTrigger>
+                <TabsTrigger value="predictors" className={cn("rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white", theme === "dark" ? "text-slate-400 hover:text-slate-200" : "text-slate-600 hover:text-slate-900")}><Activity className="w-4 h-4 mr-1" /> Predictors</TabsTrigger>
+                <TabsTrigger value="phenology" className={cn("rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white", theme === "dark" ? "text-slate-400 hover:text-slate-200" : "text-slate-600 hover:text-slate-900")}><Sprout className="w-4 h-4 mr-1" /> Growth</TabsTrigger>
+                <TabsTrigger value="charts" className={cn("rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white", theme === "dark" ? "text-slate-400 hover:text-slate-200" : "text-slate-600 hover:text-slate-900")}><ChartIcon className="w-4 h-4 mr-1" /> Trends</TabsTrigger>
+                <TabsTrigger value="report" className={cn("rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white", theme === "dark" ? "text-slate-400 hover:text-slate-200" : "text-slate-600 hover:text-slate-900")}><ClipboardCheck className="w-4 h-4 mr-1" /> Report</TabsTrigger>
+                <TabsTrigger value="triage" className={cn("rounded-xl font-bold text-xs uppercase data-[state=active]:bg-red-700 data-[state=active]:text-white", theme === "dark" ? "text-slate-400 hover:text-slate-200" : "text-slate-600 hover:text-slate-900")}><ShieldAlert className="w-4 h-4 mr-1" /> Risk Alerts</TabsTrigger>
+                <TabsTrigger value="chatbot" className={cn("rounded-xl font-bold text-xs uppercase data-[state=active]:bg-emerald-600 data-[state=active]:text-white", theme === "dark" ? "text-slate-400 hover:text-slate-200" : "text-slate-600 hover:text-slate-900")}><MessageSquare className="w-4 h-4 mr-1" /> Advisor</TabsTrigger>
               </TabsList>
 
               <TabsContent value="map">
-                <Card className="border-slate-800 shadow-2xl overflow-hidden rounded-[2.5rem] bg-slate-900 h-[650px] relative">
+                <Card className={cn("shadow-2xl overflow-hidden rounded-[2.5rem] h-[650px] relative border transition-colors duration-300",
+                  theme === "dark" ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white shadow-slate-200/50"
+                )}>
                   <YieldMap crop={selectedCrop} county={selectedCounty} subcounty={selectedSubcounty} year={selectedYear} layer={mapLayer} lulcMapPath={predictorData?.lulcMapPath || ""} predictedYield={apiData?.cards?.predicted_yield} baseYield={apiData?.cards?.base_yield} />
                 </Card>
               </TabsContent>
@@ -317,10 +372,12 @@ const Index = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* 1. YIELD */}
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                    <Card className="bg-emerald-950 border-emerald-900 p-6 rounded-[2rem] shadow-2xl relative overflow-hidden h-full">
-                      <p className="text-[11px] font-black text-emerald-400 uppercase tracking-widest mb-1">Average Yield</p>
-                      <h3 className="text-3xl font-black text-white tracking-tighter">
-                        {activeMetrics?.yield_tha?.toFixed(2) || "0.00"} <span className="text-xs font-bold text-emerald-500">t/ha</span>
+                    <Card className={cn("p-6 rounded-[2rem] shadow-2xl relative overflow-hidden h-full border transition-colors duration-300",
+                      theme === "dark" ? "bg-emerald-950 border-emerald-900" : "bg-emerald-50 border-emerald-200"
+                    )}>
+                      <p className={cn("text-[11px] font-black uppercase tracking-widest mb-1", theme === "dark" ? "text-emerald-400" : "text-emerald-700")}>Average Yield</p>
+                      <h3 className={cn("text-3xl font-black tracking-tighter", theme === "dark" ? "text-white" : "text-emerald-950")}>
+                        {activeMetrics?.yield_tha?.toFixed(2) || "0.00"} <span className={cn("text-xs font-bold", theme === "dark" ? "text-emerald-500" : "text-emerald-700")}>t/ha</span>
                       </h3>
                       <TrendingUp className="absolute right-[-10px] bottom-[-10px] h-20 w-20 text-emerald-500/20" />
                     </Card>
@@ -328,10 +385,12 @@ const Index = () => {
 
                   {/* 2. PRODUCTION */}
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                    <Card className="bg-blue-950 border-blue-900 p-6 rounded-[2rem] shadow-2xl relative overflow-hidden h-full">
-                      <p className="text-[11px] font-black text-blue-400 uppercase tracking-widest mb-1">Total Production</p>
-                      <h3 className="text-3xl font-black text-white tracking-tighter">
-                        {activeMetrics?.production_tons ? (activeMetrics.production_tons / 1000).toFixed(1) : "0.0"} <span className="text-xs font-bold text-blue-500">k Tons</span>
+                    <Card className={cn("p-6 rounded-[2rem] shadow-2xl relative overflow-hidden h-full border transition-colors duration-300",
+                      theme === "dark" ? "bg-blue-950 border-blue-900" : "bg-blue-50 border-blue-200"
+                    )}>
+                      <p className={cn("text-[11px] font-black uppercase tracking-widest mb-1", theme === "dark" ? "text-blue-400" : "text-blue-700")}>Total Production</p>
+                      <h3 className={cn("text-3xl font-black tracking-tighter", theme === "dark" ? "text-white" : "text-blue-950")}>
+                        {activeMetrics?.production_tons ? (activeMetrics.production_tons / 1000).toFixed(1) : "0.0"} <span className={cn("text-xs font-bold", theme === "dark" ? "text-blue-500" : "text-blue-700")}>k Tons</span>
                       </h3>
                       <Maximize className="absolute right-[-10px] bottom-[-10px] h-20 w-20 text-blue-500/20" />
                     </Card>
@@ -339,9 +398,11 @@ const Index = () => {
 
                   {/* 3. AREA (NEW) */}
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                    <Card className="bg-slate-900 border-slate-800 p-6 rounded-[2rem] shadow-2xl relative overflow-hidden h-full">
-                      <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Area Cultivated</p>
-                      <h3 className="text-3xl font-black text-white tracking-tighter">
+                    <Card className={cn("p-6 rounded-[2rem] shadow-2xl relative overflow-hidden h-full border transition-colors duration-300",
+                      theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200 shadow-slate-200/50"
+                    )}>
+                      <p className={cn("text-[11px] font-black uppercase tracking-widest mb-1", theme === "dark" ? "text-slate-400" : "text-slate-500")}>Area Cultivated</p>
+                      <h3 className={cn("text-3xl font-black tracking-tighter", theme === "dark" ? "text-white" : "text-slate-900")}>
                         {activeMetrics?.area_ha ? Math.round(activeMetrics.area_ha).toLocaleString() : "0"} <span className="text-xs font-bold text-slate-500">Ha</span>
                       </h3>
                       <Layers className="absolute right-[-10px] bottom-[-10px] h-20 w-20 text-slate-500/20" />
@@ -349,15 +410,19 @@ const Index = () => {
                   </motion.div>
                 </div>
 
-                <Card className="p-6 md:p-8 border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900">
+                <Card className={cn("p-6 md:p-8 shadow-2xl rounded-[2.5rem] border transition-colors duration-300",
+                  theme === "dark" ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white shadow-slate-200/50"
+                )}>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                    <h3 className="text-xl font-black text-slate-100 tracking-tight">Historical Yield Timeline ({selectedCrop})</h3>
+                    <h3 className={cn("text-xl font-black tracking-tight", theme === "dark" ? "text-slate-100" : "text-slate-900")}>Historical Yield Timeline ({selectedCrop})</h3>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-slate-400">Compare vs:</span>
+                      <span className={cn("text-sm font-bold", theme === "dark" ? "text-slate-400" : "text-slate-600")}>Compare vs:</span>
                       <select 
                         value={compareCrop} 
                         onChange={(e) => setCompareCrop(e.target.value)}
-                        className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2 font-bold"
+                        className={cn("text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2 font-bold border",
+                          theme === "dark" ? "bg-slate-800 border-slate-700 text-slate-200" : "bg-slate-50 border-slate-300 text-slate-800"
+                        )}
                       >
                         <option value="None">None</option>
                         {["Maize", "Wheat", "Potatoes", "Pigeonpeas"].filter(c => c !== selectedCrop).map(c => (
@@ -379,13 +444,13 @@ const Index = () => {
                             <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
-                        <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 'bold'}} dy={10} />
-                        <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 'bold'}} dx={-10} domain={['auto', 'auto']} />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme === "dark" ? "#334155" : "#e2e8f0"} />
+                        <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fill: theme === "dark" ? '#94a3b8' : '#64748b', fontSize: 12, fontWeight: 'bold'}} dy={10} />
+                        <YAxis axisLine={false} tickLine={false} tick={{fill: theme === "dark" ? '#94a3b8' : '#64748b', fontSize: 12, fontWeight: 'bold'}} dx={-10} domain={['auto', 'auto']} />
                         <Tooltip 
-                          contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)', background: '#1e293b', color: '#f8fafc', fontWeight: 'bold'}}
+                          contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)', background: theme === "dark" ? '#1e293b' : '#ffffff', color: theme === "dark" ? '#f8fafc' : '#0f172a', fontWeight: 'bold'}}
                           itemStyle={{fontWeight: 'black'}}
-                          cursor={{stroke: '#334155', strokeWidth: 2, strokeDasharray: '4 4'}}
+                          cursor={{stroke: theme === "dark" ? '#334155' : '#cbd5e1', strokeWidth: 2, strokeDasharray: '4 4'}}
                         />
                         <Area type="monotone" name={selectedCrop} dataKey="yield_tha" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorYield)" />
                         {compareCrop !== "None" && (
@@ -401,7 +466,9 @@ const Index = () => {
                 <div className="space-y-6">
                   {/* Action Trigger Card — decision maker layer */}
                   {apiData?.cards && (
-                    <Card className="border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900 p-6 md:p-8">
+                    <Card className={cn("shadow-2xl rounded-[2.5rem] p-6 md:p-8 border transition-colors duration-300",
+                      theme === "dark" ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white shadow-slate-200/50"
+                    )}>
                       <ActionTriggerCard
                         county={selectedCounty}
                         crop={selectedCrop}
@@ -417,7 +484,9 @@ const Index = () => {
                     </Card>
                   )}
                   {/* Full Yield Report */}
-                  <Card className="print-wrapper print-only p-8 border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900">
+                  <Card className={cn("print-wrapper print-only p-8 shadow-2xl rounded-[2.5rem] border transition-colors duration-300",
+                    theme === "dark" ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white shadow-slate-200/50"
+                  )}>
                     <ReportGenerator 
                       county={selectedCounty} 
                       subcounty={selectedSubcounty} 
@@ -435,7 +504,9 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="triage">
-                <Card className="border-slate-800 shadow-2xl rounded-[2.5rem] bg-slate-900 p-6 md:p-8">
+                <Card className={cn("shadow-2xl rounded-[2.5rem] p-6 md:p-8 border transition-colors duration-300",
+                  theme === "dark" ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white shadow-slate-200/50"
+                )}>
                   <NationalTriageMap
                     year={selectedYear}
                     crop={selectedCrop}
@@ -449,7 +520,9 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="chatbot">
-                <Card className="border-slate-800 shadow-2xl overflow-hidden rounded-[2.5rem] bg-slate-900 h-[650px]">
+                <Card className={cn("shadow-2xl overflow-hidden rounded-[2.5rem] h-[650px] border transition-colors duration-300",
+                  theme === "dark" ? "border-slate-800 bg-slate-900" : "border-slate-200 bg-white shadow-slate-200/50"
+                )}>
                   <DataChatbot selectedCounty={selectedCounty} selectedCrop={selectedCrop} />
                 </Card>
               </TabsContent>

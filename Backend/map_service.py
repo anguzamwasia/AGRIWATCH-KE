@@ -251,9 +251,17 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "", 
     filename = f"{safe_county}_{safe_sub}_{crop.lower()}_{year}{pred_str}_yield.tif"
     out_path = out_dir / filename
 
-    # Use cached TIF if it already exists to achieve instant rendering
+    # Use cached TIF if it already exists and is valid
     if out_path.exists():
-        return filename
+        try:
+            with rasterio.open(out_path) as test_src:
+                if test_src.width > 0 and test_src.height > 0:
+                    return filename
+        except Exception:
+            try:
+                out_path.unlink(missing_ok=True)
+            except Exception:
+                pass
 
     try:
         with rasterio.open(y_path) as y_src:
@@ -364,8 +372,11 @@ def generate_county_tif(county: str, crop: str, year: int, subcounty: str = "", 
                 "nodata": 0.0,
                 "compress": "lzw",
             })
-            with rasterio.open(out_path, "w", **out_meta) as dest:
+            tmp_path = out_dir / f"tmp_{filename}"
+            with rasterio.open(tmp_path, "w", **out_meta) as dest:
                 dest.write(out_band)
+            import shutil
+            shutil.move(str(tmp_path), str(out_path))
 
         return filename
 

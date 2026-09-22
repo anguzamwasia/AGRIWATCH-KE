@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
-// Fixed the import error: Button usually comes from its own UI component
+import React from 'react';
 import { Button } from "@/components/ui/button"; 
 import { 
   Brain, 
   Sprout, 
   LineChart as ChartIcon, 
   Map as MapIcon, 
-  ChevronRight, 
-  ShieldCheck,
-  X,
-  Lock
+  ChevronRight
 } from "lucide-react";
 import heroImage from "@/assets/kenya-fields-hero.jpg";
 
@@ -18,34 +14,6 @@ interface LandingPageProps {
 }
 
 const LandingPage = ({ onEnter }: LandingPageProps) => {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPass = password.trim();
-    if (
-      (cleanEmail === 'anguzacynthia@gmail.com' && cleanPass.toLowerCase() === 'cynthia@2014') ||
-      (cleanEmail.includes('@') && cleanPass.length >= 4) ||
-      cleanEmail === 'demo' ||
-      cleanPass.toLowerCase() === 'demo'
-    ) {
-      setError('');
-      setShowLoginModal(false);
-      onEnter();
-    } else {
-      setError('Invalid credentials. You can also click "Instant Guest Access" below.');
-    }
-  };
-
-  const handleGuestEnter = () => {
-    setShowLoginModal(false);
-    onEnter();
-  };
-
   return (
     <div className="min-h-screen bg-white relative">
       {/* Hero Section */}
@@ -80,16 +48,10 @@ const LandingPage = ({ onEnter }: LandingPageProps) => {
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button 
-                onClick={handleGuestEnter}
-                className="px-8 py-6 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+                onClick={onEnter}
+                className="px-8 py-6 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.4)] text-base"
               >
                 Launch Dashboard <ChevronRight className="h-5 w-5" />
-              </Button>
-              <Button 
-                onClick={() => setShowLoginModal(true)}
-                className="px-8 py-6 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl font-bold transition-all flex items-center gap-2"
-              >
-                Sign In <Lock className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </div>
@@ -125,82 +87,6 @@ const LandingPage = ({ onEnter }: LandingPageProps) => {
           </div>
         </div>
       </section>
-
-      {/* Login Modal Overlay */}
-      {showLoginModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl w-full max-w-md relative animate-in zoom-in-95 duration-300">
-            <button 
-              onClick={() => setShowLoginModal(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            
-            <div className="mb-6">
-              <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-4 border border-green-500/30">
-                <Lock className="h-6 w-6 text-green-400" />
-              </div>
-              <h2 className="text-2xl font-black text-white">System Access</h2>
-              <p className="text-sm text-slate-400 mt-1">Please log in to access the GeoAI Analytics dashboard.</p>
-            </div>
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Email Address</label>
-                <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
-                  placeholder="Enter authorized email"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Password</label>
-                <input 
-                  type="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-
-              {error && (
-                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                  <p className="text-xs text-red-400 font-bold">{error}</p>
-                </div>
-              )}
-
-              <Button 
-                type="submit"
-                className="w-full py-6 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold mt-4 shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all"
-              >
-                Authenticate & Enter
-              </Button>
-
-              <div className="relative flex py-2 items-center">
-                <div className="flex-grow border-t border-slate-800"></div>
-                <span className="flex-shrink mx-3 text-xs text-slate-500 uppercase font-mono">or</span>
-                <div className="flex-grow border-t border-slate-800"></div>
-              </div>
-
-              <Button 
-                type="button"
-                onClick={handleGuestEnter}
-                variant="outline"
-                className="w-full py-5 border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-bold transition-all"
-              >
-                Instant Guest / Evaluator Access
-              </Button>
-            </form>
-          </div>
-        </div>
-      )}
 
     </div>
   );
