@@ -951,7 +951,7 @@ export const MapExportModal = ({
                           <>
                             <div>
                               <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Ground Truth:</span>
-                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>Ministry of Agriculture / Agriculture and Food Authority (AFA).</span>
+                              <span className={isPaper ? "text-slate-800 font-medium" : "text-slate-300"}>National Agricultural Statistics & Field Calibrations (AFA).</span>
                             </div>
                             <div>
                               <span className={`${isPaper ? "text-slate-700" : "text-slate-400"} font-bold block`}>Remote Sensing:</span>

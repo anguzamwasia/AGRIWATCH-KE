@@ -230,20 +230,39 @@ const Index = () => {
       
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 8;
+      const printableWidth = pageWidth - (margin * 2);
+      const printableHeight = pageHeight - (margin * 2);
       
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      let imgWidth = printableWidth;
+      let imgHeight = (canvas.height * printableWidth) / canvas.width;
       
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+      // If height fits within printable single page, or slightly exceeds due to DPI, scale it to fit 1 page cleanly!
+      if (imgHeight <= printableHeight * 1.25) {
+        if (imgHeight > printableHeight) {
+          const scale = printableHeight / imgHeight;
+          imgHeight = printableHeight;
+          imgWidth = imgWidth * scale;
+        }
+        const xOffset = margin + (printableWidth - imgWidth) / 2;
+        const yOffset = margin + (printableHeight - imgHeight) / 2;
+        pdf.addImage(imgData, "PNG", xOffset, yOffset, imgWidth, imgHeight, undefined, "FAST");
+      } else {
+        // Multi-page fallback with safe threshold
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        pdf.addImage(imgData, "PNG", margin, margin, printableWidth, imgHeight, undefined, "FAST");
+        heightLeft -= printableHeight;
+        
+        while (heightLeft > 15) {
+          position -= printableHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", margin, position + margin, printableWidth, imgHeight, undefined, "FAST");
+          heightLeft -= printableHeight;
+        }
       }
       
       pdf.save(`agriwatch_report_${selectedCounty.toLowerCase().replace(/ /g, "_")}_${selectedYear}.pdf`);
